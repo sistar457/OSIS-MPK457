@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>SIM-OSIS & MPK - SMP Islam Tarbiyatul Huda</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22',
+            },
+            mpk: {
+              50: '#eff6ff',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- HTML5-QRCode Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <!-- Custom Styling (Light & Dark Mode + Print A4) -->
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body class="bg-slate-50 dark:bg-[#0b132b] text-slate-900 dark:text-slate-100 min-h-screen pb-20 lg:pb-12 transition-colors duration-200">
+
+  <!-- =========================================================================
+       HEADER & NAVIGATION BAR
+       ========================================================================= -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-white/90 dark:bg-[#1c2541]/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="h-16 md:h-20 flex items-center justify-between gap-4">
+        
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="App.navigateTo('portal-publik')">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-800 to-emerald-600 flex items-center justify-center text-white shadow-md">
+            <span class="material-symbols-outlined text-[24px]">school</span>
+          </div>
+          <div>
+            <div class="font-heading font-extrabold text-base md:text-lg text-emerald-800 dark:text-emerald-400 tracking-tight leading-tight">
+              SIM-OSIS & MPK
+            </div>
+            <div class="text-[11px] font-medium text-slate-500 dark:text-slate-400 hidden sm:block">
+              SMP Islam Tarbiyatul Huda
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Quick Controls -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Role Badge -->
+          <div class="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Urusan Kesiswaan</span>
+          </div>
+
+          <!-- Academic Year Badge -->
+          <div class="hidden lg:flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium">
+            <span>T.A. 2026/2027</span>
+          </div>
+
+          <!-- Dark/Light Mode Switcher -->
+          <button class="theme-toggle-btn p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Ubah Tema (Terang / Gelap)" aria-label="Toggle Theme">
+            <span class="material-symbols-outlined theme-toggle-icon text-[22px]">dark_mode</span>
+          </button>
+
+          <!-- Direct CTA Pendaftaran -->
+          <button onclick="App.navigateTo('portal-publik'); document.getElementById('section-form-pendaftaran')?.scrollIntoView({behavior:'smooth'});" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white text-xs font-bold shadow-sm transition-all">
+            <span class="material-symbols-outlined text-[16px]">how_to_reg</span>
+            <span>Daftar Calon Pengurus</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Desktop Nav Tabs -->
+      <nav class="hidden md:flex items-center gap-6 overflow-x-auto h-11 border-t border-slate-100 dark:border-slate-800/80 text-sm">
+        <a href="#portal-publik" data-tab="portal-publik" class="nav-tab active h-full flex items-center text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-700 dark:border-emerald-400 font-bold px-1 whitespace-nowrap transition-colors">
+          Portal Publik
+        </a>
+        <a href="#dashboard-erp" data-tab="dashboard-erp" class="nav-tab h-full flex items-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 px-1 whitespace-nowrap transition-colors">
+          Dashboard Kesiswaan
+        </a>
+        <a href="#presensi-kegiatan" data-tab="presensi-kegiatan" class="nav-tab h-full flex items-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 px-1 whitespace-nowrap transition-colors">
+          Presensi & Kegiatan
+        </a>
+        <a href="#penilaian-best-member" data-tab="penilaian-best-member" class="nav-tab h-full flex items-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 px-1 whitespace-nowrap transition-colors">
+          Penilaian & Best Member
+        </a>
+        <a href="#generator-surat-resmi" data-tab="generator-surat-resmi" class="nav-tab h-full flex items-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 px-1 whitespace-nowrap transition-colors">
+          Generator Surat Resmi
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN CONTENT CONTAINER
+       ========================================================================= -->
+  <main class="w-full pt-20 md:pt-32 max-w-7xl mx-auto px-4 sm:px-6">
+
+    <!-- =======================================================================
+         SECTION 1: PORTAL PUBLIK / LANDING PAGE
+         ======================================================================= -->
+    <section id="section-portal-publik" class="app-section space-y-10">
+      
+      <!-- Hero Banner -->
+      <div class="relative overflow-hidden rounded-2xl hero-gradient p-6 sm:p-10 lg:p-12 text-white shadow-lg">
+        <!-- Khatam Decorative Overlay -->
+        <div class="absolute -right-20 -top-20 w-80 h-80 opacity-10 pointer-events-none">
+          <svg class="w-full h-full fill-current text-white" viewBox="0 0 200 200">
+            <polygon points="100,0 122,38 165,22 165,68 200,90 178,128 193,172 150,172 135,212 95,190 65,212 50,172 7,172 22,128 0,90 35,68 35,22 78,38"></polygon>
+          </svg>
+        </div>
+
+        <div class="relative z-10 max-w-3xl space-y-5">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-emerald-100 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+            <span>Rekrutmen Pengurus Baru Periode 2027/2028 Resmi Dibuka!</span>
+          </div>
+
+          <h1 class="font-heading font-extrabold text-2xl sm:text-4xl lg:text-5xl tracking-tight leading-tight">
+            Membina Pemimpin Muda Berakhlak <span class="text-amber-300 underline decoration-amber-400/50 underline-offset-4">Qur'ani</span>, Kritis & Berprestasi
+          </h1>
+
+          <p class="text-emerald-100/90 text-sm sm:text-base leading-relaxed max-w-2xl">
+            Sistem Informasi Manajemen Terpadu Organisasi Siswa Intra Sekolah (OSIS) & Majelis Perwakilan Kelas (MPK) SMP Islam Tarbiyatul Huda. Akselerasi kepemimpinan amanah, transparansi program kerja, dan arsip digital mandiri.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <button onclick="document.getElementById('quiz-modal').classList.remove('hidden'); App.renderQuizModal();" class="px-5 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md transition-all">
+              <span class="material-symbols-outlined text-[20px]">psychology_alt</span>
+              <span>Ikuti Diagnostic Quiz (Cek Minat)</span>
+            </button>
+            <a href="#section-form-pendaftaran" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold text-xs sm:text-sm flex items-center gap-2 border border-white/20 transition-all">
+              <span class="material-symbols-outlined text-[20px]">edit_document</span>
+              <span>Isi Formulir Pendaftaran</span>
+            </a>
+          </div>
+
+          <!-- Quick Metrics Row -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-white/15">
+            <div class="p-3 rounded-xl bg-black/10 backdrop-blur-sm">
+              <div class="font-heading font-extrabold text-xl sm:text-2xl text-emerald-200">7 Divisi</div>
+              <div class="text-[11px] text-emerald-100/70 uppercase tracking-wider">OSIS Eksekutif</div>
+            </div>
+            <div class="p-3 rounded-xl bg-black/10 backdrop-blur-sm">
+              <div class="font-heading font-extrabold text-xl sm:text-2xl text-blue-200">4 Komisi</div>
+              <div class="text-[11px] text-blue-100/70 uppercase tracking-wider">MPK Legislatif</div>
+            </div>
+            <div class="p-3 rounded-xl bg-black/10 backdrop-blur-sm">
+              <div class="font-heading font-extrabold text-xl sm:text-2xl text-amber-200">100%</div>
+              <div class="text-[11px] text-amber-100/70 uppercase tracking-wider">Presensi QR Paperless</div>
+            </div>
+            <div class="p-3 rounded-xl bg-black/10 backdrop-blur-sm">
+              <div class="font-heading font-extrabold text-xl sm:text-2xl text-white">Award</div>
+              <div class="text-[11px] text-emerald-100/70 uppercase tracking-wider">Best Member Bulanan</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dual Pillar Sinergi: OSIS vs MPK -->
+      <div class="space-y-4">
+        <div class="text-center max-w-xl mx-auto space-y-1">
+          <span class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest">Tata Kelola Organisasi</span>
+          <h2 class="font-heading font-extrabold text-xl sm:text-2xl text-slate-900 dark:text-white">Dual Sinergi Kepemimpinan Siswa</h2>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Pembagian wewenang profesional antara badan eksekutif pelaksana dan badan perwakilan aspirasi.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Card OSIS -->
+          <div class="glass-card p-6 border-t-4 border-t-emerald-600 space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-[24px]">verified</span>
+                </div>
+                <div>
+                  <h3 class="font-heading font-bold text-base text-slate-900 dark:text-white">OSIS (Badan Eksekutif)</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Pelaksana Program Kerja & Kreativitas</p>
+                </div>
+              </div>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">7 Divisi</span>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Bertanggung jawab menyusun, mengkoordinasikan, dan mengeksekusi kegiatan keagamaan, bela negara, minat bakat, media dakwah, dan kewirausahaan siswa di lingkungan SMP Islam Tarbiyatul Huda.
+            </p>
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Pengurus Inti</span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Keagamaan</span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Kedisiplinan & Bela Negara</span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Akademik & Minat Bakat</span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Kreativitas & Wirausaha</span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Kesehatan & Kebersihan</span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Tekno Media</span>
+            </div>
+          </div>
+
+          <!-- Card MPK -->
+          <div class="glass-card p-6 border-t-4 border-t-blue-600 space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-[24px]">gavel</span>
+                </div>
+                <div>
+                  <h3 class="font-heading font-bold text-base text-slate-900 dark:text-white">MPK (Badan Legislatif)</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Pengawas, Aspirasi & Evaluasi Kebijakan</p>
+                </div>
+              </div>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300">4 Komisi</span>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Mewakili aspirasi perwakilan kelas, mengawasi kepatuhan tata tertib organisasi, mengevaluasi laporan pertanggungjawaban (LPJ) program kerja OSIS, dan mengawal musyawarah akbar kesiswaan.
+            </p>
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Komisi A: Hukum & Tata Tertib</span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Komisi B: Aspirasi & Mediasi</span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Komisi C: Anggaran & Audit</span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Komisi D: Pengawasan Proker</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulir Pendaftaran Calon Pengurus Baru -->
+      <div id="section-form-pendaftaran" class="glass-card p-6 sm:p-8 space-y-6 max-w-3xl mx-auto">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+          <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Formulir Rekrutmen Online</span>
+          <h2 class="font-heading font-extrabold text-xl text-slate-900 dark:text-white">Pendaftaran Pengurus OSIS & MPK Periode 2027/2028</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Lengkapi data diri dengan benar. Pilihan divisi dapat disesuaikan dengan hasil Diagnostic Quiz.</p>
+        </div>
+
+        <form id="form-rekrutmen" onsubmit="event.preventDefault(); App.showToast('Data pendaftaran berhasil dikirim! Menunggu konfirmasi kesiswaan.', 'success'); this.reset();" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Lengkap Siswa *</label>
+              <input type="text" required placeholder="Contoh: Muhammad Fatih Pratama" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kelas Saat Ini *</label>
+              <select required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="">Pilih Kelas</option>
+                <option value="7A">7A - Putra</option>
+                <option value="7B">7B - Putri</option>
+                <option value="7C">7C - Reguler</option>
+                <option value="8A">8A - Putra</option>
+                <option value="8B">8B - Putri</option>
+                <option value="8C">8C - Reguler</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">No. WhatsApp Siswa *</label>
+              <input type="tel" required placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">No. WhatsApp Orang Tua / Wali *</label>
+              <input type="tel" required placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"/>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pilihan Divisi Utama *</label>
+              <select id="form-pilihan-divisi-1" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="">Pilih Divisi Utama</option>
+                <option value="Pengurus Inti">OSIS - Pengurus Inti</option>
+                <option value="Keagamaan">OSIS - Keagamaan & Ibadah</option>
+                <option value="Bela Negara">OSIS - Kedisiplinan & Bela Negara</option>
+                <option value="Akademik">OSIS - Akademik & Minat Bakat</option>
+                <option value="Kreativitas">OSIS - Kreativitas & Wirausaha</option>
+                <option value="Kebersihan">OSIS - Kesehatan & Kebersihan</option>
+                <option value="Tekno Media">OSIS - Tekno Media & Humas</option>
+                <option value="MPK Komisi">MPK - Komisi Legislatif Siswa</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pilihan Cadangan (Opsional)</label>
+              <select class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="">Pilih Divisi Cadangan</option>
+                <option value="Keagamaan">OSIS - Keagamaan & Ibadah</option>
+                <option value="Bela Negara">OSIS - Kedisiplinan & Bela Negara</option>
+                <option value="Akademik">OSIS - Akademik & Minat Bakat</option>
+                <option value="Kreativitas">OSIS - Kreativitas & Wirausaha</option>
+                <option value="Tekno Media">OSIS - Tekno Media & Humas</option>
+                <option value="MPK Komisi">MPK - Komisi Legislatif Siswa</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alasan & Motivasi Mendaftar *</label>
+            <textarea rows="3" required placeholder="Tuliskan alasan mengapa Anda ingin bergabung dan apa visi kontribusi Anda..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Tautan Portofolio / Berkas Pendukung (Opsional)</label>
+            <input type="url" placeholder="https://drive.google.com/... atau tautan Canva" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"/>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" class="w-full py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-[18px]">send</span>
+              <span>Kirim Formulir Pendaftaran Sekarang</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </section>
+
+    <!-- =======================================================================
+         SECTION 2: DASHBOARD ERP KESISWAAN & TRACKING PROKER
+         ======================================================================= -->
+    <section id="section-dashboard-erp" class="app-section hidden space-y-8">
+      
+      <!-- Top Overview Metrics -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="glass-card p-4 space-y-1">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs">
+            <span>Total Pengurus</span>
+            <span class="material-symbols-outlined text-[18px] text-emerald-600">groups</span>
+          </div>
+          <div class="font-heading font-extrabold text-2xl text-slate-900 dark:text-white">45 Siswa</div>
+          <div class="text-[10px] text-emerald-600 font-semibold">30 OSIS • 15 MPK</div>
+        </div>
+
+        <div class="glass-card p-4 space-y-1">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs">
+            <span>Tingkat Keaktifan</span>
+            <span class="material-symbols-outlined text-[18px] text-blue-600">trending_up</span>
+          </div>
+          <div class="font-heading font-extrabold text-2xl text-slate-900 dark:text-white">94.8%</div>
+          <div class="text-[10px] text-blue-600 font-semibold">+3.2% dari bulan lalu</div>
+        </div>
+
+        <div class="glass-card p-4 space-y-1">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs">
+            <span>Proker Berjalan</span>
+            <span class="material-symbols-outlined text-[18px] text-amber-600">pending_actions</span>
+          </div>
+          <div class="font-heading font-extrabold text-2xl text-slate-900 dark:text-white">5 Kegiatan</div>
+          <div class="text-[10px] text-amber-600 font-semibold">2 Rencana • 1 Selesai</div>
+        </div>
+
+        <div class="glass-card p-4 space-y-1">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs">
+            <span>Realisasi Kas</span>
+            <span class="material-symbols-outlined text-[18px] text-emerald-600">account_balance_wallet</span>
+          </div>
+          <div class="font-heading font-extrabold text-2xl text-slate-900 dark:text-white">Rp8.550K</div>
+          <div class="text-[10px] text-slate-500">Transparan & Terverifikasi</div>
+        </div>
+      </div>
+
+      <!-- Papan Kanban Proker -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-heading font-extrabold text-lg text-slate-900 dark:text-white">Papan Pelacakan Program Kerja (Kanban)</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Monitoring real-time progres agenda kerja OSIS & MPK</p>
+          </div>
+          <button onclick="App.showToast('Fitur penambahan proker baru aktif untuk Super Admin!', 'info')" class="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold flex items-center gap-1 shadow-xs">
+            <span class="material-symbols-outlined text-[16px]">add</span>
+            <span>Tambah Proker</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Kolom Perencanaan -->
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 space-y-3">
+            <div class="flex items-center justify-between font-heading font-bold text-xs text-slate-700 dark:text-slate-300">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                <span>Perencanaan (Planning)</span>
+              </span>
+            </div>
+            <div id="kanban-planning" class="space-y-2.5 min-h-[120px]"></div>
+          </div>
+
+          <!-- Kolom Sedang Berjalan -->
+          <div class="p-3.5 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 space-y-3">
+            <div class="flex items-center justify-between font-heading font-bold text-xs text-emerald-800 dark:text-emerald-300">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Sedang Berjalan (In Progress)</span>
+              </span>
+            </div>
+            <div id="kanban-progress" class="space-y-2.5 min-h-[120px]"></div>
+          </div>
+
+          <!-- Kolom Selesai -->
+          <div class="p-3.5 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40 space-y-3">
+            <div class="flex items-center justify-between font-heading font-bold text-xs text-blue-800 dark:text-blue-300">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span>Selesai & Terlaksana</span>
+              </span>
+            </div>
+            <div id="kanban-completed" class="space-y-2.5 min-h-[120px]"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =======================================================================
+         SECTION 3: PRESENSI & KEGIATAN (SCAN KARTU SISWA + MANUAL)
+         ======================================================================= -->
+    <section id="section-presensi-kegiatan" class="app-section hidden space-y-6">
+      
+      <!-- Sesi Aktif Presensi Banner -->
+      <div class="glass-card p-5 sm:p-6 border-l-4 border-l-emerald-600 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <span>SESI AKTIF BERJALAN</span>
+          </div>
+          <h2 class="font-heading font-extrabold text-lg text-slate-900 dark:text-white">Rapat Pleno Persiapan Milad & LDKS</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Sabtu, 14 November 2026 • 13:00 - 15:30 WIB • Ruang OSIS-MPK</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+          <!-- Button Scan Kartu Siswa -->
+          <button id="btn-scan-presensi" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all">
+            <span class="material-symbols-outlined text-[20px]">qr_code_scanner</span>
+            <span>Scan Kartu Siswa</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Presensi -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Tingkat Hadir</div>
+          <div id="pct-kehadiran" class="font-heading font-extrabold text-xl text-emerald-600">85%</div>
+        </div>
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Hadir</div>
+          <div id="count-hadir" class="font-heading font-extrabold text-xl text-emerald-700 dark:text-emerald-400">3</div>
+        </div>
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Izin</div>
+          <div id="count-izin" class="font-heading font-extrabold text-xl text-amber-600">1</div>
+        </div>
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Sakit</div>
+          <div id="count-sakit" class="font-heading font-extrabold text-xl text-blue-600">0</div>
+        </div>
+        <div class="glass-card p-3 text-center">
+          <div class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Alpa</div>
+          <div id="count-alpa" class="font-heading font-extrabold text-xl text-rose-600">0</div>
+        </div>
+      </div>
+
+      <!-- Dua Kolom Operasional: Registrasi QR Kartu & Input Manual -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Box 1: Registrasi QR Kartu Siswa oleh Admin (Aturan Khusus) -->
+        <div class="glass-card p-5 space-y-4 border-t-2 border-t-amber-500">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-500 text-[22px]">app_registration</span>
+            <div>
+              <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white">Registrasi QR Kartu Siswa oleh Admin</h3>
+              <p class="text-[11px] text-slate-500">Pindai kartu fisik siswa yang sudah ada untuk ditautkan ke akunnya.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pilih Anggota / Siswa *</label>
+              <select id="reg-student-select" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+                <!-- Diisi otomatis oleh JavaScript -->
+              </select>
+            </div>
+
+            <div class="pt-1">
+              <button id="btn-scan-registrasi" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-all">
+                <span class="material-symbols-outlined text-[18px]">document_scanner</span>
+                <span>Scan & Tautkan Kartu Siswa Sekarang</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Box 2: Presensi Manual oleh Pengurus Inti & Kesiswaan -->
+        <div class="glass-card p-5 space-y-4 border-t-2 border-t-emerald-600">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-600 text-[22px]">how_to_reg</span>
+            <div>
+              <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white">Presensi Manual (Pengurus Inti & Kesiswaan)</h3>
+              <p class="text-[11px] text-slate-500">Catat kehadiran secara manual jika kartu fisik tertinggal atau berhalangan.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Siswa *</label>
+                <select id="manual-student-select" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+                  <option value="242507001">M. Fatih Pratama (242507001)</option>
+                  <option value="242507002">Aisyah Putri Azzahra (242507002)</option>
+                  <option value="242507003">Rayhan Al-Ghifari (242507003)</option>
+                  <option value="242507004">Nabila Zahra (242507004)</option>
+                  <option value="242507005">Zaidan Zaki Mubarak (242507005)</option>
+                  <option value="242507006">Fathimah Nur Halimah (242507006)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Status Kehadiran *</label>
+                <select id="manual-status-select" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold">
+                  <option value="Hadir">Hadir</option>
+                  <option value="Izin">Izin</option>
+                  <option value="Sakit">Sakit</option>
+                  <option value="Alpa">Alpa</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="pt-1">
+              <button id="btn-submit-manual-absensi" class="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-all">
+                <span class="material-symbols-outlined text-[18px]">save</span>
+                <span>Simpan Presensi Manual</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Realtime Attendance Roster Feed -->
+      <div class="glass-card overflow-hidden">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div class="font-heading font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-600 text-[20px]">list_alt</span>
+            <span>Daftar Kehadiran Kegiatan Terkini</span>
+          </div>
+          <button onclick="App.showToast('Data presensi berhasil diekspor ke format Excel / CSV!', 'success')" class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">file_download</span>
+            <span>Ekspor CSV</span>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100/60 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 uppercase font-semibold">
+                <th class="py-2.5 px-4">Waktu</th>
+                <th class="py-2.5 px-4">Nama Siswa</th>
+                <th class="py-2.5 px-4">Status</th>
+                <th class="py-2.5 px-4">Metode</th>
+              </tr>
+            </thead>
+            <tbody id="attendance-log-tbody">
+              <!-- Baris presensi dirender oleh JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =======================================================================
+         SECTION 4: PENILAIAN & BEST MEMBER LEADERBOARD
+         ======================================================================= -->
+    <section id="section-penilaian-best-member" class="app-section hidden space-y-8">
+      
+      <!-- Formula Banner -->
+      <div class="glass-panel p-4 rounded-2xl flex items-center gap-3 text-xs text-slate-700 dark:text-slate-300">
+        <span class="material-symbols-outlined text-amber-500 text-[24px]">calculate</span>
+        <div>
+          <span class="font-bold">Algoritma Penilaian Transparan:</span>
+          <span> Presensi Kehadiran (40%) + Eksekusi Proker (30%) + Peer Review (15%) + Evaluasi Pembina (15%).</span>
+        </div>
+      </div>
+
+      <!-- Top 3 Podium Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+        
+        <!-- Peringkat 2 (Perak) -->
+        <div class="order-2 md:order-1 glass-card p-5 text-center space-y-2 border-t-4 border-t-slate-400">
+          <div class="w-12 h-12 mx-auto rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-700 dark:text-slate-200">
+            2
+          </div>
+          <div class="font-heading font-bold text-sm text-slate-900 dark:text-white" id="podium-2-name">Aisyah Putri Azzahra</div>
+          <div class="text-[11px] text-slate-500">MPK • Komisi A</div>
+          <div class="font-mono font-extrabold text-lg text-slate-600 dark:text-slate-300" id="podium-2-score">93.5 Pts</div>
+        </div>
+
+        <!-- Peringkat 1 (Emas & Mahkota) -->
+        <div class="order-1 md:order-2 glass-card p-6 text-center space-y-2 border-2 border-amber-400 bg-amber-50/20 dark:bg-amber-950/20 relative transform md:-translate-y-2 shadow-lg">
+          <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center shadow-md">
+            👑
+          </div>
+          <div class="w-14 h-14 mx-auto rounded-full bg-amber-100 dark:bg-amber-900/60 flex items-center justify-center font-extrabold text-amber-800 dark:text-amber-300 text-xl pt-1">
+            1
+          </div>
+          <div class="font-heading font-extrabold text-base text-slate-900 dark:text-white" id="podium-1-name">M. Fatih Pratama</div>
+          <div class="text-xs text-amber-700 dark:text-amber-400 font-semibold" id="podium-1-divisi">Ketua Umum OSIS</div>
+          <div class="font-mono font-extrabold text-2xl text-amber-600 dark:text-amber-400" id="podium-1-score">96.8 Pts</div>
+          <div class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">
+            BEST MEMBER OF THE MONTH
+          </div>
+        </div>
+
+        <!-- Peringkat 3 (Perunggu) -->
+        <div class="order-3 glass-card p-5 text-center space-y-2 border-t-4 border-t-amber-700">
+          <div class="w-12 h-12 mx-auto rounded-full bg-amber-900/20 text-amber-800 dark:text-amber-400 flex items-center justify-center font-bold">
+            3
+          </div>
+          <div class="font-heading font-bold text-sm text-slate-900 dark:text-white" id="podium-3-name">Rayhan Al-Ghifari</div>
+          <div class="text-[11px] text-slate-500">OSIS • Tekno Media</div>
+          <div class="font-mono font-extrabold text-lg text-amber-700 dark:text-amber-500" id="podium-3-score">92.2 Pts</div>
+        </div>
+
+      </div>
+
+      <!-- Leaderboard Table -->
+      <div class="glass-card overflow-hidden">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div class="font-heading font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-500 text-[20px]">military_tech</span>
+            <span>Peringkat & Rekapitulasi Nilai Seluruh Pengurus</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100/60 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 uppercase font-semibold">
+                <th class="py-2.5 px-4 text-center">Rank</th>
+                <th class="py-2.5 px-4">Nama Pengurus</th>
+                <th class="py-2.5 px-4">Divisi / Komisi</th>
+                <th class="py-2.5 px-4 text-center">Presensi (40%)</th>
+                <th class="py-2.5 px-4 text-center">Proker (30%)</th>
+                <th class="py-2.5 px-4 text-center">Peer (15%)</th>
+                <th class="py-2.5 px-4 text-center">Pembina (15%)</th>
+                <th class="py-2.5 px-4 text-center">Total Skor</th>
+                <th class="py-2.5 px-4 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-tbody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =======================================================================
+         SECTION 5: GENERATOR SURAT & DOKUMEN RESMI (GAS DOC ENGINE)
+         ======================================================================= -->
+    <section id="section-generator-surat-resmi" class="app-section hidden space-y-6">
+      
+      <!-- Studio Header -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="font-heading font-extrabold text-xl text-slate-900 dark:text-white">Studio Dokumen & Surat Resmi Sekolah</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Penerbitan surat dinas otomatis dengan format standar kop A4 dan QR verifikasi HMAC.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="App.printDocument()" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all">
+            <span class="material-symbols-outlined text-[18px]">print</span>
+            <span>Cetak / Cetak PDF (A4)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Split Layout: Form Pengisian (Kiri) vs Preview A4 Cetak (Kanan) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Panel Form Input (5 Kolom) -->
+        <div class="lg:col-span-5 glass-card p-5 space-y-4">
+          <div class="border-b border-slate-200 dark:border-slate-800 pb-3">
+            <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white">Pengaturan Surat Dinas</h3>
+            <p class="text-[11px] text-slate-500">Pilih template dan sesuaikan placeholder data di bawah ini.</p>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pilih Jenis Dokumen *</label>
+              <select id="select-doc-template" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-900 dark:text-slate-100">
+                <option value="SURAT_TUGAS">Surat Tugas Kegiatan Siswa</option>
+                <option value="SK_PENGANGKATAN">Surat Keputusan (SK) Pengangkatan</option>
+                <option value="SURAT_PERINGATAN">Surat Peringatan Kedisiplinan (SP)</option>
+                <option value="PIAGAM_BEST_MEMBER">Piagam Penghargaan Best Member</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Penerima / Yang Ditugaskan *</label>
+              <input type="text" id="doc-input-nama" value="Muhammad Fatih Pratama" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100"/>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">NIS Siswa *</label>
+                <input type="text" id="doc-input-nis" value="242507001" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs"/>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kelas *</label>
+                <input type="text" id="doc-input-kelas" value="8A" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs"/>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Jabatan *</label>
+                <input type="text" id="doc-input-jabatan" value="Ketua Umum" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs"/>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Divisi / Lembaga *</label>
+                <input type="text" id="doc-input-divisi" value="OSIS Tarbiyatul Huda" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs"/>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Kegiatan / Perihal *</label>
+              <input type="text" id="doc-input-kegiatan" value="Latihan Dasar Kepemimpinan Siswa (LDKS)" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs"/>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Hari & Tanggal Pelaksanaan *</label>
+              <input type="text" id="doc-input-tanggal" value="Sabtu, 14 November 2026" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Pratinjau Dokumen Cetak A4 (7 Kolom) -->
+        <div class="lg:col-span-7 bg-slate-200/70 dark:bg-slate-900/80 p-4 sm:p-6 rounded-2xl overflow-x-auto flex justify-center">
+          <div id="printable-document-container">
+            <div id="doc-preview-area">
+              <!-- A4 Paper Document diinjeksi oleh DocEngineModule -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODAL: DIAGNOSTIC QUIZ (CEK MINAT DIVISI)
+       ========================================================================= -->
+  <div id="quiz-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 relative">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-emerald-600 text-[24px]">psychology</span>
+          <div>
+            <h3 class="font-heading font-bold text-base text-slate-900 dark:text-white">Diagnostic Quiz Minat Divisi</h3>
+            <span id="quiz-step-label" class="text-xs text-slate-500">Pertanyaan 1 dari 4</span>
+          </div>
+        </div>
+        <button onclick="document.getElementById('quiz-modal').classList.add('hidden')" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+        <div id="quiz-progress-bar" class="bg-emerald-600 h-full rounded-full transition-all duration-300" style="width: 25%"></div>
+      </div>
+
+      <!-- Quiz Body / Question Box -->
+      <div id="quiz-modal-body" class="space-y-4">
+        <div id="quiz-step-container"></div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button onclick="App.nextQuizQuestion()" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition-all">
+            <span>Lanjut</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: SCANNER KAMERA (QR PRESENSI & REGISTRASI)
+       ========================================================================= -->
+  <div id="modal-scanner" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 relative text-center">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2 text-left">
+          <span class="material-symbols-outlined text-emerald-600 text-[24px]">qr_code_scanner</span>
+          <div>
+            <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white">Scanner Kartu Siswa</h3>
+            <p class="text-[11px] text-slate-500">Arahkan kamera ke QR code pada kartu fisik siswa</p>
+          </div>
+        </div>
+        <button id="btn-close-scanner" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Viewport Kamera Scanner -->
+      <div id="qr-reader" class="my-2"></div>
+
+      <div class="text-xs text-slate-500">
+        Pastikan QR code berada tepat di dalam kotak pembidik dan pencahayaan ruangan cukup.
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MOBILE BOTTOM NAVIGATION BAR
+       ========================================================================= -->
+  <nav class="mobile-bottom-nav">
+    <button data-tab="portal-publik" class="mobile-nav-btn flex flex-col items-center text-emerald-600 dark:text-emerald-400 text-[10px] font-semibold py-1">
+      <span class="material-symbols-outlined text-[22px]">public</span>
+      <span>Beranda</span>
+    </button>
+    <button data-tab="dashboard-erp" class="mobile-nav-btn flex flex-col items-center text-slate-400 text-[10px] font-semibold py-1">
+      <span class="material-symbols-outlined text-[22px]">dashboard</span>
+      <span>ERP Proker</span>
+    </button>
+    <button data-tab="presensi-kegiatan" class="mobile-nav-btn flex flex-col items-center text-slate-400 text-[10px] font-semibold py-1">
+      <span class="material-symbols-outlined text-[22px]">qr_code_scanner</span>
+      <span>Presensi</span>
+    </button>
+    <button data-tab="penilaian-best-member" class="mobile-nav-btn flex flex-col items-center text-slate-400 text-[10px] font-semibold py-1">
+      <span class="material-symbols-outlined text-[22px]">military_tech</span>
+      <span>Penilaian</span>
+    </button>
+    <button data-tab="generator-surat-resmi" class="mobile-nav-btn flex flex-col items-center text-slate-400 text-[10px] font-semibold py-1">
+      <span class="material-symbols-outlined text-[22px]">description</span>
+      <span>Surat</span>
+    </button>
+  </nav>
+
+  <!-- =========================================================================
+       APP TOAST NOTIFICATION
+       ========================================================================= -->
+  <div id="app-toast" class="fixed bottom-20 lg:bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-xl flex items-center gap-2.5 text-sm font-semibold transition-all transform duration-300 opacity-0 translate-y-4 pointer-events-none"></div>
+
+  <!-- App Logic Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/scanner.js"></script>
+  <script src="js/doc_engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
