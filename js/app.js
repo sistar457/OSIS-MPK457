@@ -513,6 +513,13 @@ const App = {
 
   // Modal CMS Functions
   openModalLandingCMS(targetTab = 'cms-tab-hero') {
+    // Validasi Akses: Jika belum login sebagai Super Admin, buka modal login & beri panduan
+    if (!this.state.auth.isLoggedIn || this.state.auth.user?.role !== 'SUPER_ADMIN') {
+      this.openLoginModal();
+      this.showToast('Silakan login sebagai Super Admin (Akun: kesiswaan / admin123) untuk mengedit konten Beranda.', 'warning');
+      return;
+    }
+
     const c = this.getLandingContent();
 
     // Tab 1
