@@ -208,7 +208,7 @@ const App = {
   },
 
   login(username, password) {
-    username = String(username || '').trim();
+    username = String(username || '').trim().toLowerCase();
     password = String(password || '').trim();
 
     if (!username || !password) {
@@ -306,6 +306,11 @@ const App = {
   },
 
   logout() {
+    if (!this.state.auth.isLoggedIn) return;
+    
+    const userName = this.state.auth.user?.nama || 'Pengguna';
+    if (!confirm(`Apakah Anda yakin ingin keluar dari sesi ${userName}?`)) return;
+
     this.state.auth.isLoggedIn = false;
     this.state.auth.user = null;
     localStorage.removeItem(CONFIG.STORAGE_KEYS.SESSION);
@@ -327,31 +332,82 @@ const App = {
     const elGreetingName = document.getElementById('greeting-user-name');
     const elGreetingRole = document.getElementById('greeting-user-role');
 
+    // Profile dropdown elements
+    const elDropdownAvatar = document.getElementById('dropdown-user-avatar');
+    const elDropdownName = document.getElementById('dropdown-user-name');
+    const elDropdownRole = document.getElementById('dropdown-user-role');
+
     if (isAuth && user) {
+      // Sembunyikan tombol login, tampilkan profil
       if (elBtnLoginHeader) elBtnLoginHeader.classList.add('hidden');
       if (elUserProfileHeader) elUserProfileHeader.classList.remove('hidden');
-      if (elUserRoleBadge) elUserRoleBadge.textContent = `${user.jabatan} • ${user.nama.split(' ')[0]}`;
-      if (elUserAvatar) elUserAvatar.src = user.avatar;
 
+      // Update role badge - tampilkan saat login
+      if (elUserRoleBadge) {
+        elUserRoleBadge.classList.remove('sm:hidden');
+        elUserRoleBadge.classList.add('sm:flex');
+        elUserRoleBadge.textContent = `${user.jabatan} \u2022 ${user.nama.split(' ')[0]}`;
+      }
+
+      // Update avatar
+      if (elUserAvatar) elUserAvatar.src = user.avatar || '';
+
+      // Update dropdown profil
+      if (elDropdownAvatar) elDropdownAvatar.src = user.avatar || '';
+      if (elDropdownName) elDropdownName.textContent = user.nama;
+      if (elDropdownRole) elDropdownRole.textContent = `${user.jabatan} \u2022 ${user.org}`;
+
+      // Update greeting di dashboard
       if (elGreetingName) elGreetingName.textContent = user.nama;
-      if (elGreetingRole) elGreetingRole.textContent = `${user.jabatan} • ${user.org} SMP Islam Tarbiyatul Huda`;
+      if (elGreetingRole) elGreetingRole.textContent = `${user.jabatan} \u2022 ${user.org} SMP Islam Tarbiyatul Huda`;
     } else {
+      // Tampilkan tombol login, sembunyikan profil
       if (elBtnLoginHeader) elBtnLoginHeader.classList.remove('hidden');
       if (elUserProfileHeader) elUserProfileHeader.classList.add('hidden');
 
-      if (elGreetingName) elGreetingName.textContent = 'Ustadzah Siti Aminah, S.Pd.I';
-      if (elGreetingRole) elGreetingRole.textContent = 'Pembina Kesiswaan & Tata Pamong Santri • Sistem Informasi Eksekutif';
+      // Sembunyikan role badge
+      if (elUserRoleBadge) {
+        elUserRoleBadge.classList.add('sm:hidden');
+        elUserRoleBadge.classList.remove('sm:flex');
+        elUserRoleBadge.textContent = 'Tamu / Pengunjung';
+      }
+
+      // Reset greeting
+      if (elGreetingName) elGreetingName.textContent = 'Selamat Datang';
+      if (elGreetingRole) elGreetingRole.textContent = 'Silakan login untuk mengakses sistem informasi terpadu';
     }
+
+    // Tutup dropdown profil jika terbuka
+    this.closeProfileDropdown();
   },
 
   openLoginModal() {
+    this.closeProfileDropdown();
     const modal = document.getElementById('modal-login');
-    if (modal) modal.classList.remove('hidden');
+    if (modal) {
+      // Reset form setiap kali modal dibuka
+      const form = document.getElementById('form-modal-login');
+      if (form) form.reset();
+      modal.classList.remove('hidden');
+    }
   },
 
   closeLoginModal() {
     const modal = document.getElementById('modal-login');
     if (modal) modal.classList.add('hidden');
+  },
+
+  // Profile Dropdown Toggle (untuk user yang sudah login)
+  toggleProfileDropdown() {
+    const dropdown = document.getElementById('profile-dropdown');
+    if (dropdown) {
+      dropdown.classList.toggle('hidden');
+    }
+  },
+
+  closeProfileDropdown() {
+    const dropdown = document.getElementById('profile-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
   },
 
   // 3. Router SPA & RBAC Guard
@@ -1491,6 +1547,25 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
         const u = document.getElementById('login-username')?.value;
         const p = document.getElementById('login-password')?.value;
         this.login(u, p);
+      });
+    }
+
+    // Click outside to close profile dropdown
+    document.addEventListener('click', (e) => {
+      const profileEl = document.getElementById('header-user-profile');
+      const dropdownEl = document.getElementById('profile-dropdown');
+      if (profileEl && dropdownEl && !profileEl.contains(e.target)) {
+        dropdownEl.classList.add('hidden');
+      }
+    });
+
+    // Click outside to close login modal (on backdrop)
+    const modalLogin = document.getElementById('modal-login');
+    if (modalLogin) {
+      modalLogin.addEventListener('click', (e) => {
+        if (e.target === modalLogin) {
+          this.closeLoginModal();
+        }
       });
     }
 
