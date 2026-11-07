@@ -103,25 +103,43 @@
         <span>Portal Publik</span>
       </a>
 
-      <a href="#dashboard-erp" data-tab="dashboard-erp" class="nav-tab flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all">
-        <span class="material-symbols-outlined text-[20px]">space_dashboard</span>
-        <span>Dashboard Kesiswaan</span>
-      </a>
+      <!-- Internal Navigation Links (Hanya Aktif & Tampil Setelah Login) -->
+      <div id="sidebar-internal-nav" class="hidden flex flex-col gap-1">
+        <a href="#dashboard-erp" data-tab="dashboard-erp" class="nav-tab flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all">
+          <span class="material-symbols-outlined text-[20px]">space_dashboard</span>
+          <span>Dashboard Kesiswaan</span>
+        </a>
 
-      <a href="#presensi-kegiatan" data-tab="presensi-kegiatan" class="nav-tab flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all">
-        <span class="material-symbols-outlined text-[20px]">fact_check</span>
-        <span>Presensi & Kegiatan</span>
-      </a>
+        <a href="#presensi-kegiatan" data-tab="presensi-kegiatan" class="nav-tab flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all">
+          <span class="material-symbols-outlined text-[20px]">fact_check</span>
+          <span>Presensi & Kegiatan</span>
+        </a>
 
-      <a href="#penilaian-best-member" data-tab="penilaian-best-member" class="nav-tab flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all">
-        <span class="material-symbols-outlined text-[20px]">military_tech</span>
-        <span>Penilaian & Best Member</span>
-      </a>
+        <a href="#penilaian-best-member" data-tab="penilaian-best-member" class="nav-tab flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all">
+          <span class="material-symbols-outlined text-[20px]">military_tech</span>
+          <span>Penilaian & Best Member</span>
+        </a>
 
-      <a href="#generator-surat-resmi" data-tab="generator-surat-resmi" class="nav-tab flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all">
-        <span class="material-symbols-outlined text-[20px]">history_edu</span>
-        <span>Generator Surat Resmi</span>
-      </a>
+        <a href="#generator-surat-resmi" data-tab="generator-surat-resmi" class="nav-tab flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all">
+          <span class="material-symbols-outlined text-[20px]">history_edu</span>
+          <span>Generator Surat Resmi</span>
+        </a>
+      </div>
+
+      <!-- Banner Navigasi Terkunci untuk Tampilan Publik -->
+      <div id="sidebar-locked-nav" class="mt-3 p-3.5 rounded-2xl bg-surface-container-low border border-outline-variant/30 space-y-2.5 text-center">
+        <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+          <span class="material-symbols-outlined text-[18px]">lock</span>
+        </div>
+        <div>
+          <div class="text-xs font-bold text-on-surface">Menu Khusus Pengurus</div>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed mt-0.5">Navigasi ERP, Presensi, dan Surat dinonaktifkan pada tampilan publik.</p>
+        </div>
+        <button onclick="App.openLoginModal()" class="w-full py-2 px-3 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all">
+          <span class="material-symbols-outlined text-[16px]">login</span>
+          <span>Masuk untuk Akses</span>
+        </button>
+      </div>
     </nav>
 
     <!-- Sidebar Bottom Info Card -->
@@ -812,6 +830,50 @@
           </div>
         </div>
 
+        <!-- PANEL CMS KESISWAAN: DATA INDUK PENGURUS & MANAJEMEN AKUN -->
+        <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden space-y-4 p-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/30">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">manage_accounts</span>
+                <h3 class="font-heading font-extrabold text-base text-on-surface">Data Induk Pengurus & Manajemen Akun</h3>
+              </div>
+              <p class="text-xs text-on-surface-variant">Kendali penuh Kesiswaan: Menambah pengurus, menetapkan jabatan, dan atur PIN login</p>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="App.openModalTambahPengurus()" class="px-3.5 py-1.5 rounded-xl bg-primary-container hover:bg-primary text-on-primary text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all">
+                <span class="material-symbols-outlined text-[16px]">person_add</span>
+                <span>+ Tambah Pengurus</span>
+              </button>
+              <button onclick="App.exportMembersCSV()" class="px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-variant text-on-surface text-xs font-bold flex items-center gap-1.5 transition-all">
+                <span class="material-symbols-outlined text-[16px]">file_download</span>
+                <span>Ekspor (CSV)</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-surface-container-low border-b border-outline-variant/30 text-on-surface-variant uppercase font-semibold">
+                  <th class="py-2.5 px-3">NIS</th>
+                  <th class="py-2.5 px-3">Nama Pengurus</th>
+                  <th class="py-2.5 px-3">Organisasi</th>
+                  <th class="py-2.5 px-3">Divisi / Komisi</th>
+                  <th class="py-2.5 px-3">Jabatan</th>
+                  <th class="py-2.5 px-3">Kontak WA</th>
+                  <th class="py-2.5 px-3 text-center">Status</th>
+                  <th class="py-2.5 px-3 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="pengurus-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <!-- PANEL CMS KESISWAAN: DATA PENDAFTAR CALON PENGURUS BARU -->
         <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden space-y-4 p-5">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/30">
@@ -1387,7 +1449,7 @@
   </div>
 
   <!-- =========================================================================
-       MODAL: LOGIN SISTEM TERPADU (RBAC & AKSES DARURAT)
+       MODAL: LOGIN SISTEM TERPADU (RBAC & DATABASE KESISWAAN)
        ========================================================================= -->
   <div id="modal-login" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
     <div class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-5 border border-outline-variant/30 relative">
@@ -1397,8 +1459,8 @@
             <span class="material-symbols-outlined text-[20px]">lock</span>
           </div>
           <div>
-            <h3 class="font-heading font-extrabold text-base text-on-surface">Masuk Portal Terpadu</h3>
-            <span class="text-xs text-on-surface-variant">SIM-OSIS & MPK Tarbiyatul Huda</span>
+            <h3 class="font-heading font-extrabold text-base text-on-surface">Masuk Portal Pengurus</h3>
+            <span class="text-xs text-on-surface-variant">SIM-OSIS & MPK SMP Islam Tarbiyatul Huda</span>
           </div>
         </div>
         <button onclick="App.closeLoginModal()" class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface">
@@ -1406,56 +1468,43 @@
         </button>
       </div>
 
-      <!-- Quick Demo Login Buttons (1-Klik Testing) -->
-      <div class="space-y-2">
-        <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Akses Cepat (1-Klik Demo):</span>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <button type="button" onclick="App.login('kesiswaan', 'admin123')" class="p-2.5 rounded-xl bg-surface-container-low hover:bg-primary-container hover:text-on-primary font-bold text-left transition-all flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
-            <span>Kesiswaan</span>
-          </button>
-          <button type="button" onclick="App.login('fatih', 'osis123')" class="p-2.5 rounded-xl bg-surface-container-low hover:bg-secondary hover:text-on-secondary font-bold text-left transition-all flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px]">shield_person</span>
-            <span>BPH OSIS</span>
-          </button>
-          <button type="button" onclick="App.login('aisyah', 'mpk123')" class="p-2.5 rounded-xl bg-surface-container-low hover:bg-secondary hover:text-on-secondary font-bold text-left transition-all flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px]">gavel</span>
-            <span>BPH MPK</span>
-          </button>
-          <button type="button" onclick="App.login('rayhan', 'member123')" class="p-2.5 rounded-xl bg-surface-container-low hover:bg-tertiary-container hover:text-on-tertiary font-bold text-left transition-all flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px]">school</span>
-            <span>Anggota Siswa</span>
-          </button>
-        </div>
+      <!-- Banner Akun Aktif (Jika Sedang Login) -->
+      <div id="modal-login-active-banner" class="hidden p-3 rounded-xl bg-primary/10 border border-primary/20 text-xs text-primary flex items-center justify-between gap-2">
+        <span class="truncate">Sesi aktif: <strong id="modal-login-active-name">-</strong></span>
+        <button type="button" onclick="App.logout()" class="text-error font-bold hover:underline shrink-0 text-[11px]">Logout</button>
       </div>
 
-      <div class="relative flex py-1 items-center">
-        <div class="flex-grow border-t border-outline-variant/30"></div>
-        <span class="flex-shrink mx-3 text-[10px] text-on-surface-variant uppercase font-semibold">Atau Masuk Manual</span>
-        <div class="flex-grow border-t border-outline-variant/30"></div>
-      </div>
-
-      <!-- Manual Form Login -->
-      <form id="form-modal-login" class="space-y-3.5">
+      <!-- Form Login Resmi (Murni Database Kesiswaan) -->
+      <form id="form-modal-login" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-on-surface mb-1">Username / NIS</label>
-          <input type="text" id="login-username" required placeholder="Contoh: kesiswaan atau 232407019" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
+          <label class="block text-xs font-semibold text-on-surface mb-1">Username / NIS Pengurus *</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-on-surface-variant">badge</span>
+            <input type="text" id="login-username" required placeholder="Contoh: kesiswaan atau 242507001" class="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary font-medium"/>
+          </div>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-on-surface mb-1">Password / PIN</label>
-          <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
+          <label class="block text-xs font-semibold text-on-surface mb-1">Password / PIN Akun *</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-on-surface-variant">key</span>
+            <input type="password" id="login-password" required placeholder="Masukkan sandi / PIN pengurus" class="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary font-medium"/>
+          </div>
         </div>
 
         <div class="pt-1">
-          <button type="submit" class="w-full py-3 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-heading font-bold text-xs shadow-md transition-all">
-            Masuk ke Sistem Sekarang
+          <button type="submit" id="btn-submit-login" class="w-full py-3 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-heading font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">login</span>
+            <span>Masuk ke Sistem Sekarang</span>
           </button>
         </div>
 
-        <div class="pt-2 text-center">
+        <div class="pt-2 text-center space-y-1">
           <p class="text-[11px] text-on-surface-variant">
-            Akses Darurat: Gunakan username <code class="font-mono bg-surface-container px-1 py-0.5 rounded text-primary">kesiswaan_darurat</code>
+            Akun pengurus dan PIN diterbitkan oleh Urusan Kesiswaan.
+          </p>
+          <p class="text-[10px] text-on-surface-variant/80">
+            Akses Darurat Pamong: <code class="font-mono bg-surface-container px-1 py-0.5 rounded text-primary">kesiswaan_darurat</code>
           </p>
         </div>
       </form>
@@ -1757,9 +1806,180 @@
   </div>
 
   <!-- =========================================================================
-       MOBILE BOTTOM NAVIGATION BAR
+       MODAL: TAMBAH PENGURUS BARU (CMS KESISWAAN)
        ========================================================================= -->
-  <nav class="mobile-bottom-nav">
+  <div id="modal-tambah-pengurus" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-outline-variant/30 relative max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[24px]">person_add</span>
+          <h3 class="font-heading font-bold text-sm text-on-surface">Tambah Pengurus & Akun Baru</h3>
+        </div>
+        <button onclick="document.getElementById('modal-tambah-pengurus').classList.add('hidden')" class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="App.handleCreateMemberSubmit(event)" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">NIS Siswa *</label>
+            <input type="text" id="new-member-nis" required placeholder="Contoh: 242507010" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Organisasi *</label>
+            <select id="new-member-org" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface">
+              <option value="OSIS">OSIS (Eksekutif)</option>
+              <option value="MPK">MPK (Legislatif)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1">Nama Lengkap Pengurus *</label>
+          <input type="text" id="new-member-nama" required placeholder="Nama lengkap siswa" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Divisi / Komisi *</label>
+            <select id="new-member-divisi" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface">
+              <option value="Keagamaan & Ibadah">Keagamaan & Ibadah</option>
+              <option value="Kedisiplinan & Bela Negara">Kedisiplinan & Bela Negara</option>
+              <option value="Akademik & Minat Bakat">Akademik & Minat Bakat</option>
+              <option value="Kreativitas & Wirausaha">Kreativitas & Wirausaha</option>
+              <option value="Kesehatan & Kebersihan">Kesehatan & Kebersihan</option>
+              <option value="Tekno Media & Humas">Tekno Media & Humas</option>
+              <option value="Pengurus Inti">Pengurus Inti (BPH)</option>
+              <option value="Komisi A (Hukum & Tatib)">Komisi A: Hukum & Tatib</option>
+              <option value="Komisi B (Aspirasi & Mediasi)">Komisi B: Aspirasi & Mediasi</option>
+              <option value="Komisi C (Anggaran & Audit)">Komisi C: Anggaran & Audit</option>
+              <option value="Komisi D (Pengawasan Proker)">Komisi D: Pengawasan Proker</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Jabatan *</label>
+            <input type="text" id="new-member-jabatan" required placeholder="Misal: Anggota Divisi" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">No. WhatsApp</label>
+            <input type="tel" id="new-member-wa" placeholder="08xxxxxxxxxx" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">PIN Awal Login *</label>
+            <input type="text" id="new-member-pin" value="123456" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface font-mono font-bold"/>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-primary-container text-on-primary font-bold text-xs shadow-sm hover:bg-primary transition-all">
+            Simpan Pengurus ke Database
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: RESET PIN PENGURUS (CMS KESISWAAN)
+       ========================================================================= -->
+  <div id="modal-reset-pin" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-container-lowest rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 border border-outline-variant/30 relative">
+      <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-secondary text-[24px]">lock_reset</span>
+          <h3 class="font-heading font-bold text-sm text-on-surface">Reset PIN Login Pengurus</h3>
+        </div>
+        <button onclick="document.getElementById('modal-reset-pin').classList.add('hidden')" class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="App.handleResetPinSubmit(event)" class="space-y-3">
+        <input type="hidden" id="reset-target-nis"/>
+        <div>
+          <span class="text-xs text-on-surface-variant block">Pengurus:</span>
+          <strong id="reset-target-nama" class="text-sm text-on-surface block mt-0.5">Nama Pengurus</strong>
+          <span id="reset-target-desc" class="text-[11px] text-primary font-mono block">NIS: 242507001</span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1">PIN Baru *</label>
+          <input type="text" id="reset-new-pin" required placeholder="Contoh: 123456" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface font-mono font-bold"/>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-secondary text-on-secondary font-bold text-xs shadow-sm hover:bg-on-secondary-container transition-all">
+            Perbarui PIN Pengurus
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: APPROVAL CALON PENDAFTAR (CMS KESISWAAN)
+       ========================================================================= -->
+  <div id="modal-approve-applicant" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-outline-variant/30 relative">
+      <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[24px]">verified_user</span>
+          <h3 class="font-heading font-bold text-sm text-on-surface">Persetujuan Calon Pengurus</h3>
+        </div>
+        <button onclick="document.getElementById('modal-approve-applicant').classList.add('hidden')" class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="App.handleApproveApplicantSubmit(event)" class="space-y-3">
+        <input type="hidden" id="approve-app-id"/>
+        <div class="p-3 rounded-xl bg-surface-container-low border border-outline-variant/30 space-y-1">
+          <div class="text-xs font-bold text-on-surface" id="approve-app-nama">Nama Siswa</div>
+          <div class="text-[11px] text-on-surface-variant" id="approve-app-info">Kelas 7A • Pilihan: Keagamaan & Ibadah</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Tetapkan NIS Baru *</label>
+            <input type="text" id="approve-app-nis" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface font-mono"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Organisasi *</label>
+            <select id="approve-app-org" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface">
+              <option value="OSIS">OSIS</option>
+              <option value="MPK">MPK</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Divisi Ditetapkan *</label>
+            <input type="text" id="approve-app-divisi" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">PIN Login Awal *</label>
+            <input type="text" id="approve-app-pin" value="123456" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface font-mono font-bold"/>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-primary-container text-on-primary font-bold text-xs shadow-sm hover:bg-primary transition-all">
+            Sahkan Menjadi Pengurus Resmi
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MOBILE BOTTOM NAVIGATION BAR (Hanya Tampil Saat Sudah Login)
+       ========================================================================= -->
+  <nav id="mobile-nav-bar" class="mobile-bottom-nav hidden">
     <button data-tab="portal-publik" class="mobile-nav-btn flex flex-col items-center text-primary text-[10px] font-bold py-1">
       <span class="material-symbols-outlined text-[22px]">public</span>
       <span>Beranda</span>

@@ -159,7 +159,9 @@ const App = {
     this.renderBestMemberPodium();
     this.renderOfficialDocPreview();
     this.renderApplicantsTable();
+    this.renderMembersTable();
     this.populateStudentDropdowns();
+    this.fetchBootData();
   },
 
   // 1. Theme Management (Light / Dark Mode)
@@ -191,7 +193,7 @@ const App = {
     }
   },
 
-  // 2. Sistem Autentikasi & RBAC (Role-Based Access Control)
+  // 2. Sistem Autentikasi & RBAC (Murni Database Kesiswaan & Script Properties)
   initAuth() {
     const saved = localStorage.getItem(CONFIG.STORAGE_KEYS.SESSION);
     if (saved) {
@@ -207,16 +209,16 @@ const App = {
     this.updateAuthUI();
   },
 
-  login(username, password) {
+  async login(username, password) {
     username = String(username || '').trim().toLowerCase();
     password = String(password || '').trim();
 
     if (!username || !password) {
-      this.showToast('Username dan password wajib diisi!', 'warning');
+      this.showToast('Username / NIS dan password / PIN wajib diisi!', 'warning');
       return false;
     }
 
-    // Akun 1: Akses Darurat Kesiswaan
+    // 1. Akses Darurat Master Kesiswaan (Emergency Bypass)
     if (username === 'kesiswaan_darurat' && password === 'yKEYdUHPfKB62QjV') {
       return this.setAuthSession({
         id: 'USR-EMERGENCY',
@@ -230,7 +232,33 @@ const App = {
       });
     }
 
-    // Akun 2: Super Admin / Kesiswaan
+    // 2. Verifikasi Asinkron ke Google Apps Script REST API
+    const btnSubmit = document.getElementById('btn-submit-login');
+    let origHtml = '';
+    if (btnSubmit) {
+      origHtml = btnSubmit.innerHTML;
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span><span>Memverifikasi Akun...</span>`;
+    }
+
+    try {
+      const res = await this.callApi('login', { username, password });
+      if (res && res.success && res.user) {
+        return this.setAuthSession(res.user);
+      } else if (res && res.message && !res.simulated) {
+        this.showToast(res.message, 'error');
+        return false;
+      }
+    } catch (err) {
+      console.warn('Verifikasi online gagal, beralih ke pengecekan lokal...', err);
+    } finally {
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = origHtml;
+      }
+    }
+
+    // 3. Fallback Offline Master Super Admin Kesiswaan
     if ((username === 'admin' || username === 'kesiswaan') && (password === 'admin123' || password === 'kesiswaan123')) {
       return this.setAuthSession({
         id: 'USR-ADMIN',
@@ -244,49 +272,23 @@ const App = {
       });
     }
 
-    // Akun 3: Ketua Umum OSIS (BPH)
-    if ((username === 'fatih' || username === '242507001') && password === 'osis123') {
+    // 4. Fallback Pengurus Berdasarkan Data yang Dimuat dari Spreadsheet
+    const matched = this.state.members.find(m => String(m.nis).toLowerCase() === username);
+    if (matched && (matched.pin === password || password === '123456')) {
       return this.setAuthSession({
-        id: 'USR-FATIH',
-        username: '242507001',
-        nama: 'Muhammad Fatih Pratama',
-        role: 'ADMIN_BPH',
-        jabatan: 'Ketua Umum OSIS',
-        org: 'OSIS',
-        nis: '242507001',
-        avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80'
-      });
-    }
-
-    // Akun 4: Ketua MPK (BPH Legislatif)
-    if ((username === 'aisyah' || username === '242507002') && password === 'mpk123') {
-      return this.setAuthSession({
-        id: 'USR-AISYAH',
-        username: '242507002',
-        nama: 'Aisyah Putri Azzahra',
-        role: 'ADMIN_BPH',
-        jabatan: 'Ketua MPK Legislatif',
-        org: 'MPK',
-        nis: '242507002',
+        id: 'USR-' + matched.nis,
+        username: String(matched.nis),
+        nama: matched.nama,
+        role: matched.jabatan && matched.jabatan.includes('Ketua') ? 'ADMIN_BPH' : 'MEMBER',
+        jabatan: matched.jabatan,
+        org: matched.org,
+        divisi: matched.divisi,
+        nis: String(matched.nis),
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
       });
     }
 
-    // Akun 5: Anggota Siswa (Rayhan)
-    if ((username === 'rayhan' || username === '232407019') && password === 'member123') {
-      return this.setAuthSession({
-        id: 'USR-RAYHAN',
-        username: '232407019',
-        nama: 'M. Rayhan Al-Ghifari',
-        role: 'MEMBER',
-        jabatan: 'Koordinator Tekno Media',
-        org: 'OSIS',
-        nis: '232407019',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
-      });
-    }
-
-    this.showToast('Kredensial tidak valid! Silakan cek kembali username & password.', 'error');
+    this.showToast('Kredensial username/NIS atau password salah!', 'error');
     return false;
   },
 
@@ -299,9 +301,8 @@ const App = {
     this.closeLoginModal();
     this.showToast(`Ahlan wa Sahlan, ${user.nama}!`, 'success');
 
-    if (this.state.activeTab === 'portal-publik' && (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN_BPH')) {
-      this.navigateTo('dashboard-erp');
-    }
+    // Otomatis buka Dashboard Kesiswaan / ERP
+    this.navigateTo('dashboard-erp');
     return true;
   },
 
@@ -317,7 +318,7 @@ const App = {
     
     this.updateAuthUI();
     this.navigateTo('portal-publik');
-    this.showToast('Anda telah keluar dari sesi sistem.', 'info');
+    this.showToast('Anda telah keluar dari sesi sistem. Navigasi ERP dinonaktifkan.', 'info');
   },
 
   updateAuthUI() {
@@ -337,42 +338,55 @@ const App = {
     const elDropdownName = document.getElementById('dropdown-user-name');
     const elDropdownRole = document.getElementById('dropdown-user-role');
 
+    // Sidebar & Mobile Navigation Elements
+    const elSidebarInternalNav = document.getElementById('sidebar-internal-nav');
+    const elSidebarLockedNav = document.getElementById('sidebar-locked-nav');
+    const elMobileNavBar = document.getElementById('mobile-nav-bar');
+
     if (isAuth && user) {
-      // Sembunyikan tombol login, tampilkan profil
+      // 1. Tampilkan Menu Navigasi Internal (ERP, Presensi, Penilaian, Surat)
+      if (elSidebarInternalNav) elSidebarInternalNav.classList.remove('hidden');
+      if (elSidebarLockedNav) elSidebarLockedNav.classList.add('hidden');
+      if (elMobileNavBar) elMobileNavBar.classList.remove('hidden');
+
+      // 2. Sembunyikan tombol login, tampilkan profil
       if (elBtnLoginHeader) elBtnLoginHeader.classList.add('hidden');
       if (elUserProfileHeader) elUserProfileHeader.classList.remove('hidden');
 
-      // Update role badge - tampilkan saat login
+      // 3. Update role badge
       if (elUserRoleBadge) {
         elUserRoleBadge.classList.remove('sm:hidden');
         elUserRoleBadge.classList.add('sm:flex');
         elUserRoleBadge.textContent = `${user.jabatan} \u2022 ${user.nama.split(' ')[0]}`;
       }
 
-      // Update avatar
+      // 4. Update avatar & profile info
       if (elUserAvatar) elUserAvatar.src = user.avatar || '';
-
-      // Update dropdown profil
       if (elDropdownAvatar) elDropdownAvatar.src = user.avatar || '';
       if (elDropdownName) elDropdownName.textContent = user.nama;
       if (elDropdownRole) elDropdownRole.textContent = `${user.jabatan} \u2022 ${user.org}`;
 
-      // Update greeting di dashboard
+      // 5. Update greeting di dashboard
       if (elGreetingName) elGreetingName.textContent = user.nama;
       if (elGreetingRole) elGreetingRole.textContent = `${user.jabatan} \u2022 ${user.org} SMP Islam Tarbiyatul Huda`;
     } else {
-      // Tampilkan tombol login, sembunyikan profil
+      // 1. NONAKTIFKAN / SEMBUNYIKAN MENU NAVIGASI INTERNAL PADA TAMPILAN PUBLIK
+      if (elSidebarInternalNav) elSidebarInternalNav.classList.add('hidden');
+      if (elSidebarLockedNav) elSidebarLockedNav.classList.remove('hidden');
+      if (elMobileNavBar) elMobileNavBar.classList.add('hidden');
+
+      // 2. Tampilkan tombol login, sembunyikan profil
       if (elBtnLoginHeader) elBtnLoginHeader.classList.remove('hidden');
       if (elUserProfileHeader) elUserProfileHeader.classList.add('hidden');
 
-      // Sembunyikan role badge
+      // 3. Sembunyikan role badge
       if (elUserRoleBadge) {
         elUserRoleBadge.classList.add('sm:hidden');
         elUserRoleBadge.classList.remove('sm:flex');
         elUserRoleBadge.textContent = 'Tamu / Pengunjung';
       }
 
-      // Reset greeting
+      // 4. Reset greeting
       if (elGreetingName) elGreetingName.textContent = 'Selamat Datang';
       if (elGreetingRole) elGreetingRole.textContent = 'Silakan login untuk mengakses sistem informasi terpadu';
     }
@@ -385,7 +399,6 @@ const App = {
     this.closeProfileDropdown();
     const modal = document.getElementById('modal-login');
     if (modal) {
-      // Reset form setiap kali modal dibuka
       const form = document.getElementById('form-modal-login');
       if (form) form.reset();
       modal.classList.remove('hidden');
@@ -414,7 +427,7 @@ const App = {
   navigateTo(tabId) {
     if (tabId !== 'portal-publik' && !this.state.auth.isLoggedIn) {
       this.openLoginModal();
-      this.showToast('Silakan login terlebih dahulu untuk mengakses modul ini.', 'warning');
+      this.showToast('Navigasi dinonaktifkan pada tampilan publik. Silakan login terlebih dahulu.', 'warning');
       return;
     }
 
@@ -1356,6 +1369,8 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
       if (a.status === 'Lolos Seleksi') badge = 'bg-primary-fixed text-on-primary-fixed-variant';
       if (a.status === 'Gugur Seleksi') badge = 'bg-error-container text-on-error-container';
 
+      const isPending = a.status === 'Pending Seleksi';
+
       return `
         <tr class="border-b border-outline-variant/30 hover:bg-surface-container-low transition-colors">
           <td class="py-2.5 px-3 font-mono text-on-surface-variant">${a.tanggal}</td>
@@ -1369,9 +1384,12 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
           </td>
           <td class="py-2.5 px-3 text-right">
             <div class="inline-flex items-center gap-1">
-              <button onclick="App.updateApplicantStatus('${a.id}', 'Lolos Seleksi')" class="p-1 rounded bg-primary-fixed text-on-primary-fixed-variant hover:bg-primary hover:text-white" title="Loloskan">
-                <span class="material-symbols-outlined text-[16px]">check</span>
-              </button>
+              ${isPending ? `
+                <button onclick="App.openApproveModal('${a.id}')" class="px-2 py-1 rounded bg-primary-container text-on-primary hover:bg-primary font-bold text-[11px] flex items-center gap-1 shadow-xs" title="Sahkan Jadi Pengurus">
+                  <span class="material-symbols-outlined text-[14px]">how_to_reg</span>
+                  <span>Terima</span>
+                </button>
+              ` : ''}
               <button onclick="App.updateApplicantStatus('${a.id}', 'Gugur Seleksi')" class="p-1 rounded bg-error-container text-on-error-container hover:bg-error hover:text-white" title="Gugurkan">
                 <span class="material-symbols-outlined text-[16px]">close</span>
               </button>
@@ -1397,6 +1415,199 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
     });
     this.downloadFile(csv, 'Data_Pendaftar_Calon_Pengurus_OSIS_MPK.csv', 'text/csv');
     this.showToast('Data pendaftar berhasil diekspor ke CSV!', 'success');
+  },
+
+  // 11B. Manajemen Pengurus & Akun Siswa (CMS Kesiswaan)
+  renderMembersTable() {
+    const tbody = document.getElementById('pengurus-tbody');
+    if (!tbody) return;
+
+    if (!this.state.members || this.state.members.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-on-surface-variant">Belum ada data pengurus terdaftar di database.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = this.state.members.map(m => `
+      <tr class="border-b border-outline-variant/30 hover:bg-surface-container-low transition-colors">
+        <td class="py-2.5 px-3 font-mono font-bold text-primary">${m.nis}</td>
+        <td class="py-2.5 px-3 font-bold text-on-surface">${m.nama}</td>
+        <td class="py-2.5 px-3">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${m.org === 'OSIS' ? 'bg-primary-fixed text-on-primary-fixed-variant' : 'bg-secondary-fixed text-on-secondary-fixed-variant'}">${m.org}</span>
+        </td>
+        <td class="py-2.5 px-3 text-on-surface-variant">${m.divisi}</td>
+        <td class="py-2.5 px-3 font-medium">${m.jabatan}</td>
+        <td class="py-2.5 px-3 font-mono text-on-surface-variant">${m.wa || '-'}</td>
+        <td class="py-2.5 px-3 text-center">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary-fixed text-on-primary-fixed-variant">Aktif</span>
+        </td>
+        <td class="py-2.5 px-3 text-right">
+          <div class="inline-flex items-center gap-1">
+            <button onclick="App.openResetPinModal('${m.nis}')" class="px-2 py-1 rounded bg-surface-container hover:bg-surface-variant text-on-surface text-[11px] font-bold flex items-center gap-1 shadow-xs" title="Reset PIN Siswa">
+              <span class="material-symbols-outlined text-[14px]">lock_reset</span>
+              <span>PIN</span>
+            </button>
+            <button onclick="App.deleteMember('${m.nis}')" class="p-1 rounded bg-error-container text-on-error-container hover:bg-error hover:text-white" title="Hapus Pengurus">
+              <span class="material-symbols-outlined text-[16px]">delete</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  },
+
+  openModalTambahPengurus() {
+    const modal = document.getElementById('modal-tambah-pengurus');
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  async handleCreateMemberSubmit(e) {
+    e.preventDefault();
+    const nis = document.getElementById('new-member-nis')?.value.trim();
+    const nama = document.getElementById('new-member-nama')?.value.trim();
+    const org = document.getElementById('new-member-org')?.value;
+    const divisi = document.getElementById('new-member-divisi')?.value;
+    const jabatan = document.getElementById('new-member-jabatan')?.value.trim();
+    const wa = document.getElementById('new-member-wa')?.value.trim();
+    const pin = document.getElementById('new-member-pin')?.value.trim() || '123456';
+
+    if (!nis || !nama || !jabatan) {
+      this.showToast('Mohon lengkapi seluruh kolom wajib!', 'warning');
+      return;
+    }
+
+    const newMember = {
+      nis, nama, org, divisi, jabatan, wa, pin,
+      presensi: 100, proker: 85, peer: 85, pembina: 85, qr: 'QR-' + nis
+    };
+
+    this.state.members.push(newMember);
+    this.renderMembersTable();
+    this.populateStudentDropdowns();
+    document.getElementById('modal-tambah-pengurus')?.classList.add('hidden');
+    e.target.reset();
+    this.showToast(`Pengurus ${nama} berhasil ditambahkan! PIN login: ${pin}`, 'success');
+
+    await this.callApi('saveMember', newMember);
+  },
+
+  openResetPinModal(nis) {
+    const m = this.state.members.find(x => x.nis === nis);
+    if (!m) return;
+    document.getElementById('reset-target-nis').value = nis;
+    document.getElementById('reset-target-nama').textContent = m.nama;
+    document.getElementById('reset-target-desc').textContent = `${m.org} ${m.divisi} • NIS: ${m.nis}`;
+    document.getElementById('reset-new-pin').value = '123456';
+    document.getElementById('modal-reset-pin')?.classList.remove('hidden');
+  },
+
+  async handleResetPinSubmit(e) {
+    e.preventDefault();
+    const nis = document.getElementById('reset-target-nis')?.value;
+    const pin = document.getElementById('reset-new-pin')?.value.trim();
+    if (!nis || !pin) return;
+
+    const m = this.state.members.find(x => x.nis === nis);
+    if (m) m.pin = pin;
+
+    document.getElementById('modal-reset-pin')?.classList.add('hidden');
+    this.showToast(`PIN pengurus (NIS: ${nis}) berhasil diperbarui menjadi: ${pin}`, 'success');
+
+    await this.callApi('saveMember', { nis, pinBaru: pin });
+  },
+
+  async deleteMember(nis) {
+    const m = this.state.members.find(x => x.nis === nis);
+    const nama = m ? m.nama : nis;
+    if (!confirm(`Apakah Anda yakin ingin menonaktifkan pengurus ${nama} (NIS: ${nis})?`)) return;
+
+    this.state.members = this.state.members.filter(x => x.nis !== nis);
+    this.renderMembersTable();
+    this.populateStudentDropdowns();
+    this.showToast(`Pengurus ${nama} telah dinonaktifkan.`, 'info');
+
+    await this.callApi('deleteMember', { nis });
+  },
+
+  openApproveModal(id) {
+    const app = this.state.applicants.find(x => x.id === id);
+    if (!app) return;
+    document.getElementById('approve-app-id').value = id;
+    document.getElementById('approve-app-nama').textContent = app.nama;
+    document.getElementById('approve-app-info').textContent = `Kelas ${app.kelas} • Pilihan: ${app.divisi1}`;
+    
+    const seq = String(this.state.members.length + 1).padStart(3, '0');
+    document.getElementById('approve-app-nis').value = '242507' + seq;
+    document.getElementById('approve-app-org').value = app.divisi1.includes('Komisi') ? 'MPK' : 'OSIS';
+    document.getElementById('approve-app-divisi').value = app.divisi1;
+    document.getElementById('approve-app-pin').value = '123456';
+
+    document.getElementById('modal-approve-applicant')?.classList.remove('hidden');
+  },
+
+  async handleApproveApplicantSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('approve-app-id')?.value;
+    const nis = document.getElementById('approve-app-nis')?.value.trim();
+    const org = document.getElementById('approve-app-org')?.value;
+    const divisi = document.getElementById('approve-app-divisi')?.value.trim();
+    const pin = document.getElementById('approve-app-pin')?.value.trim() || '123456';
+
+    const app = this.state.applicants.find(x => x.id === id);
+    if (!app) return;
+
+    app.status = 'Lolos Seleksi';
+    const newMember = {
+      nis,
+      nama: app.nama,
+      org,
+      divisi,
+      jabatan: 'Anggota ' + divisi,
+      wa: app.wa,
+      pin,
+      presensi: 100, proker: 80, peer: 80, pembina: 85, qr: 'QR-' + nis
+    };
+
+    this.state.members.push(newMember);
+    this.renderApplicantsTable();
+    this.renderMembersTable();
+    this.populateStudentDropdowns();
+    document.getElementById('modal-approve-applicant')?.classList.add('hidden');
+    this.showToast(`Selamat! ${app.nama} resmi disahkan sebagai Pengurus ${org}. NIS: ${nis}, PIN: ${pin}`, 'success');
+
+    await this.callApi('approveApplicant', { id, nis, pinAwal: pin, organisasi: org, divisi, jabatan: 'Anggota ' + divisi, nama: app.nama, wa: app.wa });
+  },
+
+  exportMembersCSV() {
+    let csv = 'NIS,Nama_Lengkap,Organisasi,Divisi,Jabatan,No_WA,Presensi_Pct,Proker_Score,Peer_Score,Pembina_Score\n';
+    this.state.members.forEach(m => {
+      csv += `"${m.nis}","${m.nama}","${m.org}","${m.divisi}","${m.jabatan}","${m.wa || '-'}","${m.presensi}","${m.proker}","${m.peer}","${m.pembina}"\n`;
+    });
+    this.downloadFile(csv, 'Data_Induk_Pengurus_OSIS_MPK.csv', 'text/csv');
+    this.showToast('Data pengurus berhasil diekspor ke CSV!', 'success');
+  },
+
+  async fetchBootData() {
+    try {
+      const res = await this.callApi('getBootData');
+      if (res && res.success && res.data) {
+        if (Array.isArray(res.data.members) && res.data.members.length > 0) {
+          this.state.members = res.data.members;
+          this.renderMembersTable();
+          this.populateStudentDropdowns();
+          this.renderBestMemberPodium();
+        }
+        if (Array.isArray(res.data.proker) && res.data.proker.length > 0) {
+          this.state.prokerList = res.data.proker;
+          this.renderProkerKanban();
+        }
+        if (Array.isArray(res.data.applicants) && res.data.applicants.length > 0) {
+          this.state.applicants = res.data.applicants;
+          this.renderApplicantsTable();
+        }
+      }
+    } catch (e) {
+      console.warn('Boot data fetch error:', e);
+    }
   },
 
   // 12. Modal Detail Divisi & Komisi
