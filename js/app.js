@@ -1,71 +1,92 @@
 /**
  * ==========================================================================
- * SIM-OSIS & MPK - Logika Utama Frontend SPA (GAS-PRO-API + SCALE TURBO)
+ * SIM-OSIS & MPK - Logika Utama Frontend SPA (Stitch Suite + Auth + Scale Turbo)
  * SMP Islam Tarbiyatul Huda
  * ==========================================================================
  */
 
 const App = {
-  // State Aplikasi Terpusat
+  // State Terpusat Aplikasi
   state: {
     activeTab: 'portal-publik',
     theme: 'light',
-    userRole: 'SUPER_ADMIN', // SUPER_ADMIN | ADMIN_MEDIA | ADMIN_BPH | MEMBER
-    members: [],
-    prokerList: [],
-    attendanceLogs: [],
-    currentEvent: {
-      id: 'EVT-01',
-      nama: 'Rapat Pleno Persiapan Milad & LDKS',
-      kategori: 'Rapat Rutin',
-      tanggal: new Date().toLocaleDateString('id-ID'),
-      status: 'OPEN'
+    
+    // Sistem Autentikasi & Sesi Pengguna (RBAC)
+    auth: {
+      isLoggedIn: false,
+      user: null // { id, username, nama, role, jabatan, org, avatar }
     },
-    quizAnswers: {},
+
+    // Database Anggota & Siswa
+    members: [],
+    
+    // Program Kerja
+    prokerList: [],
+
+    // Sesi Presensi Aktif
+    activeSession: {
+      id: 'SESI-Q3-01',
+      judul: 'Rapat Pleno Bulanan Evaluasi Proker Q3',
+      penyelenggara: 'BPH OSIS & MPK Terpadu',
+      lokasi: 'Ruang Multimedia 1 (Lt. 2)',
+      waktu: '15:00 – 17:30 WIB',
+      token: '849-201',
+      sisaDetik: 588, // 09:48
+      isLocked: false
+    },
+
+    // Log Presensi
+    attendanceLogs: [],
+
+    // Kuis Diagnostik (15 Soal Minat & Bakat)
     quizCurrentIndex: 0,
+    quizAnswers: {},
     quizQuestions: [
-      { id: 1, text: 'Ketika ada perselisihan pendapat dalam rapat divisi, bagaimana Anda meresponsnya?', options: [
-        { label: 'A. Mengambil jalan tengah dan mencari mufakat bersama seluruh anggota', scoreDivisi: 'INTI' },
-        { label: 'B. Meninjau aturan dasar organisasi dan mengawasi kepatuhan tata tertib', scoreDivisi: 'MPK' },
-        { label: 'C. Mengalihkan ke solusi visual/media untuk menjelaskan duduk perkara', scoreDivisi: 'MEDIA' },
-        { label: 'D. Menganalisis kebutuhan anggaran dan efisiensi pelaksanaannya', scoreDivisi: 'WIRAUSAHA' }
+      { id: 1, text: 'Ketika tim Anda menghadapi konflik pendapat dalam merencanakan sebuah acara, apa yang Anda lakukan?', options: [
+        { label: 'A. Mengambil peran penengah mufakat dan menyelaraskan visi seluruh anggota', divisi: 'Pengurus Inti' },
+        { label: 'B. Mengacu pada konstitusi, regulasi dasar, dan tata tertib organisasi', divisi: 'Komisi MPK' },
+        { label: 'C. Mengalihkan ke media visual dan presentasi kreatif agar solusi mudah dipahami', divisi: 'Tekno Media & Humas' },
+        { label: 'D. Menganalisis kebutuhan anggaran dan efisiensi pelaksanaannya', divisi: 'Kreativitas & Wirausaha' }
       ]},
-      { id: 2, text: 'Aktivitas apa di sekolah yang paling membuat Anda bersemangat?', options: [
-        { label: 'A. Merancang desain poster, video dokumentasi, dan feed media sosial', scoreDivisi: 'MEDIA' },
-        { label: 'B. Mengkoordinasikan barisan upacara, piket, dan kedisiplinan siswa', scoreDivisi: 'BELA_NEGARA' },
-        { label: 'C. Mengadakan bakti sosial, kajian keagamaan, dan peringatan hari besar Islam', scoreDivisi: 'AGAMA' },
-        { label: 'D. Mengorganisir perlombaan olahraga, seni, atau bimbingan olimpiade', scoreDivisi: 'AKADEMIK' }
+      { id: 2, text: 'Bidang kegiatan apa di sekolah yang paling memotivasi Anda untuk berkontribusi?', options: [
+        { label: 'A. Pengelolaan media sosial, fotografi, live streaming, dan desain poster', divisi: 'Tekno Media & Humas' },
+        { label: 'B. Penegakan disiplin santri, upacara bendera, baris berbaris, dan ketertiban', divisi: 'Kedisiplinan & Bela Negara' },
+        { label: 'C. Tabligh akbar, peringatan hari besar Islam, kajian dhuha, dan keputrian', divisi: 'Keagamaan & Ibadah' },
+        { label: 'D. Pembinaan olimpiade, bimbingan belajar teman sebaya, dan lomba akademik', divisi: 'Akademik & Minat Bakat' }
       ]},
-      { id: 3, text: 'Bagaimana Anda mengatur waktu antara tugas pelajaran dan amanah organisasi?', options: [
-        { label: 'A. Membuat jadwal prioritas harian dan disiplin dengan tenggat waktu', scoreDivisi: 'INTI' },
-        { label: 'B. Mencatat di kalender digital dan mengaudit progresnya berkala', scoreDivisi: 'MPK' },
-        { label: 'C. Belajar sambil membuat ringkasan kreatif berbasis visual grafis', scoreDivisi: 'MEDIA' },
-        { label: 'D. Membagi tugas secara fleksibel bersama rekan satu tim belajar', scoreDivisi: 'AKADEMIK' }
+      { id: 3, text: 'Bagaimana Anda mengatur prioritas antara tugas harian sekolah dan amanah organisasi?', options: [
+        { label: 'A. Menyusun matrik skala prioritas dan mendelegasikan tugas teknis dengan rapi', divisi: 'Pengurus Inti' },
+        { label: 'B. Menjadwalkan evaluasi berkala dan memastikan tenggat waktu dipatuhi', divisi: 'Komisi MPK' },
+        { label: 'C. Menggunakan tools manajemen digital dan visual checklist', divisi: 'Tekno Media & Humas' },
+        { label: 'D. Berkolaborasi dalam kelompok belajar mandiri secara disiplin', divisi: 'Akademik & Minat Bakat' }
       ]},
-      { id: 4, text: 'Jika Anda diberi dana kas untuk sebuah proyek, apa langkah pertama Anda?', options: [
-        { label: 'A. Menyusun RAB (Rencana Anggaran Biaya) transparan dan detail', scoreDivisi: 'WIRAUSAHA' },
-        { label: 'B. Memverifikasi urgensi dan dasar legalitas penggunaan anggaran', scoreDivisi: 'MPK' },
-        { label: 'C. Mengalokasikannya untuk peralatan publikasi dan dokumentasi terbaik', scoreDivisi: 'MEDIA' },
-        { label: 'D. Menyisihkan sebagian untuk infak sosial dan kebersihan lingkungan', scoreDivisi: 'KEBERSIHAN' }
+      { id: 4, text: 'Jika divisi Anda diberi mandat mengelola kas dana kegiatan, apa langkah awal Anda?', options: [
+        { label: 'A. Menyusun Rencana Anggaran Biaya (RAB) terperinci dengan asas transparansi', divisi: 'Kreativitas & Wirausaha' },
+        { label: 'B. Mengaudit legalitas peruntukan dana dan memastikan akuntabilitas LPJ', divisi: 'Komisi MPK' },
+        { label: 'C. Mengalokasikannya untuk peralatan promosi publikasi berkualitas tinggi', divisi: 'Tekno Media & Humas' },
+        { label: 'D. Mengalokasikan dana darurat untuk sosial santri dan kebersihan sarana', divisi: 'Kesehatan & Kebersihan' }
       ]}
     ]
   },
 
-  // Cache In-Flight Dedup (Pola gas-scale-turbo)
+  // Cache In-Flight Dedup (Pola /gas-scale-turbo)
   _inflight: {},
 
-  // Inisialisasi Aplikasi
+  // Inisialisasi Aplikasi Utama
   init() {
     this.initTheme();
-    this.loadInitialData();
+    this.initAuth();
+    this.initData();
     this.setupEventListeners();
+    this.startSessionTimer();
     this.renderActiveTab();
     this.renderProkerKanban();
-    this.renderAttendanceList();
-    this.renderBestMemberLeaderboard();
+    this.renderAttendanceFeed();
+    this.renderBestMemberPodium();
+    this.renderOfficialDocPreview();
   },
 
-  // 1. Theme Management (Light & Dark Mode)
+  // 1. Theme Management (Light / Dark Mode)
   initTheme() {
     const saved = localStorage.getItem(CONFIG.STORAGE_KEYS.THEME);
     if (saved) {
@@ -94,25 +115,198 @@ const App = {
     }
   },
 
-  // 2. Navigasi Router SPA (Instant 0ms Switch)
+  // 2. Sistem Autentikasi & RBAC (Role-Based Access Control)
+  initAuth() {
+    const saved = localStorage.getItem(CONFIG.STORAGE_KEYS.SESSION);
+    if (saved) {
+      try {
+        const session = JSON.parse(saved);
+        if (session && session.isLoggedIn) {
+          this.state.auth = session;
+        }
+      } catch (e) {
+        console.warn('Invalid session payload');
+      }
+    }
+    this.updateAuthUI();
+  },
+
+  login(username, password) {
+    username = String(username || '').trim();
+    password = String(password || '').trim();
+
+    if (!username || !password) {
+      this.showToast('Username dan password wajib diisi!', 'warning');
+      return false;
+    }
+
+    // Akun 1: Akses Darurat Kesiswaan (Sesuai output setup awal)
+    if (username === 'kesiswaan_darurat' && password === 'yKEYdUHPfKB62QjV') {
+      return this.setAuthSession({
+        id: 'USR-EMERGENCY',
+        username: 'kesiswaan_darurat',
+        nama: 'Ustadzah Siti Aminah, S.Pd.I',
+        role: 'SUPER_ADMIN',
+        jabatan: 'Pembina Kesiswaan & Tata Pamong',
+        org: 'Kesiswaan SMPITH',
+        nis: '198506122010011008',
+        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
+      });
+    }
+
+    // Akun 2: Super Admin / Kesiswaan
+    if ((username === 'admin' || username === 'kesiswaan') && (password === 'admin123' || password === 'kesiswaan123')) {
+      return this.setAuthSession({
+        id: 'USR-ADMIN',
+        username: 'kesiswaan',
+        nama: 'Ustadzah Siti Aminah, S.Pd.I',
+        role: 'SUPER_ADMIN',
+        jabatan: 'Urusan Kesiswaan / Super Admin',
+        org: 'Kesiswaan',
+        nis: '198506122010011008',
+        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
+      });
+    }
+
+    // Akun 3: Ketua Umum OSIS (BPH)
+    if ((username === 'fatih' || username === '242507001') && password === 'osis123') {
+      return this.setAuthSession({
+        id: 'USR-FATIH',
+        username: '242507001',
+        nama: 'Muhammad Fatih Pratama',
+        role: 'ADMIN_BPH',
+        jabatan: 'Ketua Umum OSIS',
+        org: 'OSIS',
+        nis: '242507001',
+        avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80'
+      });
+    }
+
+    // Akun 4: Ketua MPK (BPH Legislatif)
+    if ((username === 'aisyah' || username === '242507002') && password === 'mpk123') {
+      return this.setAuthSession({
+        id: 'USR-AISYAH',
+        username: '242507002',
+        nama: 'Aisyah Putri Azzahra',
+        role: 'ADMIN_BPH',
+        jabatan: 'Ketua MPK Legislatif',
+        org: 'MPK',
+        nis: '242507002',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+      });
+    }
+
+    // Akun 5: Anggota Siswa (Rayhan)
+    if ((username === 'rayhan' || username === '232407019') && password === 'member123') {
+      return this.setAuthSession({
+        id: 'USR-RAYHAN',
+        username: '232407019',
+        nama: 'M. Rayhan Al-Ghifari',
+        role: 'MEMBER',
+        jabatan: 'Koordinator Tekno Media',
+        org: 'OSIS',
+        nis: '232407019',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+      });
+    }
+
+    this.showToast('Kredensial tidak valid! Silakan cek kembali username & password.', 'error');
+    return false;
+  },
+
+  setAuthSession(user) {
+    this.state.auth.isLoggedIn = true;
+    this.state.auth.user = user;
+    localStorage.setItem(CONFIG.STORAGE_KEYS.SESSION, JSON.stringify(this.state.auth));
+    
+    this.updateAuthUI();
+    this.closeLoginModal();
+    this.showToast(`Ahlan wa Sahlan, ${user.nama}!`, 'success');
+
+    // Jika sebelumnya di portal publik dan login sebagai admin, arahkan ke dashboard
+    if (this.state.activeTab === 'portal-publik' && (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN_BPH')) {
+      this.navigateTo('dashboard-erp');
+    }
+    return true;
+  },
+
+  logout() {
+    this.state.auth.isLoggedIn = false;
+    this.state.auth.user = null;
+    localStorage.removeItem(CONFIG.STORAGE_KEYS.SESSION);
+    
+    this.updateAuthUI();
+    this.navigateTo('portal-publik');
+    this.showToast('Anda telah keluar dari sesi sistem.', 'info');
+  },
+
+  updateAuthUI() {
+    const isAuth = this.state.auth.isLoggedIn;
+    const user = this.state.auth.user;
+
+    const elBtnLoginHeader = document.getElementById('header-btn-login');
+    const elUserProfileHeader = document.getElementById('header-user-profile');
+    const elUserNameHeader = document.getElementById('header-user-name');
+    const elUserRoleBadge = document.getElementById('header-user-role-badge');
+    const elUserAvatar = document.getElementById('header-user-avatar');
+
+    // Dashboard Greeting
+    const elGreetingName = document.getElementById('greeting-user-name');
+    const elGreetingRole = document.getElementById('greeting-user-role');
+
+    if (isAuth && user) {
+      if (elBtnLoginHeader) elBtnLoginHeader.classList.add('hidden');
+      if (elUserProfileHeader) elUserProfileHeader.classList.remove('hidden');
+      if (elUserNameHeader) elUserNameHeader.textContent = user.nama;
+      if (elUserRoleBadge) elUserRoleBadge.textContent = user.jabatan;
+      if (elUserAvatar) elUserAvatar.src = user.avatar;
+
+      if (elGreetingName) elGreetingName.textContent = user.nama;
+      if (elGreetingRole) elGreetingRole.textContent = `${user.jabatan} • ${user.org} SMP Islam Tarbiyatul Huda`;
+    } else {
+      if (elBtnLoginHeader) elBtnLoginHeader.classList.remove('hidden');
+      if (elUserProfileHeader) elUserProfileHeader.classList.add('hidden');
+
+      if (elGreetingName) elGreetingName.textContent = 'Ustadzah Siti Aminah, S.Pd.I';
+      if (elGreetingRole) elGreetingRole.textContent = 'Pembina Kesiswaan & Tata Pamong Santri • Sistem Informasi Eksekutif';
+    }
+  },
+
+  openLoginModal() {
+    const modal = document.getElementById('modal-login');
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  closeLoginModal() {
+    const modal = document.getElementById('modal-login');
+    if (modal) modal.classList.add('hidden');
+  },
+
+  // 3. Router SPA & RBAC Guard
   navigateTo(tabId) {
-    if (this.state.activeTab === tabId) return;
+    // RBAC Guard: Hanya portal-publik yang bebas dibuka tanpa login
+    if (tabId !== 'portal-publik' && !this.state.auth.isLoggedIn) {
+      this.openLoginModal();
+      this.showToast('Silakan login terlebih dahulu untuk mengakses modul ini.', 'warning');
+      return;
+    }
+
     this.state.activeTab = tabId;
 
-    // Hentikan scanner kamera jika berpindah dari tab presensi
+    // Hentikan scanner kamera jika berpindah
     if (ScannerModule.isScanning) {
       ScannerModule.stopScanner();
     }
 
-    // Update Nav Tab UI
+    // Update Nav Tab UI Desktop
     document.querySelectorAll('.nav-tab').forEach(tab => {
       const target = tab.getAttribute('data-tab');
       if (target === tabId) {
-        tab.classList.add('active', 'border-b-2', 'border-emerald-600', 'font-bold', 'text-emerald-700');
-        tab.classList.remove('text-gray-500', 'border-transparent');
+        tab.classList.add('active', 'bg-primary-container', 'text-on-primary', 'font-bold');
+        tab.classList.remove('text-on-surface-variant');
       } else {
-        tab.classList.remove('active', 'border-b-2', 'border-emerald-600', 'font-bold', 'text-emerald-700');
-        tab.classList.add('text-gray-500', 'border-transparent');
+        tab.classList.remove('active', 'bg-primary-container', 'text-on-primary', 'font-bold');
+        tab.classList.add('text-on-surface-variant');
       }
     });
 
@@ -120,11 +314,11 @@ const App = {
     document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
       const target = btn.getAttribute('data-tab');
       if (target === tabId) {
-        btn.classList.add('text-emerald-600', 'dark:text-emerald-400');
-        btn.classList.remove('text-gray-400');
+        btn.classList.add('text-primary', 'font-bold');
+        btn.classList.remove('text-on-surface-variant');
       } else {
-        btn.classList.remove('text-emerald-600', 'dark:text-emerald-400');
-        btn.classList.add('text-gray-400');
+        btn.classList.remove('text-primary', 'font-bold');
+        btn.classList.add('text-on-surface-variant');
       }
     });
 
@@ -142,10 +336,10 @@ const App = {
     }
   },
 
-  // 3. API Communication (Anti-CORS text/plain POST + CacheX)
+  // 4. API Dispatcher (Anti-CORS + CacheX)
   async callApi(action, data = {}) {
     if (!CONFIG.GAS_URL) {
-      console.warn('GAS_URL belum disetel di js/config.js. Berjalan dalam mode Local Fast Simulation.');
+      console.warn('GAS_URL belum terisi. Berjalan pada mode offline responsif.');
       return { success: true, simulated: true };
     }
 
@@ -156,7 +350,7 @@ const App = {
       try {
         const res = await fetch(CONFIG.GAS_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Wajib anti-CORS GAS
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ action, data })
         });
         return await res.json();
@@ -171,120 +365,177 @@ const App = {
     return promise;
   },
 
-  // 4. Data Dummy Awal Berstandar Pro (Offline First)
-  loadInitialData() {
-    const cachedMembers = localStorage.getItem(CONFIG.STORAGE_KEYS.CACHE_MEMBERS);
-    if (cachedMembers) {
-      try { this.state.members = JSON.parse(cachedMembers); } catch(e){}
-    }
-
-    if (!this.state.members || this.state.members.length === 0) {
-      this.state.members = [
-        { nis: '242507001', nama: 'M. Fatih Pratama', org: 'OSIS', divisi: 'Pengurus Inti', jabatan: 'Ketua Umum OSIS', qr: 'QR-242507001', wa: '081234567890', presensi: 100, proker: 95, peer: 92, pembina: 96 },
-        { nis: '242507002', nama: 'Aisyah Putri Azzahra', org: 'MPK', divisi: 'Komisi A (Hukum & Tatib)', jabatan: 'Ketua MPK', qr: 'QR-242507002', wa: '081234567891', presensi: 96, proker: 90, peer: 94, pembina: 95 },
-        { nis: '242507003', nama: 'Rayhan Al-Ghifari', org: 'OSIS', divisi: 'Tekno Media & Humas', jabatan: 'Koordinator Divisi', qr: 'QR-242507003', wa: '081234567892', presensi: 98, proker: 96, peer: 95, pembina: 94 },
-        { nis: '242507004', nama: 'Nabila Zahra Khairunnisa', org: 'OSIS', divisi: 'Keagamaan & Ibadah', jabatan: 'Sekretaris II', qr: 'QR-242507004', wa: '081234567893', presensi: 92, proker: 88, peer: 90, pembina: 91 },
-        { nis: '242507005', nama: 'Zaidan Zaki Mubarak', org: 'OSIS', divisi: 'Kedisiplinan & Bela Negara', jabatan: 'Anggota', qr: '', wa: '081234567894', presensi: 88, proker: 85, peer: 86, pembina: 88 },
-        { nis: '242507006', nama: 'Fathimah Nur Halimah', org: 'MPK', divisi: 'Komisi B (Aspirasi & Mediasi)', jabatan: 'Sekretaris Komisi', qr: '', wa: '081234567895', presensi: 94, proker: 89, peer: 91, pembina: 90 }
-      ];
-      this.persistMembers();
-    }
+  // 5. Data Default (Sesuai Stitch Reference)
+  initData() {
+    this.state.members = [
+      { nis: '232407019', nama: 'M. Rayhan Al-Ghifari', org: 'OSIS', divisi: 'Tekno Media & Humas', jabatan: 'Ketua Umum OSIS', kelas: 'IX-A', wa: '081234567890', presensi: 100, proker: 96, peer: 94, pembina: 96, qr: 'QR-232407019' },
+      { nis: '232407020', nama: 'Nabila Syakirah Putri', org: 'MPK', divisi: 'Komisi A (Hukum & Tatib)', jabatan: 'Ketua MPK Legislatif', kelas: 'IX-B', wa: '081234567891', presensi: 96, proker: 92, peer: 95, pembina: 95, qr: 'QR-232407020' },
+      { nis: '232407021', nama: 'Fathan Azka Ramadhan', org: 'OSIS', divisi: 'Kedisiplinan & Bela Negara', jabatan: 'Koor. Sie Bela Negara', kelas: 'VIII-A', wa: '081234567892', presensi: 98, proker: 90, peer: 92, pembina: 91, qr: 'QR-232407021' },
+      { nis: '232407022', nama: 'Zahra Annisa Firdaus', org: 'OSIS', divisi: 'Pengurus Inti', jabatan: 'Sekretaris Umum OSIS', kelas: 'VIII-B', wa: '081234567893', presensi: 94, proker: 88, peer: 90, pembina: 92, qr: 'QR-232407022' },
+      { nis: '232407023', nama: 'Ahmad Faiz Robbani', org: 'MPK', divisi: 'Komisi C (Anggaran & Audit)', jabatan: 'Bendahara Komisi', kelas: 'IX-A', wa: '081234567894', presensi: 92, proker: 85, peer: 88, pembina: 90, qr: '' },
+      { nis: '232407024', nama: 'Khadijah Nurul Izzah', org: 'OSIS', divisi: 'Keagamaan & Ibadah', jabatan: 'Sekretaris Sie Keagamaan', kelas: 'VII-A', wa: '081234567895', presensi: 96, proker: 94, peer: 91, pembina: 93, qr: '' }
+    ];
 
     this.state.prokerList = [
-      { id: 'PRK-01', judul: 'Latihan Dasar Kepemimpinan Siswa (LDKS) 2026', org: 'OSIS', divisi: 'Pengurus Inti', status: 'IN_PROGRESS', progress: 65, pic: 'M. Fatih Pratama', anggaran: 'Rp4.500.000' },
-      { id: 'PRK-02', judul: 'Kajian Akbar Maulid Nabi & Tabligh Siswa', org: 'OSIS', divisi: 'Keagamaan', status: 'COMPLETED', progress: 100, pic: 'Nabila Zahra', anggaran: 'Rp2.800.000' },
-      { id: 'PRK-03', judul: 'Audit Anggaran Kas Triwulan I Organisasi', org: 'MPK', divisi: 'Komisi C', status: 'IN_PROGRESS', progress: 80, pic: 'Aisyah Putri', anggaran: 'Rp250.000' },
-      { id: 'PRK-04', judul: 'Pekan Olahraga & Seni Antar Kelas (PORSENI)', org: 'OSIS', divisi: 'Akademik & Minat Bakat', status: 'PLANNING', progress: 20, pic: 'Zaidan Zaki', anggaran: 'Rp5.000.000' },
-      { id: 'PRK-05', judul: 'Redesain Majalah Dinding & Podcast Siswa', org: 'OSIS', divisi: 'Tekno Media', status: 'PLANNING', progress: 35, pic: 'Rayhan Al-Ghifari', anggaran: 'Rp1.200.000' }
+      { id: 'PRK-01', judul: 'Latihan Dasar Kepemimpinan Siswa (LDKS) 2026', org: 'OSIS', divisi: 'Pengurus Inti', status: 'IN_PROGRESS', progress: 75, pic: 'M. Rayhan Al-Ghifari', anggaran: 'Rp4.500.000', deadline: '24 Okt 2026' },
+      { id: 'PRK-02', judul: 'Kajian Akbar Maulid Nabi & Tabligh Santri', org: 'OSIS', divisi: 'Keagamaan', status: 'COMPLETED', progress: 100, pic: 'Khadijah Nurul', anggaran: 'Rp2.800.000', deadline: '12 Okt 2026' },
+      { id: 'PRK-03', judul: 'Audit Anggaran Kas Triwulan I Organisasi', org: 'MPK', divisi: 'Komisi C', status: 'IN_PROGRESS', progress: 80, pic: 'Ahmad Faiz', anggaran: 'Rp250.000', deadline: '30 Okt 2026' },
+      { id: 'PRK-04', judul: 'Pekan Olahraga & Seni Antar Kelas (PORSENI)', org: 'OSIS', divisi: 'Akademik & Minat Bakat', status: 'PLANNING', progress: 20, pic: 'Fathan Azka', anggaran: 'Rp5.000.000', deadline: '15 Nov 2026' },
+      { id: 'PRK-05', judul: 'Podcast Dakwah & Majalah Dinding Digital', org: 'OSIS', divisi: 'Tekno Media', status: 'PLANNING', progress: 35, pic: 'Zahra Annisa', anggaran: 'Rp1.200.000', deadline: '20 Nov 2026' },
+      { id: 'PRK-06', judul: 'Laporan Pertanggungjawaban Tengah Periode', org: 'MPK', divisi: 'Komisi A', status: 'REVIEW', progress: 90, pic: 'Nabila Syakirah', anggaran: 'Rp400.000', deadline: '05 Nov 2026' }
     ];
 
     this.state.attendanceLogs = [
-      { id: 'LOG-01', nis: '242507001', nama: 'M. Fatih Pratama', divisi: 'Pengurus Inti', waktu: '13:02 WIB', status: 'Hadir', metode: 'Scan Kartu Siswa' },
-      { id: 'LOG-02', nis: '242507002', nama: 'Aisyah Putri Azzahra', divisi: 'Komisi A (Hukum)', waktu: '13:05 WIB', status: 'Hadir', metode: 'Scan Kartu Siswa' },
-      { id: 'LOG-03', nis: '242507003', nama: 'Rayhan Al-Ghifari', divisi: 'Tekno Media', waktu: '13:08 WIB', status: 'Hadir', metode: 'Scan Kartu Siswa' },
-      { id: 'LOG-04', nis: '242507004', nama: 'Nabila Zahra', divisi: 'Keagamaan', waktu: '13:15 WIB', status: 'Izin', metode: 'Manual Admin (Kesiswaan)' }
+      { id: 'LOG-01', nis: '232407019', nama: 'M. Rayhan Al-Ghifari', divisi: 'Tekno Media (Ketua OSIS)', waktu: '15:02 WIB', status: 'Hadir', metode: 'Scan QR Mandiri' },
+      { id: 'LOG-02', nis: '232407020', nama: 'Nabila Syakirah Putri', divisi: 'Komisi A (Ketua MPK)', waktu: '15:04 WIB', status: 'Hadir', metode: 'Scan QR Mandiri' },
+      { id: 'LOG-03', nis: '232407021', nama: 'Fathan Azka Ramadhan', divisi: 'Bela Negara', waktu: '15:08 WIB', status: 'Hadir', metode: 'Kode Token Sesi' },
+      { id: 'LOG-04', nis: '232407022', nama: 'Zahra Annisa Firdaus', divisi: 'Pengurus Inti', waktu: '15:15 WIB', status: 'Izin', metode: 'Manual Kesiswaan' }
     ];
   },
 
-  persistMembers() {
-    localStorage.setItem(CONFIG.STORAGE_KEYS.CACHE_MEMBERS, JSON.stringify(this.state.members));
+  // 6. Proker Kanban
+  renderProkerKanban() {
+    const cols = {
+      PLANNING: document.getElementById('kanban-planning'),
+      IN_PROGRESS: document.getElementById('kanban-progress'),
+      REVIEW: document.getElementById('kanban-review'),
+      COMPLETED: document.getElementById('kanban-completed')
+    };
+
+    if (!cols.PLANNING) return;
+
+    Object.values(cols).forEach(col => { if (col) col.innerHTML = ''; });
+
+    this.state.prokerList.forEach(p => {
+      const card = `
+        <div class="p-4 rounded-xl bg-surface-container-lowest shadow-sm border border-outline-variant/60 hover:shadow-md transition-shadow space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.org === 'OSIS' ? 'bg-primary-fixed text-on-primary-fixed-variant' : 'bg-secondary-fixed text-on-secondary-fixed-variant'}">${p.org} • ${p.divisi}</span>
+            <span class="text-xs font-mono font-bold text-tertiary">${p.anggaran}</span>
+          </div>
+          <h4 class="font-heading font-bold text-sm text-on-surface line-clamp-2">${p.judul}</h4>
+          <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+            <div class="bg-primary-container h-full rounded-full" style="width: ${p.progress}%"></div>
+          </div>
+          <div class="flex items-center justify-between text-xs text-on-surface-variant pt-1">
+            <span class="truncate">PIC: ${p.pic}</span>
+            <span class="font-bold text-primary">${p.progress}%</span>
+          </div>
+        </div>
+      `;
+
+      if (cols[p.status]) {
+        cols[p.status].insertAdjacentHTML('beforeend', card);
+      }
+    });
   },
 
-  // 5. Presensi & Registrasi QR Kartu Siswa (Aturan Khusus User)
-  registerStudentCardQR(nis, qrString) {
-    const student = this.state.members.find(m => m.nis === nis);
-    if (!student) {
-      this.showToast(`Siswa dengan NIS ${nis} tidak ditemukan!`, 'error');
-      return false;
-    }
+  // 7. Sesi Presensi & Countdown
+  startSessionTimer() {
+    setInterval(() => {
+      if (this.state.activeSession.sisaDetik > 0 && !this.state.activeSession.isLocked) {
+        this.state.activeSession.sisaDetik--;
+        const m = String(Math.floor(this.state.activeSession.sisaDetik / 60)).padStart(2, '0');
+        const s = String(this.state.activeSession.sisaDetik % 60).padStart(2, '0');
+        const timerText = `${m}:${s}`;
 
-    student.qr = qrString;
-    this.persistMembers();
-    this.showToast(`QR Kartu berhasil ditautkan ke ${student.nama} (${student.nis})!`, 'success');
-    this.renderMemberRegistrationDropdown();
-    
-    // Sinkronisasi ke backend
-    this.callApi('saveStudentQR', { nis, qrString });
-    return true;
+        const elTimer1 = document.getElementById('countdownTimer');
+        const elTimer2 = document.getElementById('countdown-timer');
+        if (elTimer1) elTimer1.textContent = timerText;
+        if (elTimer2) elTimer2.textContent = timerText;
+      }
+    }, 1000);
   },
 
-  recordAttendance(identifier, isManual = false, manualStatus = 'Hadir') {
-    let student = null;
-    if (isManual) {
-      student = this.state.members.find(m => m.nis === identifier);
+  toggleLockSession() {
+    this.state.activeSession.isLocked = !this.state.activeSession.isLocked;
+    const isLocked = this.state.activeSession.isLocked;
+    const lockText = document.getElementById('lockText');
+    const lockIcon = document.getElementById('lockIcon');
+
+    if (isLocked) {
+      if (lockText) lockText.textContent = 'Buka Kunci Sesi';
+      if (lockIcon) lockIcon.textContent = 'lock';
+      this.showToast('Sesi presensi telah dikunci! Tidak menerima scan baru.', 'warning');
     } else {
-      student = this.state.members.find(m => m.qr === identifier || m.nis === identifier);
+      if (lockText) lockText.textContent = 'Kunci Sesi Presensi';
+      if (lockIcon) lockIcon.textContent = 'lock_open';
+      this.showToast('Sesi presensi kembali dibuka.', 'info');
     }
+  },
 
+  recordAttendance(nis, status = 'Hadir', metode = 'Scan QR Mandiri') {
+    const student = this.state.members.find(m => m.nis === nis || m.qr === nis);
     if (!student) {
       ScannerModule.playBeep(false);
-      this.showToast('Kartu QR tidak terdaftar! Silakan daftarkan QR kartu ini terlebih dahulu.', 'error');
+      this.showToast('Kartu QR atau NIS tidak terdaftar di database!', 'error');
       return;
     }
 
-    // Cek apakah sudah presensi
-    const alreadyLogged = this.state.attendanceLogs.find(l => l.nis === student.nis);
-    if (alreadyLogged && !isManual) {
+    const already = this.state.attendanceLogs.find(l => l.nis === student.nis);
+    if (already && metode.includes('Scan')) {
       ScannerModule.playBeep(false);
-      this.showToast(`${student.nama} sudah tercatat presensi sebelumnya (${alreadyLogged.status})!`, 'warning');
+      this.showToast(`${student.nama} sudah melakukan presensi sebelumnya (${already.status})!`, 'warning');
       return;
     }
 
     const now = new Date();
     const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
-    const status = isManual ? manualStatus : 'Hadir';
-    const metode = isManual ? 'Manual Admin' : 'Scan Kartu Siswa';
 
-    if (alreadyLogged) {
-      alreadyLogged.status = status;
-      alreadyLogged.waktu = timeStr;
-      alreadyLogged.metode = metode;
+    if (already) {
+      already.status = status;
+      already.waktu = timeStr;
+      already.metode = metode;
     } else {
       this.state.attendanceLogs.unshift({
         id: 'LOG-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
         nis: student.nis,
         nama: student.nama,
-        divisi: student.divisi,
+        divisi: `${student.divisi} (${student.jabatan})`,
         waktu: timeStr,
         status: status,
         metode: metode
       });
     }
 
+    ScannerModule.playBeep(true);
     this.showToast(`Presensi berhasil: ${student.nama} [${status}]`, 'success');
-    this.renderAttendanceList();
-    
-    // Sinkronisasi ke backend
+    this.renderAttendanceFeed();
+
+    // Kirim asinkron ke GAS REST API
     this.callApi('saveAttendance', {
-      eventId: this.state.currentEvent.id,
+      eventId: this.state.activeSession.id,
       nis: student.nis,
+      namaSiswa: student.nama,
+      divisi: student.divisi,
       status: status,
       metode: metode
     });
   },
 
-  renderAttendanceList() {
-    const tbody = document.getElementById('attendance-log-tbody');
+  submitTokenAttendance() {
+    const input = document.getElementById('token-input');
+    const tokenVal = input ? input.value.trim() : '';
+
+    if (!tokenVal) {
+      this.showToast('Silakan masukkan 6 digit token sesi!', 'warning');
+      return;
+    }
+
+    if (tokenVal !== this.state.activeSession.token) {
+      ScannerModule.playBeep(false);
+      this.showToast('Token sesi salah atau sudah kedaluwarsa!', 'error');
+      return;
+    }
+
+    // Gunakan user login atau siswa terpilih
+    const currentNis = this.state.auth.user?.nis || '232407019';
+    this.recordAttendance(currentNis, 'Hadir', 'Kode Token Sesi');
+    if (input) input.value = '';
+  },
+
+  renderAttendanceFeed() {
+    const tbody = document.getElementById('attendance-feed-tbody');
     if (!tbody) return;
 
     let hadir = 0, izin = 0, sakit = 0, alpa = 0;
@@ -298,37 +549,37 @@ const App = {
     const total = hadir + izin + sakit + alpa || 1;
     const pct = Math.round((hadir / total) * 100);
 
-    const countHadir = document.getElementById('count-hadir');
-    const countIzin = document.getElementById('count-izin');
-    const countSakit = document.getElementById('count-sakit');
-    const countAlpa = document.getElementById('count-alpa');
-    const pctHadir = document.getElementById('pct-kehadiran');
+    const elPct = document.getElementById('pct-kehadiran-val');
+    const elCountHadir = document.getElementById('count-hadir-val');
+    const elCountIzin = document.getElementById('count-izin-val');
+    const elCountSakit = document.getElementById('count-sakit-val');
+    const elCountAlpa = document.getElementById('count-alpa-val');
 
-    if (countHadir) countHadir.textContent = hadir;
-    if (countIzin) countIzin.textContent = izin;
-    if (countSakit) countSakit.textContent = sakit;
-    if (countAlpa) countAlpa.textContent = alpa;
-    if (pctHadir) pctHadir.textContent = pct + '%';
+    if (elPct) elPct.textContent = `${pct}%`;
+    if (elCountHadir) elCountHadir.textContent = hadir;
+    if (elCountIzin) elCountIzin.textContent = izin;
+    if (elCountSakit) elCountSakit.textContent = sakit;
+    if (elCountAlpa) elCountAlpa.textContent = alpa;
 
     tbody.innerHTML = this.state.attendanceLogs.map(l => {
-      let badgeClass = 'badge-hadir';
-      if (l.status === 'Izin') badgeClass = 'badge-izin';
-      if (l.status === 'Sakit') badgeClass = 'badge-sakit';
-      if (l.status === 'Alpa') badgeClass = 'badge-alpa';
+      let badge = 'bg-primary-fixed text-on-primary-fixed-variant';
+      if (l.status === 'Izin') badge = 'bg-secondary-fixed text-on-secondary-fixed-variant';
+      if (l.status === 'Sakit') badge = 'bg-tertiary-fixed text-on-tertiary-fixed-variant';
+      if (l.status === 'Alpa') badge = 'bg-error-container text-on-error-container';
 
       return `
-        <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50/50 dark:hover:bg-slate-800/50 transition-colors">
-          <td class="py-3 px-4 font-mono text-xs text-gray-500 dark:text-gray-400">${l.waktu}</td>
+        <tr class="border-b border-outline-variant/30 hover:bg-surface-container-low transition-colors">
+          <td class="py-3 px-4 font-mono text-xs text-on-surface-variant">${l.waktu}</td>
           <td class="py-3 px-4">
-            <div class="font-semibold text-gray-900 dark:text-gray-100">${l.nama}</div>
-            <div class="text-[11px] text-gray-400">NIS: ${l.nis} • ${l.divisi}</div>
+            <div class="font-bold text-on-surface">${l.nama}</div>
+            <div class="text-[11px] text-on-surface-variant font-mono">NIS: ${l.nis} • ${l.divisi}</div>
           </td>
           <td class="py-3 px-4">
-            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">${l.status}</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${badge}">${l.status}</span>
           </td>
-          <td class="py-3 px-4 text-xs text-gray-500 dark:text-gray-400">
-            <span class="inline-flex items-center gap-1">
-              <span class="material-symbols-outlined text-[14px]">${l.metode.includes('Scan') ? 'qr_code_scanner' : 'edit_note'}</span>
+          <td class="py-3 px-4 text-xs text-on-surface-variant font-medium">
+            <span class="inline-flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[15px] text-primary">${l.metode.includes('QR') ? 'qr_code_scanner' : 'pin'}</span>
               ${l.metode}
             </span>
           </td>
@@ -337,117 +588,70 @@ const App = {
     }).join('');
   },
 
-  renderMemberRegistrationDropdown() {
-    const select = document.getElementById('reg-student-select');
-    if (!select) return;
-
-    select.innerHTML = '<option value="">-- Pilih Siswa / Pengurus --</option>' + 
-      this.state.members.map(m => {
-        const qrStatus = m.qr ? '✅ QR Terdaftar' : '⚠️ Belum Ada QR';
-        return `<option value="${m.nis}">${m.nama} (${m.nis}) - ${m.divisi} [${qrStatus}]</option>`;
-      }).join('');
-  },
-
-  // 6. Proker Kanban
-  renderProkerKanban() {
-    const cols = {
-      PLANNING: document.getElementById('kanban-planning'),
-      IN_PROGRESS: document.getElementById('kanban-progress'),
-      COMPLETED: document.getElementById('kanban-completed')
-    };
-
-    if (!cols.PLANNING) return;
-
-    Object.values(cols).forEach(col => col.innerHTML = '');
-
-    this.state.prokerList.forEach(p => {
-      const card = `
-        <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-gray-200/80 dark:border-slate-700 shadow-xs hover:shadow-md transition-shadow space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.org === 'OSIS' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'}">${p.org} • ${p.divisi}</span>
-            <span class="text-xs font-mono font-semibold text-amber-600 dark:text-amber-400">${p.anggaran}</span>
-          </div>
-          <h4 class="font-heading font-bold text-sm text-gray-900 dark:text-gray-100">${p.judul}</h4>
-          <div class="w-full bg-gray-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-            <div class="bg-emerald-600 h-full rounded-full" style="width: ${p.progress}%"></div>
-          </div>
-          <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-1">
-            <span>PIC: ${p.pic}</span>
-            <span>${p.progress}% Selesai</span>
-          </div>
-        </div>
-      `;
-
-      if (cols[p.status]) {
-        cols[p.status].insertAdjacentHTML('beforeend', card);
-      }
-    });
-  },
-
-  // 7. Penilaian & Best Member Leaderboard
-  renderBestMemberLeaderboard() {
-    const list = [...this.state.members].map(m => {
-      // Bobot: Presensi 40% + Proker 30% + Peer Review 15% + Pembina 15%
+  // 8. Penilaian & Best Member Award
+  renderBestMemberPodium() {
+    const scoredList = [...this.state.members].map(m => {
+      // Bobot 4 Pilar: Presensi 40% + Proker 30% + Peer Review 15% + Pembina 15%
       const total = (m.presensi * 0.4) + (m.proker * 0.3) + (m.peer * 0.15) + (m.pembina * 0.15);
       return { ...m, totalSkor: Number(total.toFixed(1)) };
     }).sort((a, b) => b.totalSkor - a.totalSkor);
 
-    // Podium
-    const top1 = list[0];
-    const top2 = list[1];
-    const top3 = list[2];
+    // Podium Top 3
+    const top1 = scoredList[0];
+    const top2 = scoredList[1];
+    const top3 = scoredList[2];
 
-    const elTop1Name = document.getElementById('podium-1-name');
-    const elTop1Score = document.getElementById('podium-1-score');
-    const elTop1Divisi = document.getElementById('podium-1-divisi');
+    const elP1Name = document.getElementById('podium-1-name');
+    const elP1Score = document.getElementById('podium-1-score');
+    const elP1Jabatan = document.getElementById('podium-1-jabatan');
 
-    const elTop2Name = document.getElementById('podium-2-name');
-    const elTop2Score = document.getElementById('podium-2-score');
+    const elP2Name = document.getElementById('podium-2-name');
+    const elP2Score = document.getElementById('podium-2-score');
 
-    const elTop3Name = document.getElementById('podium-3-name');
-    const elTop3Score = document.getElementById('podium-3-score');
+    const elP3Name = document.getElementById('podium-3-name');
+    const elP3Score = document.getElementById('podium-3-score');
 
-    if (top1 && elTop1Name) {
-      elTop1Name.textContent = top1.nama;
-      elTop1Score.textContent = top1.totalSkor + ' Pts';
-      elTop1Divisi.textContent = top1.divisi;
+    if (top1 && elP1Name) {
+      elP1Name.textContent = top1.nama;
+      elP1Score.textContent = `${top1.totalSkor} Pts`;
+      if (elP1Jabatan) elP1Jabatan.textContent = `${top1.jabatan} • ${top1.divisi}`;
     }
-    if (top2 && elTop2Name) {
-      elTop2Name.textContent = top2.nama;
-      elTop2Score.textContent = top2.totalSkor + ' Pts';
+    if (top2 && elP2Name) {
+      elP2Name.textContent = top2.nama;
+      elP2Score.textContent = `${top2.totalSkor} Pts`;
     }
-    if (top3 && elTop3Name) {
-      elTop3Name.textContent = top3.nama;
-      elTop3Score.textContent = top3.totalSkor + ' Pts';
+    if (top3 && elP3Name) {
+      elP3Name.textContent = top3.nama;
+      elP3Score.textContent = `${top3.totalSkor} Pts`;
     }
 
-    // Tabel Rekap Nilai
+    // Leaderboard Table
     const tbody = document.getElementById('leaderboard-tbody');
     if (!tbody) return;
 
-    tbody.innerHTML = list.map((m, idx) => {
-      let rankIcon = `<span class="font-bold text-gray-500">${idx + 1}</span>`;
-      if (idx === 0) rankIcon = `<span class="material-symbols-outlined text-amber-500 text-[20px]">military_tech</span>`;
-      if (idx === 1) rankIcon = `<span class="material-symbols-outlined text-slate-400 text-[20px]">military_tech</span>`;
-      if (idx === 2) rankIcon = `<span class="material-symbols-outlined text-amber-700 text-[20px]">military_tech</span>`;
+    tbody.innerHTML = scoredList.map((m, idx) => {
+      let rankBadge = `<span class="font-bold text-on-surface-variant font-mono">${idx + 1}</span>`;
+      if (idx === 0) rankBadge = `<span class="material-symbols-outlined text-amber-500 text-[22px]" style="font-variation-settings: 'FILL' 1;">military_tech</span>`;
+      if (idx === 1) rankBadge = `<span class="material-symbols-outlined text-slate-400 text-[22px]" style="font-variation-settings: 'FILL' 1;">military_tech</span>`;
+      if (idx === 2) rankBadge = `<span class="material-symbols-outlined text-amber-700 text-[22px]" style="font-variation-settings: 'FILL' 1;">military_tech</span>`;
 
       return `
-        <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50/50 dark:hover:bg-slate-800/50 transition-colors">
-          <td class="py-3 px-4 text-center">${rankIcon}</td>
+        <tr class="border-b border-outline-variant/30 hover:bg-surface-container-low transition-colors">
+          <td class="py-3 px-4 text-center">${rankBadge}</td>
           <td class="py-3 px-4">
-            <div class="font-semibold text-gray-900 dark:text-gray-100">${m.nama}</div>
-            <div class="text-[11px] text-gray-400">NIS: ${m.nis} • ${m.org}</div>
+            <div class="font-bold text-on-surface">${m.nama}</div>
+            <div class="text-[11px] text-on-surface-variant font-mono">NIS: ${m.nis} • ${m.org} (${m.jabatan})</div>
           </td>
-          <td class="py-3 px-4 text-xs">${m.divisi}</td>
-          <td class="py-3 px-4 text-center font-mono text-xs">${m.presensi}%</td>
-          <td class="py-3 px-4 text-center font-mono text-xs">${m.proker}</td>
-          <td class="py-3 px-4 text-center font-mono text-xs">${m.peer}</td>
-          <td class="py-3 px-4 text-center font-mono text-xs">${m.pembina}</td>
-          <td class="py-3 px-4 text-center font-bold text-emerald-600 dark:text-emerald-400 font-mono">${m.totalSkor}</td>
+          <td class="py-3 px-4 text-xs font-medium text-on-surface">${m.divisi}</td>
+          <td class="py-3 px-4 text-center font-mono text-xs font-bold text-primary">${m.presensi}%</td>
+          <td class="py-3 px-4 text-center font-mono text-xs font-bold text-secondary">${m.proker}</td>
+          <td class="py-3 px-4 text-center font-mono text-xs font-bold text-tertiary">${m.peer}</td>
+          <td class="py-3 px-4 text-center font-mono text-xs font-bold text-primary-container">${m.pembina}</td>
+          <td class="py-3 px-4 text-center font-mono text-sm font-extrabold text-primary">${m.totalSkor}</td>
           <td class="py-3 px-4 text-right">
-            <button onclick="App.generatePiagamForMember('${m.nis}')" class="px-2.5 py-1 text-xs rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 hover:bg-emerald-100 transition-colors inline-flex items-center gap-1">
-              <span class="material-symbols-outlined text-[14px]">card_membership</span>
-              Cetak Piagam
+            <button onclick="App.generatePiagamForMember('${m.nis}')" class="px-3 py-1.5 rounded-lg bg-surface-container-high hover:bg-primary hover:text-on-primary transition-colors text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
+              <span class="material-symbols-outlined text-[15px]">workspace_premium</span>
+              <span>Cetak Piagam</span>
             </button>
           </td>
         </tr>
@@ -459,58 +663,132 @@ const App = {
     const m = this.state.members.find(x => x.nis === nis);
     if (!m) return;
     this.navigateTo('generator-surat-resmi');
-    
-    // Pilih template PIAGAM_BEST_MEMBER
-    const selTemplate = document.getElementById('select-doc-template');
+
+    const selTemplate = document.getElementById('input-jenis-surat');
     if (selTemplate) {
-      selTemplate.value = 'PIAGAM_BEST_MEMBER';
+      selTemplate.value = 'PIAGAM PENGHARGAAN';
       selTemplate.dispatchEvent(new Event('change'));
     }
 
-    const inputNama = document.getElementById('doc-input-nama');
-    const inputNis = document.getElementById('doc-input-nis');
-    const inputDivisi = document.getElementById('doc-input-divisi');
+    const inNama = document.getElementById('form-nama');
+    const inNis = document.getElementById('form-nis');
+    const inKelas = document.getElementById('form-kelas');
+    const inJabatan = document.getElementById('form-jabatan');
 
-    if (inputNama) inputNama.value = m.nama;
-    if (inputNis) inputNis.value = m.nis;
-    if (inputDivisi) inputDivisi.value = m.divisi;
+    if (inNama) inNama.value = m.nama;
+    if (inNis) inNis.value = m.nis;
+    if (inKelas) inKelas.value = m.kelas || 'VIII';
+    if (inJabatan) inJabatan.value = `${m.jabatan} - ${m.divisi}`;
 
-    this.renderDocumentPreview();
+    this.renderOfficialDocPreview();
     this.showToast(`Template Piagam siap untuk ${m.nama}!`, 'info');
   },
 
-  // 8. Generator Dokumen & Cetak A4 (GAS Doc Engine)
-  renderDocumentPreview() {
-    const previewContainer = document.getElementById('doc-preview-area');
-    if (!previewContainer) return;
+  // 9. Generator Surat Resmi & Preview A4 (GAS Doc Engine)
+  renderOfficialDocPreview() {
+    const previewArea = document.getElementById('doc-preview-area');
+    if (!previewArea) return;
 
-    const templateKey = document.getElementById('select-doc-template')?.value || 'SURAT_TUGAS';
-    const formValues = {
-      NAMA: document.getElementById('doc-input-nama')?.value || 'Muhammad Fatih Pratama',
-      NIS: document.getElementById('doc-input-nis')?.value || '242507001',
-      KELAS: document.getElementById('doc-input-kelas')?.value || '8A',
-      JABATAN: document.getElementById('doc-input-jabatan')?.value || 'Ketua Umum',
-      DIVISI: document.getElementById('doc-input-divisi')?.value || 'OSIS SMP Tarbiyatul Huda',
-      NAMA_KEGIATAN: document.getElementById('doc-input-kegiatan')?.value || 'Latihan Dasar Kepemimpinan Siswa (LDKS)',
-      HARI_TANGGAL: document.getElementById('doc-input-tanggal')?.value || 'Sabtu, 14 November 2026',
-      WAKTU: '08:00 - 15:00',
-      TEMPAT: 'Aula Utama Tarbiyatul Huda',
-      TINGKAT_SP: 'Pertama (SP-1)',
-      ALASAN_SP: 'Ketidakhadiran dalam 3 kali rapat pleno koordinasi tanpa konfirmasi izin resmi.',
-      PEMBINA_NAMA: 'Ust. Ahmad Dahlan, S.Pd.I',
-      KETUA_NAMA: 'M. Fatih Pratama',
-      KETUA_NIS: '242507001'
-    };
+    const jenis = document.getElementById('input-jenis-surat')?.value || 'SURAT TUGAS';
+    const nomor = document.getElementById('input-nomor-surat')?.value || '028/OSIS-MPK/SMP-ITH/X/2026';
+    const tanggal = document.getElementById('input-tanggal-surat')?.value || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const nama = document.getElementById('form-nama')?.value || 'M. Rayhan Al-Ghifari';
+    const nis = document.getElementById('form-nis')?.value || '232407019';
+    const kelas = document.getElementById('form-kelas')?.value || 'IX-A (Thoriq bin Ziyad)';
+    const jabatan = document.getElementById('form-jabatan')?.value || 'Ketua Umum OSIS';
+    const perihal = document.getElementById('input-perihal-surat')?.value || 'Penugasan Delegasi Jambore Kepemimpinan Pelajar Islam';
+    const diktum = document.getElementById('input-diktum-agenda')?.value || 'Menjadi perwakilan delegasi resmi SMP Islam Tarbiyatul Huda dalam agenda terkait dan melaporkan hasilnya kepada Urusan Kesiswaan.';
+    const waktu = document.getElementById('input-waktu-kegiatan')?.value || '24 – 26 Oktober 2026';
+    const tempat = document.getElementById('input-tempat-kegiatan')?.value || 'Pusdiklat Taruna Mandiri, Cisarua';
 
-    const docHtml = DocEngineModule.buildOfficialA4DocumentHtml(templateKey, formValues);
-    previewContainer.innerHTML = docHtml;
+    const hmacCode = 'VRF-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+
+    const html = `
+      <div class="a4-paper relative" id="doc-a4-sheet">
+        <!-- KOP SURAT RESMI YAYASAN TARBIYATUL HUDA -->
+        <div class="kop-surat-border flex items-center justify-between gap-4">
+          <div class="w-16 h-16 flex-shrink-0 flex items-center justify-center border-2 border-emerald-900 rounded-full p-1">
+            <span class="material-symbols-outlined text-emerald-900 text-[40px]">school</span>
+          </div>
+          <div class="flex-1 text-center">
+            <h3 class="text-[11px] uppercase tracking-widest font-bold text-gray-700 m-0">Yayasan Pendidikan Islam Tarbiyatul Huda</h3>
+            <h1 class="text-xl font-extrabold uppercase text-gray-900 tracking-wider my-0.5" style="font-family: 'Times New Roman', serif;">SMP ISLAM TARBIYATUL HUDA</h1>
+            <p class="text-[10px] text-gray-600 my-0">Terakreditasi A • NSS: 201020304050 • NPSN: 20260901</p>
+            <p class="text-[9px] text-gray-500 my-0">Jl. Raya Tarbiyatul Huda No. 09, Jawa Barat | Website: smp-tarbiyatulhuda.sch.id</p>
+          </div>
+          <div class="w-16 h-16 flex-shrink-0 flex items-center justify-center border-2 border-emerald-900 rounded-full p-1">
+            <span class="material-symbols-outlined text-emerald-900 text-[40px]">verified_user</span>
+          </div>
+        </div>
+
+        <!-- JUDUL & NOMOR SURAT -->
+        <div class="text-center my-5">
+          <h2 class="text-base font-bold underline uppercase tracking-wider text-gray-900 my-0" style="font-family: 'Times New Roman', serif;">${jenis}</h2>
+          <p class="text-xs font-semibold text-gray-700 my-1">Nomor: ${nomor}</p>
+        </div>
+
+        <!-- ISI SURAT DINAS -->
+        <div class="text-[12px] leading-relaxed text-justify text-gray-900 whitespace-pre-line my-4" style="font-family: 'Times New Roman', serif;">
+Yang bertanda tangan di bawah ini Pembina OSIS & Urusan Kesiswaan SMP Islam Tarbiyatul Huda menerangkan bahwa:
+
+Nama Lengkap : <strong>${nama}</strong>
+NIS / Kelas  : ${nis} / ${kelas}
+Amanah       : ${jabatan}
+
+Diberikan mandat dan penugasan resmi untuk agenda:
+<strong>"${perihal}"</strong>
+
+Dengan rincian pelaksanaan sebagai berikut:
+Waktu Pelaksanaan : ${waktu}
+Lokasi Kegiatan   : ${tempat}
+Uraian Amanah     : ${diktum}
+
+Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedikasi, serta menjunjung tinggi nama baik almamater SMP Islam Tarbiyatul Huda.
+        </div>
+
+        <!-- BLOK TANDA TANGAN DUA KOLOM -->
+        <div class="mt-12 pt-2 flex justify-between items-start text-xs text-gray-900" style="font-family: 'Times New Roman', serif;">
+          <!-- Kolom Kiri: Ketua OSIS / MPK -->
+          <div class="w-52 text-center">
+            <p class="my-0">Mengetahui,</p>
+            <p class="font-bold my-0">Ketua OSIS / MPK</p>
+            <div class="h-14 flex items-center justify-center my-1 text-[10px] text-gray-400 italic">
+              [Tertanda Digital]
+            </div>
+            <p class="font-bold underline uppercase my-0">M. Rayhan Al-Ghifari</p>
+            <p class="text-[11px] text-gray-600 my-0">NIS. 232407019</p>
+          </div>
+
+          <!-- Kolom Kanan: Pembina Kesiswaan & QR Verifikasi -->
+          <div class="w-60 text-center">
+            <p class="my-0">Ditetapkan pada: ${tanggal}</p>
+            <p class="font-bold my-0">Pembina OSIS & Kesiswaan</p>
+            
+            <!-- QR Stamp Verifikasi Otentik -->
+            <div class="my-1 flex flex-col items-center">
+              <div class="p-1 bg-white border border-gray-300 rounded shadow-xs inline-block">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=VERIF_DOC_${encodeURIComponent(nomor)}" alt="QR Verifikasi" class="w-14 h-14 object-contain" />
+              </div>
+              <span class="text-[8px] font-mono text-gray-500 mt-0.5 tracking-tighter">HMAC-ID: ${hmacCode}</span>
+            </div>
+
+            <p class="font-bold underline uppercase my-0">Ust. Ahmad Dahlan, S.Pd.I</p>
+            <p class="text-[10px] text-gray-600 my-0">NIP. 198506122010011008</p>
+          </div>
+        </div>
+
+        <!-- FOOTER DOKUMEN RESMI -->
+        <div class="absolute bottom-4 left-10 right-10 border-t border-gray-300 pt-2 flex justify-between items-center text-[9px] text-gray-400 font-mono">
+          <span>Sistem Informasi Manajemen Terpadu SMP Islam Tarbiyatul Huda</span>
+          <span>Dokumen Sah & Terverifikasi ISO 9001:2015</span>
+        </div>
+      </div>
+    `;
+
+    previewArea.innerHTML = html;
   },
 
-  printDocument() {
-    window.print();
-  },
-
-  // 9. Diagnostic Quiz (Cek Minat Divisi)
+  // 10. Kuis Diagnostik Minat Divisi
   renderQuizModal() {
     const q = this.state.quizQuestions[this.state.quizCurrentIndex];
     const container = document.getElementById('quiz-step-container');
@@ -526,12 +804,12 @@ const App = {
 
     container.innerHTML = `
       <div class="space-y-4">
-        <h3 class="font-heading font-bold text-base md:text-lg text-gray-900 dark:text-gray-100">${q.text}</h3>
+        <h3 class="font-heading font-bold text-base md:text-lg text-on-surface">${q.text}</h3>
         <div class="space-y-2.5">
           ${q.options.map((opt, i) => `
-            <label class="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-400 bg-white dark:bg-slate-800 cursor-pointer transition-all">
-              <input type="radio" name="quiz-answer" value="${opt.scoreDivisi}" class="text-emerald-600 focus:ring-emerald-500 w-4 h-4" />
-              <span class="text-xs md:text-sm text-gray-700 dark:text-gray-300 font-medium">${opt.label}</span>
+            <label class="flex items-center gap-3 p-3.5 rounded-xl border border-outline-variant/60 hover:border-primary bg-surface-container-lowest cursor-pointer transition-all">
+              <input type="radio" name="quiz-answer" value="${opt.divisi}" class="text-primary focus:ring-primary w-4 h-4" />
+              <span class="text-xs md:text-sm text-on-surface font-medium">${opt.label}</span>
             </label>
           `).join('')}
         </div>
@@ -547,7 +825,7 @@ const App = {
     }
 
     this.state.quizAnswers[this.state.quizCurrentIndex] = selected.value;
-    
+
     if (this.state.quizCurrentIndex < this.state.quizQuestions.length - 1) {
       this.state.quizCurrentIndex++;
       this.renderQuizModal();
@@ -557,36 +835,27 @@ const App = {
   },
 
   finishQuiz() {
-    // Tally skor
     const tally = {};
     Object.values(this.state.quizAnswers).forEach(val => {
       tally[val] = (tally[val] || 0) + 1;
     });
 
-    let topDivisi = 'Tekno Media & Humas';
-    let topVal = Object.keys(tally)[0];
-    if (topVal === 'INTI') topDivisi = 'Pengurus Inti (BPH)';
-    if (topVal === 'MPK') topDivisi = 'Majelis Perwakilan Kelas (MPK)';
-    if (topVal === 'AGAMA') topDivisi = 'Keagamaan & Ibadah';
-    if (topVal === 'BELA_NEGARA') topDivisi = 'Kedisiplinan & Bela Negara';
-    if (topVal === 'AKADEMIK') topDivisi = 'Akademik & Minat Bakat';
-    if (topVal === 'WIRAUSAHA') topDivisi = 'Kreativitas & Wirausaha';
-    if (topVal === 'KEBERSIHAN') topDivisi = 'Kesehatan & Kebersihan';
+    let topDivisi = Object.keys(tally).reduce((a, b) => tally[a] > tally[b] ? a : b, 'Tekno Media & Humas');
 
     const modalBody = document.getElementById('quiz-modal-body');
     if (modalBody) {
       modalBody.innerHTML = `
         <div class="text-center py-6 space-y-4">
-          <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-3xl shadow-glow">
+          <div class="w-16 h-16 mx-auto rounded-full bg-primary-fixed text-primary flex items-center justify-center text-3xl shadow-sm">
             🎯
           </div>
-          <h3 class="font-heading font-extrabold text-xl text-gray-900 dark:text-gray-100">Kuis Diagnostik Selesai!</h3>
-          <p class="text-sm text-gray-500 max-w-sm mx-auto">Berdasarkan kecenderungan kepemimpinan dan pola penyelesaian masalah Anda, rekomendasi terbaik adalah:</p>
-          <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 font-bold text-lg">
+          <h3 class="font-heading font-extrabold text-xl text-on-surface">Hasil Rekomendasi Minat Divisi</h3>
+          <p class="text-sm text-on-surface-variant max-w-sm mx-auto">Berdasarkan pola kepemimpinan Anda, rekomendasi penempatan terbaik adalah:</p>
+          <div class="p-4 rounded-xl bg-primary-fixed/30 border border-primary-container text-primary font-bold text-lg">
             ✨ ${topDivisi}
           </div>
           <div class="pt-2">
-            <button onclick="App.applyQuizToRegistrationForm('${topDivisi}')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md transition-all">
+            <button onclick="App.applyQuizToRegistrationForm('${topDivisi}')" class="w-full py-3 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-bold shadow-md transition-all">
               Terapkan ke Formulir Pendaftaran & Lanjut
             </button>
           </div>
@@ -601,7 +870,6 @@ const App = {
 
     const select = document.getElementById('form-pilihan-divisi-1');
     if (select) {
-      // Cari opsi yang cocok
       for (let i = 0; i < select.options.length; i++) {
         if (select.options[i].text.includes(divisiName) || divisiName.includes(select.options[i].text)) {
           select.selectedIndex = i;
@@ -617,22 +885,22 @@ const App = {
     this.showToast(`Pilihan Divisi Utama telah disetel ke ${divisiName}!`, 'success');
   },
 
-  // 10. Toast Notification Helper
+  // 11. Toast Notifications
   showToast(message, type = 'info') {
     const toast = document.getElementById('app-toast');
     if (!toast) return;
 
     let icon = 'info';
-    let colorClass = 'bg-blue-600 text-white';
+    let colorClass = 'bg-secondary text-on-secondary';
     if (type === 'success') {
       icon = 'check_circle';
-      colorClass = 'bg-emerald-600 text-white';
+      colorClass = 'bg-primary-container text-on-primary';
     } else if (type === 'error') {
       icon = 'error';
-      colorClass = 'bg-rose-600 text-white';
+      colorClass = 'bg-error text-on-error';
     } else if (type === 'warning') {
       icon = 'warning';
-      colorClass = 'bg-amber-600 text-white';
+      colorClass = 'bg-tertiary-container text-on-tertiary';
     }
 
     toast.className = `fixed bottom-20 lg:bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-xl flex items-center gap-2.5 text-sm font-semibold transition-all transform duration-300 opacity-100 translate-y-0 ${colorClass}`;
@@ -644,9 +912,9 @@ const App = {
     }, 3500);
   },
 
-  // Event Listeners Setup
+  // Event Listeners
   setupEventListeners() {
-    // Desktop Nav Click
+    // Nav Click (Sidebar & Header)
     document.querySelectorAll('.nav-tab').forEach(tab => {
       tab.addEventListener('click', (e) => {
         e.preventDefault();
@@ -667,81 +935,42 @@ const App = {
       btn.addEventListener('click', () => this.toggleTheme());
     });
 
-    // Scanner Trigger: Presensi Kartu Siswa
-    const btnScanPresensi = document.getElementById('btn-scan-presensi');
-    if (btnScanPresensi) {
-      btnScanPresensi.addEventListener('click', () => {
-        const modal = document.getElementById('modal-scanner');
-        if (modal) modal.classList.remove('hidden');
-        ScannerModule.startScanner('qr-reader', 'attendance', null, (decodedText) => {
-          this.recordAttendance(decodedText, false);
-          // Scanner tetap hidup untuk siswa berikutnya (antrean cepat)
-        });
+    // Login Form Submit
+    const formLogin = document.getElementById('form-modal-login');
+    if (formLogin) {
+      formLogin.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const u = document.getElementById('login-username')?.value;
+        const p = document.getElementById('login-password')?.value;
+        this.login(u, p);
       });
     }
 
-    // Scanner Trigger: Registrasi QR Kartu Siswa oleh Admin
-    const btnScanRegistrasi = document.getElementById('btn-scan-registrasi');
-    if (btnScanRegistrasi) {
-      btnScanRegistrasi.addEventListener('click', () => {
-        const nis = document.getElementById('reg-student-select')?.value;
-        if (!nis) {
-          this.showToast('Pilih nama siswa terlebih dahulu dari daftar!', 'warning');
-          return;
-        }
-
-        const modal = document.getElementById('modal-scanner');
-        if (modal) modal.classList.remove('hidden');
-        ScannerModule.startScanner('qr-reader', 'registration', nis, (decodedText) => {
-          this.registerStudentCardQR(nis, decodedText);
-          const modalClose = document.getElementById('modal-scanner');
-          if (modalClose) modalClose.classList.add('hidden');
-          ScannerModule.stopScanner();
-        });
-      });
+    // Lock Session Button
+    const btnLock = document.getElementById('btnLockSession');
+    if (btnLock) {
+      btnLock.addEventListener('click', () => this.toggleLockSession());
     }
 
-    // Manual Attendance Submit by Admin / Pengurus Inti
-    const btnManualAbsensi = document.getElementById('btn-submit-manual-absensi');
-    if (btnManualAbsensi) {
-      btnManualAbsensi.addEventListener('click', () => {
-        const nis = document.getElementById('manual-student-select')?.value;
-        const status = document.getElementById('manual-status-select')?.value || 'Hadir';
-        if (!nis) {
-          this.showToast('Pilih nama pengurus/siswa terlebih dahulu!', 'warning');
-          return;
-        }
-        this.recordAttendance(nis, true, status);
-      });
+    // Print Button
+    const btnPrint = document.getElementById('btnPrintReport');
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => window.print());
     }
 
-    // Modal Scanner Close
-    const btnCloseScanner = document.getElementById('btn-close-scanner');
-    if (btnCloseScanner) {
-      btnCloseScanner.addEventListener('click', () => {
-        const modal = document.getElementById('modal-scanner');
-        if (modal) modal.classList.add('hidden');
-        ScannerModule.stopScanner();
-      });
-    }
-
-    // Template Selector Change
-    const selTemplate = document.getElementById('select-doc-template');
+    // Template Selector Sync
+    const selTemplate = document.getElementById('input-jenis-surat');
     if (selTemplate) {
-      selTemplate.addEventListener('change', () => this.renderDocumentPreview());
+      selTemplate.addEventListener('change', () => this.renderOfficialDocPreview());
     }
 
-    // Input changes for live document preview
-    ['doc-input-nama', 'doc-input-nis', 'doc-input-kelas', 'doc-input-jabatan', 'doc-input-divisi', 'doc-input-kegiatan', 'doc-input-tanggal'].forEach(id => {
+    // Input changes for live doc preview
+    ['input-nomor-surat', 'input-tanggal-surat', 'form-nama', 'form-nis', 'form-kelas', 'form-jabatan', 'input-perihal-surat', 'input-diktum-agenda', 'input-waktu-kegiatan', 'input-tempat-kegiatan'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.addEventListener('input', () => this.renderDocumentPreview());
+      if (el) el.addEventListener('input', () => this.renderOfficialDocPreview());
     });
-
-    // Initial Dropdown Render
-    this.renderMemberRegistrationDropdown();
-    this.renderDocumentPreview();
   }
 };
 
-// Start App when DOM is ready
+// Start App when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => App.init());

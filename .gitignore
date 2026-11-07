@@ -1,0 +1,10 @@
+# Credentials & Notes
+Arsip/
+cadangan v1/
+Frontend/
+
+# OS files
+Thumbs.db
+.DS_Store
+*.tmp
+*.zip

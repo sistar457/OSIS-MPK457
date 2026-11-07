@@ -4,31 +4,31 @@
  * SMP Islam Tarbiyatul Huda
  * ==========================================================================
  * 
- * Aturan Bersih Keamanan:
- * File ini HANYA memuat endpoint GAS_URL publik dan konfigurasi statis UI.
- * Tidak ada token rahasia, sandi, atau API key di sini!
+ * Sesuai panduan skill:
+ * - /gas-pro-api & /gas-rahasia-script-properties
  */
 
 const CONFIG = {
-  // Masukkan URL Deployment Google Apps Script Web App (berakhiran /exec) di sini:
-  GAS_URL: 'https://script.google.com/macros/s/AKfycbx_O3seyp2KaMDSw5e_TyQ1feFunw25O_kYnnBR7dCVfPcY37KbNmspGc6JYbsu9_xG/exec', 
+  // URL Deployment Web App Google Apps Script (Diambil dari setup awal Anda)
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbx_O3seyp2KaMDSw5e_TyQ1feFunw25O_kYnnBR7dCVfPcY37KbNmspGc6JYbsu9_xG/exec',
 
   // Identitas Aplikasi
-  APP_NAME: 'SIM-OSIS & MPK SMP Islam Tarbiyatul Huda',
+  APP_NAME: 'SIM-OSIS & MPK',
   ORG_NAME: 'SMP Islam Tarbiyatul Huda',
+  TAGLINE: 'Unggul, Religius & Berprestasi',
   ACADEMIC_YEAR: '2026/2027',
+  SEMESTER: 'Semester Ganjil',
   
-  // Kunci Penyimpanan Lokal (CacheX SWR)
+  // Kunci Penyimpanan Lokal (LocalStorage)
   STORAGE_KEYS: {
     THEME: 'sim_theme_mode',
-    SESSION: 'sim_user_session',
+    SESSION: 'sim_auth_session',
     CACHE_BOOT: 'sim_cache_boot_data',
-    CACHE_PROKER: 'sim_cache_proker',
     CACHE_MEMBERS: 'sim_cache_members',
-    CACHE_ATTENDANCE: 'sim_cache_attendance',
-    CACHE_QUIZ: 'sim_cache_quiz_result'
+    CACHE_PROKER: 'sim_cache_proker',
+    CACHE_ATTENDANCE: 'sim_cache_attendance'
   },
 
-  // Waktu Cache Lokal (Detik)
-  CACHE_TTL: 300 // 5 Menit SWR
+  // Waktu Cache Lokal SWR (Detik)
+  CACHE_TTL: 300 // 5 Menit
 };
