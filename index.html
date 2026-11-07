@@ -169,7 +169,7 @@
         </div>
         <div class="flex flex-col">
           <span class="font-heading font-bold text-base text-primary lg:hidden">SIM-OSIS & MPK</span>
-          <span class="text-[11px] text-on-surface-variant hidden sm:inline-block">SMP Islam Tarbiyatul Huda • Unggul, Religius & Berprestasi</span>
+          <span class="text-[11px] text-on-surface-variant hidden sm:inline-block" id="header-school-tagline">SMP Islam Tarbiyatul Huda • Unggul, Religius & Berprestasi</span>
         </div>
       </div>
 
@@ -251,78 +251,256 @@
            ===================================================================== -->
       <section id="section-portal-publik" class="app-section space-y-12">
         
-        <!-- Hero Section -->
-        <div class="relative overflow-hidden rounded-2xl bg-surface-container-lowest p-6 sm:p-10 lg:p-12 shadow-sm border border-outline-variant/30">
-          <!-- Khatam Islamic Geometric Watermark -->
-          <div class="absolute -right-24 -top-24 w-96 h-96 pointer-events-none opacity-5 text-primary">
-            <svg class="w-full h-full fill-current" viewBox="0 0 200 200">
-              <polygon points="100,0 122,38 165,22 165,68 200,90 178,128 193,172 150,172 135,212 95,190 65,212 50,172 7,172 22,128 0,90 35,68 35,22 78,38"></polygon>
-            </svg>
+        <!-- ===================================================================
+             1. HERO SECTION ULTRA-MODERN & VIBRANT (DYNAMIC CMS)
+             =================================================================== -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-900 p-6 sm:p-10 lg:p-14 shadow-2xl border border-emerald-500/20 text-white">
+          <!-- Background Ambient Glow & Motif Geometris Islami -->
+          <div class="absolute -right-20 -top-20 w-96 h-96 rounded-full bg-emerald-500/20 blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-amber-500/15 blur-3xl pointer-events-none"></div>
+          <div class="absolute right-0 top-0 w-full h-full opacity-5 pointer-events-none islamic-pattern"></div>
+
+          <!-- Super Admin Edit Trigger Banner -->
+          <div class="relative z-20 flex justify-end mb-4 rbac-super-admin-only hidden">
+            <button onclick="App.openModalLandingCMS()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 font-bold text-xs shadow-lg flex items-center gap-2 transform hover:scale-105 transition-all">
+              <span class="material-symbols-outlined text-[18px]">edit_note</span>
+              <span>Kelola & Edit Konten Beranda (CMS)</span>
+            </button>
           </div>
 
-          <div class="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto space-y-5">
-            <!-- Announcement Chip -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container text-on-surface shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              <span class="font-heading font-bold text-xs text-primary">
-                ✨ Penerimaan Calon Pengurus Baru OSIS & MPK Periode 2026/2027 Telah Dibuka
-              </span>
-            </div>
-
-            <!-- Main Headline -->
-            <h1 class="font-heading font-extrabold text-2xl sm:text-4xl lg:text-5xl text-on-surface tracking-tight leading-tight">
-              Membina Pemimpin Muda Berakhlak <span class="text-primary underline decoration-primary-container decoration-4 underline-offset-8">Qur'ani</span>, Kritis, dan Berprestasi
-            </h1>
-
-            <!-- Subheadline -->
-            <p class="font-sans text-sm sm:text-base text-on-surface-variant max-w-2xl leading-relaxed">
-              Portal resmi terpadu Organisasi Siswa Intra Sekolah (OSIS) & Majelis Perwakilan Kelas (MPK) SMP Islam Tarbiyatul Huda. Wadah akselerasi integritas, kepemimpinan amanah, dan pengabdian nyata santri.
-            </p>
-
-            <!-- Action Buttons -->
-            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
-              <button onclick="App.openQuizModal()" class="px-5 py-3 rounded-xl bg-primary-container text-on-primary font-heading font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md hover:bg-primary transition-all">
-                <span class="material-symbols-outlined text-[20px]">psychology_alt</span>
-                <span>Ikuti Diagnostic Quiz Minat Divisi (15 Soal)</span>
-              </button>
-
-              <a href="#section-form-pendaftaran" class="px-5 py-3 rounded-xl bg-surface-container-high text-on-surface font-heading font-bold text-xs sm:text-sm flex items-center gap-2 hover:bg-surface-variant transition-all">
-                <span class="material-symbols-outlined text-[20px] text-tertiary">how_to_reg</span>
-                <span>Daftar Calon Pengurus</span>
-              </a>
-
-              <a href="#struktur-organisasi" class="px-4 py-3 rounded-xl bg-transparent text-secondary font-heading font-bold text-xs sm:text-sm flex items-center gap-1.5 hover:bg-surface-container transition-all">
-                <span>Eksplorasi Struktur & Proker</span>
-                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-              </a>
-            </div>
-
-            <!-- Metric Pills Row -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 w-full pt-6 border-t border-outline-variant/30">
-              <div class="p-3 rounded-xl bg-surface-container-low flex flex-col items-center">
-                <span class="font-heading font-extrabold text-2xl text-primary">7</span>
-                <span class="text-[11px] text-on-surface-variant uppercase tracking-wider font-semibold">Divisi OSIS Aktif</span>
-              </div>
-              <div class="p-3 rounded-xl bg-surface-container-low flex flex-col items-center">
-                <span class="font-heading font-extrabold text-2xl text-secondary">4</span>
-                <span class="text-[11px] text-on-surface-variant uppercase tracking-wider font-semibold">Komisi MPK Legislatif</span>
-              </div>
-              <div class="p-3 rounded-xl bg-surface-container-low flex flex-col items-center">
-                <span class="font-heading font-extrabold text-2xl text-primary-container">100%</span>
-                <span class="text-[11px] text-on-surface-variant uppercase tracking-wider font-semibold">Presensi QR Paperless</span>
-              </div>
-              <div class="p-3 rounded-xl bg-surface-container-low flex flex-col items-center">
-                <div class="flex items-center gap-1 text-tertiary">
-                  <span class="material-symbols-outlined text-[20px]">military_tech</span>
-                  <span class="font-heading font-extrabold text-2xl">Best</span>
+          <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Kolom Kiri: Headline & Call-to-Action -->
+            <div class="lg:col-span-7 space-y-6 text-left">
+              <!-- Announcement Badge & Motto -->
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-200 text-xs font-semibold shadow-xs">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span id="landing-badge-announcement">✨ Penerimaan Calon Pengurus Baru OSIS & MPK Periode 2026/2027 Telah Dibuka</span>
                 </div>
-                <span class="text-[11px] text-on-surface-variant uppercase tracking-wider font-semibold">Member Bulanan</span>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-bold">
+                  <span class="material-symbols-outlined text-[14px]">stars</span>
+                  <span id="landing-motto-tagline">Unggul, Religius & Berprestasi</span>
+                </div>
+              </div>
+
+              <!-- Main Headline Dinamis -->
+              <h1 id="landing-main-headline" class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
+                Membina Pemimpin Muda Berakhlak <span class="bg-gradient-to-r from-emerald-300 via-teal-200 to-amber-300 bg-clip-text text-transparent underline decoration-amber-400/50 decoration-4 underline-offset-8">Qur'ani</span>, Kritis, dan Berprestasi
+              </h1>
+
+              <!-- Subheadline Dinamis -->
+              <p id="landing-subheadline" class="font-sans text-sm sm:text-base text-emerald-100/90 leading-relaxed max-w-xl">
+                Portal resmi terpadu Organisasi Siswa Intra Sekolah (OSIS) & Majelis Perwakilan Kelas (MPK) SMP Islam Tarbiyatul Huda. Wadah akselerasi integritas, kepemimpinan amanah, dan pengabdian nyata santri.
+              </p>
+
+              <!-- Action Buttons -->
+              <div class="flex flex-wrap items-center gap-3 pt-2">
+                <button onclick="App.openQuizModal()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-heading font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-emerald-900/40 transform hover:-translate-y-0.5 transition-all">
+                  <span class="material-symbols-outlined text-[20px] text-amber-300">psychology_alt</span>
+                  <span id="landing-cta-primary">Ikuti Diagnostic Quiz Minat (15 Soal)</span>
+                </button>
+
+                <a href="#section-form-pendaftaran" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-heading font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm transition-all">
+                  <span class="material-symbols-outlined text-[20px] text-amber-400">how_to_reg</span>
+                  <span id="landing-cta-secondary">Daftar Calon Pengurus</span>
+                </a>
+
+                <a href="#video-profil-section" class="px-4 py-3 rounded-xl text-emerald-200 hover:text-white font-heading font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-colors">
+                  <span class="material-symbols-outlined text-[18px]">play_circle</span>
+                  <span>Tonton Video</span>
+                </a>
+              </div>
+
+              <!-- Quick Trust Indicators -->
+              <div class="pt-4 flex items-center gap-4 text-xs text-emerald-200/80 border-t border-white/10">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-amber-400 text-[18px]">verified</span>
+                  <span>Terakreditasi A (NPSN: 20260901)</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-emerald-400 text-[18px]">lock_reset</span>
+                  <span>Presensi Mandiri QR Terpadu</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kolom Kanan: Video YouTube Showcase Card -->
+            <div class="lg:col-span-5" id="video-profil-section">
+              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl space-y-3">
+                <div class="flex items-center justify-between text-xs font-bold text-white px-1">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+                    <span class="text-amber-300">Video Profil & Syiar Santri</span>
+                  </div>
+                  <span class="text-[11px] text-emerald-200/90 font-mono">YouTube HD</span>
+                </div>
+
+                <!-- Video YouTube Responsive Embed Container -->
+                <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black/60 shadow-inner border border-white/10" id="landing-youtube-container">
+                  <iframe id="landing-youtube-frame" class="w-full h-full object-cover" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video Profil OSIS MPK" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+
+                <div class="space-y-1 px-1">
+                  <h4 class="font-heading font-bold text-sm text-white line-clamp-1" id="landing-youtube-title">
+                    Profil Kepemimpinan & Prestasi Santri SMPITH
+                  </h4>
+                  <p class="text-xs text-emerald-100/70 line-clamp-2" id="landing-youtube-desc">
+                    Saksikan sekilas perjalanan kepemimpinan, dakwah, dan inovasi santri SMP Islam Tarbiyatul Huda.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             2. STATISTIK PENCAPAIAN BERWARNA-WARNI (DYNAMIC STATS)
+             =================================================================== -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Stat 1: Emerald -->
+          <div class="p-5 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-950/40 dark:to-teal-900/30 border border-emerald-200 dark:border-emerald-800/40 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-md">
+              <span class="material-symbols-outlined text-[26px]">verified_user</span>
+            </div>
+            <div>
+              <div class="font-heading font-extrabold text-2xl text-emerald-900 dark:text-emerald-200" id="landing-stat-1-val">100%</div>
+              <div class="text-xs font-semibold text-emerald-700 dark:text-emerald-400" id="landing-stat-1-lbl">Amanah & Transparan</div>
+            </div>
+          </div>
+
+          <!-- Stat 2: Indigo -->
+          <div class="p-5 rounded-2xl bg-gradient-to-br from-indigo-50 to-blue-100 dark:from-indigo-950/40 dark:to-blue-900/30 border border-indigo-200 dark:border-indigo-800/40 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
+              <span class="material-symbols-outlined text-[26px]">groups</span>
+            </div>
+            <div>
+              <div class="font-heading font-extrabold text-2xl text-indigo-900 dark:text-indigo-200" id="landing-stat-2-val">7 Divisi</div>
+              <div class="text-xs font-semibold text-indigo-700 dark:text-indigo-400" id="landing-stat-2-lbl">OSIS Eksekutif Aktif</div>
+            </div>
+          </div>
+
+          <!-- Stat 3: Amber -->
+          <div class="p-5 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100 dark:from-amber-950/40 dark:to-orange-900/30 border border-amber-200 dark:border-amber-800/40 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md">
+              <span class="material-symbols-outlined text-[26px]">gavel</span>
+            </div>
+            <div>
+              <div class="font-heading font-extrabold text-2xl text-amber-900 dark:text-amber-200" id="landing-stat-3-val">4 Komisi</div>
+              <div class="text-xs font-semibold text-amber-700 dark:text-amber-400" id="landing-stat-3-lbl">MPK Legislatif Santri</div>
+            </div>
+          </div>
+
+          <!-- Stat 4: Rose/Teal -->
+          <div class="p-5 rounded-2xl bg-gradient-to-br from-rose-50 to-pink-100 dark:from-rose-950/40 dark:to-pink-900/30 border border-rose-200 dark:border-rose-800/40 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-rose-500 text-white flex items-center justify-center shadow-md">
+              <span class="material-symbols-outlined text-[26px]">military_tech</span>
+            </div>
+            <div>
+              <div class="font-heading font-extrabold text-2xl text-rose-900 dark:text-rose-200" id="landing-stat-4-val">24+</div>
+              <div class="text-xs font-semibold text-rose-700 dark:text-rose-400" id="landing-stat-4-lbl">Proker Terealisasi</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             3. SHOWCASE PROGRAM KERJA UNGGULAN OSIS & MPK (EDITABLE BY SUPER ADMIN)
+             =================================================================== -->
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div>
+              <div class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary">
+                <span class="material-symbols-outlined text-[16px]">task_alt</span>
+                <span>Program Kerja Terpilih</span>
+              </div>
+              <h2 class="font-heading font-extrabold text-2xl sm:text-3xl text-on-surface mt-1">
+                Karya & Aksi Nyata Santri Berdampak
+              </h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant max-w-xl mt-1">
+                Deretan program unggulan yang digerakkan oleh OSIS dan dikawal secara transparan oleh MPK.
+              </p>
+            </div>
+
+            <!-- Filter Buttons & Super Admin Edit Trigger -->
+            <div class="flex items-center gap-2">
+              <div class="inline-flex p-1 rounded-xl bg-surface-container border border-outline-variant/30">
+                <button onclick="App.filterFeaturedProker('ALL')" class="proker-tab-btn active px-3 py-1.5 rounded-lg text-xs font-bold transition-all" data-tab-filter="ALL">Semua</button>
+                <button onclick="App.filterFeaturedProker('OSIS')" class="proker-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface-variant hover:text-on-surface transition-all" data-tab-filter="OSIS">OSIS</button>
+                <button onclick="App.filterFeaturedProker('MPK')" class="proker-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface-variant hover:text-on-surface transition-all" data-tab-filter="MPK">MPK</button>
+              </div>
+
+              <button onclick="App.openModalLandingCMS('tab-proker')" class="rbac-super-admin-only hidden px-3 py-1.5 rounded-xl bg-primary-container text-on-primary text-xs font-bold flex items-center gap-1 shadow-xs hover:bg-primary transition-all" title="Edit Proker Beranda">
+                <span class="material-symbols-outlined text-[16px]">edit</span>
+                <span class="hidden sm:inline">Edit Proker</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Proker Grid (Rendered by JS) -->
+          <div id="landing-featured-proker-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Proker Cards will be injected by App.renderLandingContent() -->
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             4. GALERI DOKUMENTASI & MEDIA FOTO KEGIATAN (EDITABLE BY SUPER ADMIN)
+             =================================================================== -->
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div>
+              <div class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-secondary">
+                <span class="material-symbols-outlined text-[16px]">photo_library</span>
+                <span>Dokumentasi & Syiar Kreatif</span>
+              </div>
+              <h2 class="font-heading font-extrabold text-2xl sm:text-3xl text-on-surface mt-1">
+                Momen Terbaik & Galeri Santri
+              </h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant max-w-xl mt-1">
+                Dokumentasi hangat kebersamaan, kepemimpinan, dan syiar Islami santri SMP Islam Tarbiyatul Huda.
+              </p>
+            </div>
+
+            <button onclick="App.openModalLandingCMS('tab-media')" class="rbac-super-admin-only hidden px-3.5 py-1.5 rounded-xl bg-secondary text-on-secondary text-xs font-bold flex items-center gap-1.5 shadow-xs hover:bg-on-secondary-container transition-all">
+              <span class="material-symbols-outlined text-[16px]">add_photo_alternate</span>
+              <span>Kelola Galeri & Video</span>
+            </button>
+          </div>
+
+          <!-- Dynamic Gallery Cards (Rendered by JS) -->
+          <div id="landing-gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Injected by App.renderLandingContent() -->
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             5. SAMBUTAN PEMBINA & NILAI KEISLAMAN
+             =================================================================== -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 p-8 sm:p-10 shadow-lg text-white">
+          <div class="absolute right-0 top-0 w-96 h-96 opacity-10 pointer-events-none islamic-pattern"></div>
+          <div class="relative z-10 max-w-3xl space-y-4">
+            <span class="material-symbols-outlined text-[48px] text-amber-300 opacity-80">format_quote</span>
+            <h3 class="font-heading font-extrabold text-xl sm:text-2xl text-white" id="landing-sambutan-title">
+              Menyiapkan Generasi Pemimpin Rabbani
+            </h3>
+            <p class="text-sm sm:text-base text-emerald-100 leading-relaxed italic" id="landing-sambutan-text">
+              "Organisasi bukan sekadar jabatan struktural, melainkan ladang amal shalih, wadah pembentukan akhlak karimah, dan laboratorium kepemimpinan yang berintegritas tinggi demi almamater dan umat."
+            </p>
+            <div class="pt-2 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-amber-300">
+                <span class="material-symbols-outlined text-[20px]">school</span>
+              </div>
+              <div>
+                <p class="font-bold text-sm text-white" id="landing-sambutan-author">Pembina Kesiswaan SMP Islam Tarbiyatul Huda</p>
+                <p class="text-xs text-emerald-200">Urusan Kesiswaan & Tata Pamong Santri</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Dual Pillar Showcase: OSIS vs MPK -->
+        <!-- ===================================================================
+             6. DUAL PILAR SINERGI (OSIS vs MPK)
+             =================================================================== -->
         <div class="space-y-6" id="struktur-organisasi">
           <div class="text-center max-w-xl mx-auto space-y-1">
             <span class="text-xs font-bold text-tertiary uppercase tracking-widest">Dual Sinergi Kepemimpinan</span>
@@ -420,6 +598,10 @@
             </div>
           </div>
         </div>
+
+        <!-- ===================================================================
+             7. FORMULIR PENDAFTARAN ONLINE CALON PENGURUS BARU
+             =================================================================== -->
 
         <!-- Formulir Pendaftaran Online Calon Pengurus Baru -->
         <div id="section-form-pendaftaran" class="rounded-2xl bg-surface-container-lowest p-6 sm:p-8 shadow-sm border border-outline-variant/30 space-y-6 max-w-3xl mx-auto">
@@ -2168,6 +2350,269 @@
         <div class="pt-2">
           <button type="submit" class="w-full py-2.5 rounded-xl bg-primary-container text-on-primary font-bold text-xs shadow-sm hover:bg-primary transition-all">
             Sahkan Menjadi Pengurus Resmi
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: CMS PENGATURAN HALAMAN BERANDA (KHUSUS SUPER ADMIN)
+       ========================================================================= -->
+  <div id="modal-cms-landing" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-surface-container-lowest rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-outline-variant/30 overflow-hidden">
+      <!-- Modal Header -->
+      <div class="p-5 sm:p-6 border-b border-outline-variant/30 flex items-center justify-between bg-surface-container-low">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-amber-500 text-amber-950 flex items-center justify-center font-bold shadow-md">
+            <span class="material-symbols-outlined text-[24px]">edit_note</span>
+          </div>
+          <div>
+            <h3 class="font-heading font-extrabold text-base sm:text-lg text-on-surface">Editor CMS Konten Beranda & Landing Page</h3>
+            <p class="text-xs text-on-surface-variant">Kelola motto, video YouTube, galeri foto, proker unggulan, dan teks landing page secara langsung.</p>
+          </div>
+        </div>
+        <button onclick="App.closeModalLandingCMS()" class="p-2 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- CMS Tabs Navigation -->
+      <div class="flex border-b border-outline-variant/30 px-6 bg-surface-container-lowest text-xs font-bold overflow-x-auto gap-2 pt-2">
+        <button type="button" onclick="App.switchCmsTab('cms-tab-hero')" id="btn-cms-tab-hero" class="cms-tab-nav active py-3 px-3 border-b-2 border-primary text-primary transition-all whitespace-nowrap flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">title</span>
+          <span>Hero & Motto</span>
+        </button>
+        <button type="button" onclick="App.switchCmsTab('cms-tab-media')" id="btn-cms-tab-media" class="cms-tab-nav py-3 px-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all whitespace-nowrap flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">smart_display</span>
+          <span>Video YouTube & Galeri</span>
+        </button>
+        <button type="button" onclick="App.switchCmsTab('cms-tab-proker')" id="btn-cms-tab-proker" class="cms-tab-nav py-3 px-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all whitespace-nowrap flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">task</span>
+          <span>Proker Unggulan</span>
+        </button>
+        <button type="button" onclick="App.switchCmsTab('cms-tab-stats')" id="btn-cms-tab-stats" class="cms-tab-nav py-3 px-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all whitespace-nowrap flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">analytics</span>
+          <span>Statistik & Sambutan</span>
+        </button>
+      </div>
+
+      <!-- CMS Tab Contents (Scrollable Form) -->
+      <form id="form-cms-landing" onsubmit="App.handleSaveLandingCMS(event)" class="p-6 overflow-y-auto space-y-6 flex-1">
+        
+        <!-- TAB 1: HERO & IDENTITAS -->
+        <div id="cms-tab-hero" class="cms-tab-pane space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface mb-1">Motto / Tagline Sekolah *</label>
+              <input type="text" id="cms-motto" required placeholder="Contoh: Unggul, Religius & Berprestasi" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary font-bold text-primary"/>
+              <p class="text-[10px] text-on-surface-variant mt-1">Muncul di header atas dan chip banner utama.</p>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface mb-1">Pengumuman / Announcement Chip *</label>
+              <input type="text" id="cms-badge" required placeholder="Teks banner pengumuman atas" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Judul Utama (Headline) Beranda *</label>
+            <input type="text" id="cms-headline" required placeholder="Judul besar landing page" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary font-bold"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Subheadline / Deskripsi Pengantar *</label>
+            <textarea id="cms-subheadline" rows="3" required placeholder="Deskripsi singkat portal OSIS & MPK" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary leading-relaxed"></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface mb-1">Teks Tombol CTA Utama *</label>
+              <input type="text" id="cms-cta-primary" required class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface mb-1">Teks Tombol CTA Pendaftaran *</label>
+              <input type="text" id="cms-cta-secondary" required class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: VIDEO YOUTUBE & GALERI FOTO -->
+        <div id="cms-tab-media" class="cms-tab-pane hidden space-y-6">
+          <div class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 space-y-3">
+            <div class="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
+              <span class="material-symbols-outlined text-[18px] text-red-500">smart_display</span>
+              <span>Sematkan Video YouTube Utama</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-on-surface mb-1">Tautan / ID Video YouTube *</label>
+                <input type="text" id="cms-youtube-url" placeholder="Contoh: https://www.youtube.com/watch?v=dQw4w9WgXcQ atau ID video" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-lowest text-xs text-on-surface font-mono"/>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-on-surface mb-1">Judul Video YouTube *</label>
+                <input type="text" id="cms-youtube-title" placeholder="Misal: Profil Kepemimpinan Santri SMPITH" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-lowest text-xs text-on-surface font-bold"/>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface mb-1">Keterangan Singkat Video</label>
+              <input type="text" id="cms-youtube-desc" placeholder="Deskripsi ringkas video yang disematkan" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-lowest text-xs text-on-surface"/>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-on-surface uppercase tracking-wider">Galeri Foto Dokumentasi (4 Item)</span>
+              <span class="text-[11px] text-on-surface-variant">URL gambar langsung (Unsplash, Google Drive publik, dll)</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Foto 1 -->
+              <div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/30 space-y-2">
+                <span class="text-xs font-bold text-primary">Foto 1 (Kaderisasi)</span>
+                <input type="text" id="cms-gallery-title-1" placeholder="Judul: Latihan Dasar Kepemimpinan" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface font-semibold"/>
+                <input type="text" id="cms-gallery-cat-1" placeholder="Kategori: Kaderisasi" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface"/>
+                <input type="url" id="cms-gallery-img-1" placeholder="URL Foto Gambar" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface font-mono"/>
+              </div>
+
+              <!-- Foto 2 -->
+              <div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/30 space-y-2">
+                <span class="text-xs font-bold text-primary">Foto 2 (Keagamaan)</span>
+                <input type="text" id="cms-gallery-title-2" placeholder="Judul: Peringatan Hari Besar Islam" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface font-semibold"/>
+                <input type="text" id="cms-gallery-cat-2" placeholder="Kategori: Keagamaan" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface"/>
+                <input type="url" id="cms-gallery-img-2" placeholder="URL Foto Gambar" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface font-mono"/>
+              </div>
+
+              <!-- Foto 3 -->
+              <div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/30 space-y-2">
+                <span class="text-xs font-bold text-primary">Foto 3 (Legislatif)</span>
+                <input type="text" id="cms-gallery-title-3" placeholder="Judul: Sidang Paripurna MPK" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface font-semibold"/>
+                <input type="text" id="cms-gallery-cat-3" placeholder="Kategori: Legislatif" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface"/>
+                <input type="url" id="cms-gallery-img-3" placeholder="URL Foto Gambar" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface font-mono"/>
+              </div>
+
+              <!-- Foto 4 -->
+              <div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/30 space-y-2">
+                <span class="text-xs font-bold text-primary">Foto 4 (Kreativitas)</span>
+                <input type="text" id="cms-gallery-title-4" placeholder="Judul: Bazar Santri Preneur" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface font-semibold"/>
+                <input type="text" id="cms-gallery-cat-4" placeholder="Kategori: Wirausaha" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface"/>
+                <input type="url" id="cms-gallery-img-4" placeholder="URL Foto Gambar" class="w-full px-3 py-1.5 rounded-lg bg-surface-container-lowest text-xs text-on-surface font-mono"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: PROGRAM KERJA UNGGULAN -->
+        <div id="cms-tab-proker" class="cms-tab-pane hidden space-y-6">
+          <div class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 space-y-3">
+            <span class="text-xs font-bold text-primary uppercase tracking-wider block">+ Tambah Program Kerja Unggulan Baru ke Beranda</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-on-surface mb-1">Organisasi *</label>
+                <select id="new-fp-org" class="w-full px-3 py-2 rounded-xl bg-surface-container-lowest text-xs text-on-surface border border-outline-variant/60">
+                  <option value="OSIS">OSIS (Eksekutif)</option>
+                  <option value="MPK">MPK (Legislatif)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-on-surface mb-1">Divisi / Komisi *</label>
+                <input type="text" id="new-fp-divisi" placeholder="Misal: Keagamaan & Ibadah" class="w-full px-3 py-2 rounded-xl bg-surface-container-lowest text-xs text-on-surface border border-outline-variant/60"/>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-on-surface mb-1">Label Badge *</label>
+                <input type="text" id="new-fp-badge" placeholder="Misal: Unggulan / Prioritas" class="w-full px-3 py-2 rounded-xl bg-surface-container-lowest text-xs text-on-surface border border-outline-variant/60"/>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-semibold text-on-surface mb-1">Judul Program Kerja *</label>
+                <input type="text" id="new-fp-title" placeholder="Nama program kerja unggulan" class="w-full px-3 py-2 rounded-xl bg-surface-container-lowest text-xs text-on-surface border border-outline-variant/60 font-bold"/>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-on-surface mb-1">Aksen Warna Kartu *</label>
+                <select id="new-fp-color" class="w-full px-3 py-2 rounded-xl bg-surface-container-lowest text-xs text-on-surface border border-outline-variant/60">
+                  <option value="emerald">Emerald (Hijau Santri)</option>
+                  <option value="blue">Royal Blue (Biru)</option>
+                  <option value="purple">Purple (Ungu)</option>
+                  <option value="amber">Warm Amber (Kuning Emas)</option>
+                  <option value="teal">Teal (Toska)</option>
+                  <option value="rose">Rose (Merah Muda)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-on-surface mb-1">Deskripsi Singkat Program *</label>
+              <textarea id="new-fp-desc" rows="2" placeholder="Uraian ringkas tujuan dan pelaksanaan program..." class="w-full px-3 py-2 rounded-xl bg-surface-container-lowest text-xs text-on-surface border border-outline-variant/60"></textarea>
+            </div>
+
+            <button type="button" onclick="App.handleAddFeaturedProkerFromCMS()" class="px-4 py-2 rounded-xl bg-primary-container text-on-primary font-bold text-xs flex items-center gap-1.5 shadow-sm hover:bg-primary transition-all">
+              <span class="material-symbols-outlined text-[16px]">add_circle</span>
+              <span>Tambahkan ke Daftar Beranda</span>
+            </button>
+          </div>
+
+          <div class="space-y-3">
+            <span class="text-xs font-bold text-on-surface uppercase tracking-wider block">Daftar Proker yang Sedang Ditampilkan di Beranda</span>
+            <div id="cms-proker-table-container" class="space-y-2 max-h-72 overflow-y-auto">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: STATISTIK & SAMBUTAN -->
+        <div id="cms-tab-stats" class="cms-tab-pane hidden space-y-6">
+          <div class="space-y-3">
+            <span class="text-xs font-bold text-primary uppercase tracking-wider block">4 Metrik Statistik Beranda</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div class="p-3 rounded-xl bg-surface-container-low border border-outline-variant/30 space-y-1">
+                <span class="text-[10px] text-emerald-600 font-bold uppercase">Stat 1 (Emerald)</span>
+                <input type="text" id="cms-stat1-val" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-xs font-bold"/>
+                <input type="text" id="cms-stat1-lbl" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-xs"/>
+              </div>
+              <div class="p-3 rounded-xl bg-surface-container-low border border-outline-variant/30 space-y-1">
+                <span class="text-[10px] text-blue-600 font-bold uppercase">Stat 2 (Blue)</span>
+                <input type="text" id="cms-stat2-val" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-xs font-bold"/>
+                <input type="text" id="cms-stat2-lbl" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-xs"/>
+              </div>
+              <div class="p-3 rounded-xl bg-surface-container-low border border-outline-variant/30 space-y-1">
+                <span class="text-[10px] text-amber-600 font-bold uppercase">Stat 3 (Amber)</span>
+                <input type="text" id="cms-stat3-val" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-xs font-bold"/>
+                <input type="text" id="cms-stat3-lbl" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-xs"/>
+              </div>
+              <div class="p-3 rounded-xl bg-surface-container-low border border-outline-variant/30 space-y-1">
+                <span class="text-[10px] text-rose-600 font-bold uppercase">Stat 4 (Rose)</span>
+                <input type="text" id="cms-stat4-val" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-xs font-bold"/>
+                <input type="text" id="cms-stat4-lbl" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-xs"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 space-y-3">
+            <span class="text-xs font-bold text-primary uppercase tracking-wider block">Kutipan & Sambutan Pembina Kesiswaan</span>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface mb-1">Judul Sambutan *</label>
+              <input type="text" id="cms-sambutan-title" required class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-lowest text-xs text-on-surface font-bold"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface mb-1">Teks Pesan / Kutipan Sambutan *</label>
+              <textarea id="cms-sambutan-text" rows="3" required class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-lowest text-xs text-on-surface leading-relaxed"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface mb-1">Nama / Jabatan Penulis *</label>
+              <input type="text" id="cms-sambutan-author" required class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-lowest text-xs text-on-surface font-semibold"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button Footer -->
+        <div class="pt-4 border-t border-outline-variant/30 flex items-center justify-end gap-3">
+          <button type="button" onclick="App.closeModalLandingCMS()" class="px-4 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold transition-all">
+            Batal
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container hover:from-primary-container hover:to-primary text-on-primary font-bold text-xs shadow-md transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">save</span>
+            <span>Simpan & Terapkan ke Beranda</span>
           </button>
         </div>
       </form>

@@ -155,6 +155,7 @@ const App = {
     this.renderOfficialDocPreview();
     this.renderApplicantsTable();
     this.renderMembersTable();
+    this.renderLandingContent();
     this.populateStudentDropdowns();
     this.fetchBootData();
   },
@@ -272,6 +273,467 @@ const App = {
 
     // Sinkronisasi asinkron ke Google Apps Script backend
     await this.callApi('saveProfile', newProfile);
+  },
+
+  // 1B. Modul CMS & Pengaturan Konten Beranda (Landing Page)
+  getDefaultLandingContent() {
+    return {
+      motto: "Unggul, Religius & Berprestasi",
+      schoolName: "SMP Islam Tarbiyatul Huda",
+      badge: "✨ Penerimaan Calon Pengurus Baru OSIS & MPK Periode 2026/2027 Telah Dibuka",
+      headline: "Membina Pemimpin Muda Berakhlak Qur'ani, Kritis, dan Berprestasi",
+      subheadline: "Portal resmi terpadu Organisasi Siswa Intra Sekolah (OSIS) & Majelis Perwakilan Kelas (MPK) SMP Islam Tarbiyatul Huda. Wadah akselerasi integritas, kepemimpinan amanah, dan pengabdian nyata santri.",
+      ctaPrimary: "Ikuti Diagnostic Quiz Minat (15 Soal)",
+      ctaSecondary: "Daftar Calon Pengurus",
+      youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      youtubeTitle: "Profil Kepemimpinan & Prestasi Santri SMPITH",
+      youtubeDesc: "Saksikan sekilas perjalanan kepemimpinan, dakwah, dan inovasi santri SMP Islam Tarbiyatul Huda.",
+      gallery: [
+        { id: "g1", title: "Latihan Dasar Kepemimpinan (LDKS)", category: "Kaderisasi", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop&q=80" },
+        { id: "g2", title: "Peringatan Hari Besar Islam (PHBI)", category: "Keagamaan", img: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&auto=format&fit=crop&q=80" },
+        { id: "g3", title: "Sidang Paripurna Aspirasi MPK", category: "Legislatif", img: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&auto=format&fit=crop&q=80" },
+        { id: "g4", title: "Bazar Santri Preneur Kreatif", category: "Wirausaha", img: "https://images.unsplash.com/photo-1526976668912-1a811878dd37?w=600&auto=format&fit=crop&q=80" }
+      ],
+      featuredProker: [
+        { id: "fp1", org: "OSIS", divisi: "Keagamaan & Ibadah", title: "Gema Dhuha & Tahfidz Camp Santri", desc: "Gerakan kedisiplinan shalat berjamaah 5 waktu dan murojaah quran harian.", badge: "Unggulan", color: "emerald", icon: "mosque" },
+        { id: "fp2", org: "OSIS", divisi: "Kedisiplinan & Bela Negara", title: "Taruna Wira & Latihan Kedisiplinan", desc: "Penegakan tata tertib santri, baris berbaris, kepanduan dan patriotisme.", badge: "Prioritas", color: "blue", icon: "shield" },
+        { id: "fp3", org: "OSIS", divisi: "Tekno Media & Humas", title: "Podcast Dakwah & Jurnalistik Pelajar", desc: "Produksi konten syiar digital, liputan event, dan buletin santri bulanan.", badge: "Kreatif", color: "purple", icon: "photo_camera" },
+        { id: "fp4", org: "MPK", divisi: "Komisi A (Hukum & Tatib)", title: "Uji Publik Kode Etik Santri", desc: "Sosialisasi dan review berkala buku saku adab dan peraturan santri.", badge: "Regulasi", color: "amber", icon: "balance" },
+        { id: "fp5", org: "MPK", divisi: "Komisi B (Aspirasi & Mediasi)", title: "Kotak Suara Aspirasi Digital", desc: "Kanal penyaluran aspirasi santri perwakilan kelas yang transparan & solutif.", badge: "Aspiratif", color: "teal", icon: "forum" },
+        { id: "fp6", org: "MPK", divisi: "Komisi C (Anggaran & Audit)", title: "Audit Terbuka Dana Kas Kegiatan", desc: "Transparansi laporan pertanggungjawaban keuangan proker setiap triwulan.", badge: "Akuntabel", color: "rose", icon: "payments" }
+      ],
+      stats: {
+        stat1Val: "100%", stat1Lbl: "Amanah & Transparan",
+        stat2Val: "7 Divisi", stat2Lbl: "OSIS Eksekutif Aktif",
+        stat3Val: "4 Komisi", stat3Lbl: "MPK Legislatif Santri",
+        stat4Val: "24+", stat4Lbl: "Proker Terealisasi"
+      },
+      sambutanTitle: "Menyiapkan Generasi Pemimpin Rabbani",
+      sambutanText: "Organisasi bukan sekadar jabatan struktural, melainkan ladang amal shalih, wadah pembentukan akhlak karimah, dan laboratorium kepemimpinan yang berintegritas tinggi demi almamater dan umat.",
+      sambutanAuthor: "Pembina Kesiswaan SMP Islam Tarbiyatul Huda"
+    };
+  },
+
+  getLandingContent() {
+    const saved = localStorage.getItem('sim_landing_cms');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.headline) {
+          return Object.assign(this.getDefaultLandingContent(), parsed);
+        }
+      } catch(e) {}
+    }
+    return this.getDefaultLandingContent();
+  },
+
+  extractYouTubeId(url) {
+    if (!url) return 'dQw4w9WgXcQ';
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = String(url).match(regExp);
+    return (match && match[2].length === 11) ? match[2] : (url.length === 11 ? url : 'dQw4w9WgXcQ');
+  },
+
+  renderLandingContent(prokerFilter = 'ALL') {
+    const c = this.getLandingContent();
+
+    // 1. Header Motto & Taglines
+    const elHeaderTagline = document.getElementById('header-school-tagline');
+    if (elHeaderTagline) {
+      elHeaderTagline.textContent = `${c.schoolName || 'SMP Islam Tarbiyatul Huda'} • ${c.motto || 'Unggul, Religius & Berprestasi'}`;
+    }
+
+    const elMotto = document.getElementById('landing-motto-tagline');
+    if (elMotto) elMotto.textContent = c.motto || 'Unggul, Religius & Berprestasi';
+
+    const elBadge = document.getElementById('landing-badge-announcement');
+    if (elBadge) elBadge.textContent = c.badge || '✨ Penerimaan Calon Pengurus Baru OSIS & MPK';
+
+    const elHeadline = document.getElementById('landing-main-headline');
+    if (elHeadline) {
+      elHeadline.innerHTML = c.headline.includes("Qur'ani")
+        ? c.headline.replace("Qur'ani", `<span class="bg-gradient-to-r from-emerald-300 via-teal-200 to-amber-300 bg-clip-text text-transparent underline decoration-amber-400/50 decoration-4 underline-offset-8">Qur'ani</span>`)
+        : c.headline;
+    }
+
+    const elSub = document.getElementById('landing-subheadline');
+    if (elSub) elSub.textContent = c.subheadline;
+
+    const elCta1 = document.getElementById('landing-cta-primary');
+    if (elCta1) elCta1.textContent = c.ctaPrimary;
+
+    const elCta2 = document.getElementById('landing-cta-secondary');
+    if (elCta2) elCta2.textContent = c.ctaSecondary;
+
+    // 2. YouTube Video Embed
+    const ytId = this.extractYouTubeId(c.youtubeUrl);
+    const elYtFrame = document.getElementById('landing-youtube-frame');
+    if (elYtFrame) {
+      elYtFrame.src = `https://www.youtube.com/embed/${ytId}?rel=0`;
+    }
+    const elYtTitle = document.getElementById('landing-youtube-title');
+    if (elYtTitle) elYtTitle.textContent = c.youtubeTitle;
+    const elYtDesc = document.getElementById('landing-youtube-desc');
+    if (elYtDesc) elYtDesc.textContent = c.youtubeDesc;
+
+    // 3. 4 Statistik
+    if (c.stats) {
+      const s1Val = document.getElementById('landing-stat-1-val');
+      const s1Lbl = document.getElementById('landing-stat-1-lbl');
+      if (s1Val) s1Val.textContent = c.stats.stat1Val || '100%';
+      if (s1Lbl) s1Lbl.textContent = c.stats.stat1Lbl || 'Amanah';
+
+      const s2Val = document.getElementById('landing-stat-2-val');
+      const s2Lbl = document.getElementById('landing-stat-2-lbl');
+      if (s2Val) s2Val.textContent = c.stats.stat2Val || '7 Divisi';
+      if (s2Lbl) s2Lbl.textContent = c.stats.stat2Lbl || 'OSIS Eksekutif';
+
+      const s3Val = document.getElementById('landing-stat-3-val');
+      const s3Lbl = document.getElementById('landing-stat-3-lbl');
+      if (s3Val) s3Val.textContent = c.stats.stat3Val || '4 Komisi';
+      if (s3Lbl) s3Lbl.textContent = c.stats.stat3Lbl || 'MPK Legislatif';
+
+      const s4Val = document.getElementById('landing-stat-4-val');
+      const s4Lbl = document.getElementById('landing-stat-4-lbl');
+      if (s4Val) s4Val.textContent = c.stats.stat4Val || '24+';
+      if (s4Lbl) s4Lbl.textContent = c.stats.stat4Lbl || 'Proker Tuntas';
+    }
+
+    // 4. Sambutan
+    const elSamTitle = document.getElementById('landing-sambutan-title');
+    if (elSamTitle) elSamTitle.textContent = c.sambutanTitle;
+    const elSamText = document.getElementById('landing-sambutan-text');
+    if (elSamText) elSamText.textContent = `"${c.sambutanText}"`;
+    const elSamAuthor = document.getElementById('landing-sambutan-author');
+    if (elSamAuthor) elSamAuthor.textContent = c.sambutanAuthor;
+
+    // 5. Render Galeri Foto
+    this.renderLandingGallery(c.gallery);
+
+    // 6. Render Proker Unggulan
+    this.renderLandingFeaturedProker(prokerFilter, c.featuredProker);
+  },
+
+  renderLandingGallery(gallery) {
+    const container = document.getElementById('landing-gallery-container');
+    if (!container) return;
+
+    const list = gallery || (this.getLandingContent().gallery || []);
+    container.innerHTML = list.map(item => `
+      <div class="group relative overflow-hidden rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col">
+        <div class="relative w-full aspect-[4/3] overflow-hidden bg-surface-container">
+          <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop&q=80'"/>
+          <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-bold text-white uppercase tracking-wider">
+            ${item.category || 'Dokumentasi'}
+          </span>
+        </div>
+        <div class="p-3.5 flex-1 flex flex-col justify-between">
+          <h4 class="font-heading font-bold text-xs text-on-surface line-clamp-2">${item.title}</h4>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  renderLandingFeaturedProker(filter = 'ALL', list = null) {
+    const container = document.getElementById('landing-featured-proker-container');
+    if (!container) return;
+
+    const prokerList = list || (this.getLandingContent().featuredProker || []);
+    const filtered = filter === 'ALL' ? prokerList : prokerList.filter(p => p.org === filter);
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-on-surface-variant">Belum ada program kerja untuk filter ini.</div>`;
+      return;
+    }
+
+    const colorMap = {
+      emerald: { border: 'border-emerald-300 dark:border-emerald-800', bar: 'bg-emerald-500', badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300', icon: 'text-emerald-600 dark:text-emerald-400' },
+      blue: { border: 'border-blue-300 dark:border-blue-800', bar: 'bg-blue-600', badge: 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300', icon: 'text-blue-600 dark:text-blue-400' },
+      purple: { border: 'border-purple-300 dark:border-purple-800', bar: 'bg-purple-600', badge: 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300', icon: 'text-purple-600 dark:text-purple-400' },
+      amber: { border: 'border-amber-300 dark:border-amber-800', bar: 'bg-amber-500', badge: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300', icon: 'text-amber-600 dark:text-amber-400' },
+      teal: { border: 'border-teal-300 dark:border-teal-800', bar: 'bg-teal-500', badge: 'bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300', icon: 'text-teal-600 dark:text-teal-400' },
+      rose: { border: 'border-rose-300 dark:border-rose-800', bar: 'bg-rose-500', badge: 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300', icon: 'text-rose-600 dark:text-rose-400' }
+    };
+
+    container.innerHTML = filtered.map(p => {
+      const c = colorMap[p.color] || colorMap.emerald;
+      return `
+        <div class="relative overflow-hidden rounded-2xl bg-surface-container-lowest p-5 border ${c.border} shadow-xs hover:shadow-lg transition-all flex flex-col justify-between space-y-3 group">
+          <div class="w-full h-1.5 ${c.bar} absolute top-0 left-0"></div>
+          
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${p.org === 'OSIS' ? 'bg-primary-fixed text-on-primary-fixed-variant' : 'bg-secondary-fixed text-on-secondary-fixed-variant'}">
+                ${p.org}
+              </span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${c.badge}">
+                ${p.badge || 'Unggulan'}
+              </span>
+            </div>
+
+            <div class="flex items-start gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-surface-container-low flex items-center justify-center shrink-0 ${c.icon}">
+                <span class="material-symbols-outlined text-[20px]">${p.icon || 'verified'}</span>
+              </div>
+              <div>
+                <h4 class="font-heading font-bold text-sm text-on-surface group-hover:text-primary transition-colors">${p.title}</h4>
+                <p class="text-[11px] font-medium text-on-surface-variant">${p.divisi}</p>
+              </div>
+            </div>
+
+            <p class="text-xs text-on-surface-variant leading-relaxed line-clamp-3">
+              ${p.desc}
+            </p>
+          </div>
+
+          <div class="pt-2 border-t border-outline-variant/20 flex items-center justify-between text-xs font-semibold text-primary">
+            <span class="text-[11px] text-on-surface-variant font-medium">SMP Islam Tarbiyatul Huda</span>
+            <span class="inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <span>Detail Divisi</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+
+  filterFeaturedProker(filter) {
+    document.querySelectorAll('.proker-tab-btn').forEach(btn => {
+      if (btn.getAttribute('data-tab-filter') === filter) {
+        btn.classList.add('active', 'bg-primary-container', 'text-on-primary');
+        btn.classList.remove('text-on-surface-variant');
+      } else {
+        btn.classList.remove('active', 'bg-primary-container', 'text-on-primary');
+        btn.classList.add('text-on-surface-variant');
+      }
+    });
+    this.renderLandingFeaturedProker(filter);
+  },
+
+  // Modal CMS Functions
+  openModalLandingCMS(targetTab = 'cms-tab-hero') {
+    const c = this.getLandingContent();
+
+    // Tab 1
+    const inMotto = document.getElementById('cms-motto');
+    const inBadge = document.getElementById('cms-badge');
+    const inHeadline = document.getElementById('cms-headline');
+    const inSub = document.getElementById('cms-subheadline');
+    const inCta1 = document.getElementById('cms-cta-primary');
+    const inCta2 = document.getElementById('cms-cta-secondary');
+
+    if (inMotto) inMotto.value = c.motto || '';
+    if (inBadge) inBadge.value = c.badge || '';
+    if (inHeadline) inHeadline.value = c.headline || '';
+    if (inSub) inSub.value = c.subheadline || '';
+    if (inCta1) inCta1.value = c.ctaPrimary || '';
+    if (inCta2) inCta2.value = c.ctaSecondary || '';
+
+    // Tab 2
+    const inYtUrl = document.getElementById('cms-youtube-url');
+    const inYtTitle = document.getElementById('cms-youtube-title');
+    const inYtDesc = document.getElementById('cms-youtube-desc');
+    if (inYtUrl) inYtUrl.value = c.youtubeUrl || '';
+    if (inYtTitle) inYtTitle.value = c.youtubeTitle || '';
+    if (inYtDesc) inYtDesc.value = c.youtubeDesc || '';
+
+    // Galeri 1-4
+    if (Array.isArray(c.gallery)) {
+      for (let i = 0; i < 4; i++) {
+        const item = c.gallery[i] || {};
+        const inT = document.getElementById(`cms-gallery-title-${i+1}`);
+        const inC = document.getElementById(`cms-gallery-cat-${i+1}`);
+        const inI = document.getElementById(`cms-gallery-img-${i+1}`);
+        if (inT) inT.value = item.title || '';
+        if (inC) inC.value = item.category || '';
+        if (inI) inI.value = item.img || '';
+      }
+    }
+
+    // Tab 4 (Stats & Sambutan)
+    if (c.stats) {
+      const s1v = document.getElementById('cms-stat1-val');
+      const s1l = document.getElementById('cms-stat1-lbl');
+      const s2v = document.getElementById('cms-stat2-val');
+      const s2l = document.getElementById('cms-stat2-lbl');
+      const s3v = document.getElementById('cms-stat3-val');
+      const s3l = document.getElementById('cms-stat3-lbl');
+      const s4v = document.getElementById('cms-stat4-val');
+      const s4l = document.getElementById('cms-stat4-lbl');
+
+      if (s1v) s1v.value = c.stats.stat1Val || '';
+      if (s1l) s1l.value = c.stats.stat1Lbl || '';
+      if (s2v) s2v.value = c.stats.stat2Val || '';
+      if (s2l) s2l.value = c.stats.stat2Lbl || '';
+      if (s3v) s3v.value = c.stats.stat3Val || '';
+      if (s3l) s3l.value = c.stats.stat3Lbl || '';
+      if (s4v) s4v.value = c.stats.stat4Val || '';
+      if (s4l) s4l.value = c.stats.stat4Lbl || '';
+    }
+
+    const inSamTitle = document.getElementById('cms-sambutan-title');
+    const inSamText = document.getElementById('cms-sambutan-text');
+    const inSamAuthor = document.getElementById('cms-sambutan-author');
+    if (inSamTitle) inSamTitle.value = c.sambutanTitle || '';
+    if (inSamText) inSamText.value = c.sambutanText || '';
+    if (inSamAuthor) inSamAuthor.value = c.sambutanAuthor || '';
+
+    this.renderCmsProkerTable();
+    this.switchCmsTab(targetTab);
+
+    const modal = document.getElementById('modal-cms-landing');
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  closeModalLandingCMS() {
+    const modal = document.getElementById('modal-cms-landing');
+    if (modal) modal.classList.add('hidden');
+  },
+
+  switchCmsTab(tabId) {
+    document.querySelectorAll('.cms-tab-pane').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.cms-tab-nav').forEach(btn => {
+      btn.classList.remove('border-primary', 'text-primary');
+      btn.classList.add('border-transparent', 'text-on-surface-variant');
+    });
+
+    const pane = document.getElementById(tabId);
+    if (pane) pane.classList.remove('hidden');
+
+    const activeBtn = document.getElementById(`btn-${tabId}`);
+    if (activeBtn) {
+      activeBtn.classList.add('border-primary', 'text-primary');
+      activeBtn.classList.remove('border-transparent', 'text-on-surface-variant');
+    }
+  },
+
+  renderCmsProkerTable() {
+    const container = document.getElementById('cms-proker-table-container');
+    if (!container) return;
+
+    const c = this.getLandingContent();
+    const list = c.featuredProker || [];
+
+    if (list.length === 0) {
+      container.innerHTML = `<div class="p-3 text-center text-xs text-on-surface-variant bg-surface-container-low rounded-xl">Belum ada proker unggulan di beranda.</div>`;
+      return;
+    }
+
+    container.innerHTML = list.map(p => `
+      <div class="p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex items-center justify-between gap-3">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${p.org === 'OSIS' ? 'bg-primary-fixed text-on-primary-fixed-variant' : 'bg-secondary-fixed text-on-secondary-fixed-variant'}">${p.org}</span>
+            <span class="text-xs font-bold text-on-surface truncate">${p.title}</span>
+            <span class="text-[10px] text-on-surface-variant font-mono">(${p.divisi})</span>
+          </div>
+          <p class="text-[11px] text-on-surface-variant line-clamp-1 mt-0.5">${p.desc}</p>
+        </div>
+        <button type="button" onclick="App.handleDeleteFeaturedProkerFromCMS('${p.id}')" class="p-1.5 rounded-lg bg-error-container text-on-error-container hover:bg-error hover:text-white transition-colors shrink-0" title="Hapus dari Beranda">
+          <span class="material-symbols-outlined text-[16px]">delete</span>
+        </button>
+      </div>
+    `).join('');
+  },
+
+  handleAddFeaturedProkerFromCMS() {
+    const org = document.getElementById('new-fp-org')?.value || 'OSIS';
+    const divisi = document.getElementById('new-fp-divisi')?.value.trim();
+    const badge = document.getElementById('new-fp-badge')?.value.trim() || 'Unggulan';
+    const title = document.getElementById('new-fp-title')?.value.trim();
+    const color = document.getElementById('new-fp-color')?.value || 'emerald';
+    const desc = document.getElementById('new-fp-desc')?.value.trim();
+
+    if (!divisi || !title || !desc) {
+      this.showToast('Mohon isi divisi, judul, dan deskripsi program kerja!', 'warning');
+      return;
+    }
+
+    const c = this.getLandingContent();
+    if (!Array.isArray(c.featuredProker)) c.featuredProker = [];
+
+    const newId = 'fp_' + Date.now();
+    c.featuredProker.push({
+      id: newId,
+      org,
+      divisi,
+      badge,
+      title,
+      color,
+      icon: org === 'MPK' ? 'gavel' : 'verified',
+      desc
+    });
+
+    localStorage.setItem('sim_landing_cms', JSON.stringify(c));
+    this.renderCmsProkerTable();
+    this.renderLandingContent();
+
+    // Reset input form
+    document.getElementById('new-fp-divisi').value = '';
+    document.getElementById('new-fp-badge').value = '';
+    document.getElementById('new-fp-title').value = '';
+    document.getElementById('new-fp-desc').value = '';
+
+    this.showToast(`Proker "${title}" berhasil ditambahkan ke Beranda!`, 'success');
+  },
+
+  handleDeleteFeaturedProkerFromCMS(id) {
+    const c = this.getLandingContent();
+    if (!Array.isArray(c.featuredProker)) return;
+
+    c.featuredProker = c.featuredProker.filter(p => p.id !== id);
+    localStorage.setItem('sim_landing_cms', JSON.stringify(c));
+    this.renderCmsProkerTable();
+    this.renderLandingContent();
+    this.showToast('Program kerja dihapus dari Beranda.', 'info');
+  },
+
+  async handleSaveLandingCMS(e) {
+    e.preventDefault();
+    const c = this.getLandingContent();
+
+    c.motto = document.getElementById('cms-motto')?.value.trim() || c.motto;
+    c.badge = document.getElementById('cms-badge')?.value.trim() || c.badge;
+    c.headline = document.getElementById('cms-headline')?.value.trim() || c.headline;
+    c.subheadline = document.getElementById('cms-subheadline')?.value.trim() || c.subheadline;
+    c.ctaPrimary = document.getElementById('cms-cta-primary')?.value.trim() || c.ctaPrimary;
+    c.ctaSecondary = document.getElementById('cms-cta-secondary')?.value.trim() || c.ctaSecondary;
+
+    c.youtubeUrl = document.getElementById('cms-youtube-url')?.value.trim() || c.youtubeUrl;
+    c.youtubeTitle = document.getElementById('cms-youtube-title')?.value.trim() || c.youtubeTitle;
+    c.youtubeDesc = document.getElementById('cms-youtube-desc')?.value.trim() || c.youtubeDesc;
+
+    c.gallery = [];
+    for (let i = 1; i <= 4; i++) {
+      const title = document.getElementById(`cms-gallery-title-${i}`)?.value.trim() || `Dokumentasi ${i}`;
+      const category = document.getElementById(`cms-gallery-cat-${i}`)?.value.trim() || 'Kegiatan';
+      const img = document.getElementById(`cms-gallery-img-${i}`)?.value.trim() || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop&q=80';
+      c.gallery.push({ id: `g${i}`, title, category, img });
+    }
+
+    if (!c.stats) c.stats = {};
+    c.stats.stat1Val = document.getElementById('cms-stat1-val')?.value.trim() || c.stats.stat1Val;
+    c.stats.stat1Lbl = document.getElementById('cms-stat1-lbl')?.value.trim() || c.stats.stat1Lbl;
+    c.stats.stat2Val = document.getElementById('cms-stat2-val')?.value.trim() || c.stats.stat2Val;
+    c.stats.stat2Lbl = document.getElementById('cms-stat2-lbl')?.value.trim() || c.stats.stat2Lbl;
+    c.stats.stat3Val = document.getElementById('cms-stat3-val')?.value.trim() || c.stats.stat3Val;
+    c.stats.stat3Lbl = document.getElementById('cms-stat3-lbl')?.value.trim() || c.stats.stat3Lbl;
+    c.stats.stat4Val = document.getElementById('cms-stat4-val')?.value.trim() || c.stats.stat4Val;
+    c.stats.stat4Lbl = document.getElementById('cms-stat4-lbl')?.value.trim() || c.stats.stat4Lbl;
+
+    c.sambutanTitle = document.getElementById('cms-sambutan-title')?.value.trim() || c.sambutanTitle;
+    c.sambutanText = document.getElementById('cms-sambutan-text')?.value.trim() || c.sambutanText;
+    c.sambutanAuthor = document.getElementById('cms-sambutan-author')?.value.trim() || c.sambutanAuthor;
+
+    // Simpan ke LocalStorage secara instan
+    localStorage.setItem('sim_landing_cms', JSON.stringify(c));
+    this.renderLandingContent();
+    this.closeModalLandingCMS();
+    this.showToast('Seluruh konten Halaman Beranda berhasil diperbarui!', 'success');
+
+    // Sinkronkan ke Google Apps Script backend
+    await this.callApi('saveLandingCMS', c);
   },
 
   async login(username, password) {
@@ -1976,6 +2438,10 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
           localStorage.setItem('sim_applicants_data', JSON.stringify(this.state.applicants));
           this.renderApplicantsTable();
         }
+        if (res.data.landingCMS) {
+          localStorage.setItem('sim_landing_cms', JSON.stringify(res.data.landingCMS));
+          this.renderLandingContent();
+        }
         this.updateDashboardMetrics();
       }
     } catch (e) {
@@ -2149,6 +2615,16 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
       modalLogin.addEventListener('click', (e) => {
         if (e.target === modalLogin) {
           this.closeLoginModal();
+        }
+      });
+    }
+
+    // Click outside to close CMS Landing modal
+    const modalCms = document.getElementById('modal-cms-landing');
+    if (modalCms) {
+      modalCms.addEventListener('click', (e) => {
+        if (e.target === modalCms) {
+          this.closeModalLandingCMS();
         }
       });
     }
