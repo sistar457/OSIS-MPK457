@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
-  <title>SIM-OSIS & MPK - SMP Islam Tarbiyatul Huda</title>
+  <title>SIM-OSIS & MPK — SMP Islam Tarbiyatul Huda</title>
 
   <!-- Google Fonts & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -129,10 +129,10 @@
       <div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1.5 border border-outline-variant/30">
         <div class="flex items-center gap-1.5 text-primary">
           <span class="material-symbols-outlined text-[18px]">verified</span>
-          <span class="font-heading font-bold text-xs">Konstitusional MPK</span>
+          <span class="font-heading font-bold text-xs">Konstitusional MPK & OSIS</span>
         </div>
         <p class="text-[11px] text-on-surface-variant leading-relaxed">
-          Sistem tata kelola dan administrasi terintegrasi SMP Islam Tarbiyatul Huda.
+          Sistem tata kelola dan administrasi digital terintegrasi SMP Islam Tarbiyatul Huda.
         </p>
       </div>
     </div>
@@ -146,7 +146,7 @@
       
       <!-- Mobile / Tablet Brand -->
       <div class="flex items-center gap-3 cursor-pointer" onclick="App.navigateTo('portal-publik')">
-        <div class="w-9 h-9 rounded-xl bg-primary-container text-on-primary flex lg:hidden items-center justify-center font-bold">
+        <div class="w-9 h-9 rounded-xl bg-primary-container text-on-primary flex lg:hidden items-center justify-center font-bold shadow-sm">
           <span class="material-symbols-outlined text-[20px]">school</span>
         </div>
         <div class="flex flex-col">
@@ -164,7 +164,7 @@
         </div>
 
         <!-- Role Pill -->
-        <div class="hidden sm:flex items-center gap-1 px-3 py-1 rounded-full bg-surface-container text-on-secondary-container text-xs font-semibold" id="header-user-role-badge">
+        <div class="hidden sm:flex items-center gap-1 px-3 py-1 rounded-full bg-surface-container text-on-secondary-container text-xs font-semibold cursor-pointer" onclick="App.openLoginModal()" id="header-user-role-badge">
           Urusan Kesiswaan / Super Admin
         </div>
 
@@ -174,7 +174,7 @@
         </button>
 
         <!-- Notification Bell -->
-        <button class="relative p-2 rounded-xl text-on-surface-variant hover:bg-surface-container transition-colors" onclick="App.showToast('Tidak ada pemberitahuan baru saat ini.', 'info')">
+        <button class="relative p-2 rounded-xl text-on-surface-variant hover:bg-surface-container transition-colors" onclick="App.showToast('Tidak ada pemberitahuan baru saat ini.', 'info')" title="Pemberitahuan">
           <span class="material-symbols-outlined text-[20px]">notifications</span>
           <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
         </button>
@@ -187,7 +187,7 @@
           </button>
         </div>
 
-        <div id="header-user-profile" class="flex items-center gap-2 pl-1 cursor-pointer" onclick="App.openLoginModal()">
+        <div id="header-user-profile" class="flex items-center gap-2 pl-1 cursor-pointer" onclick="App.openLoginModal()" title="Klik untuk ganti akun atau login">
           <img id="header-user-avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20"/>
           <span class="material-symbols-outlined text-[16px] text-on-surface-variant hidden sm:inline-block">expand_more</span>
         </div>
@@ -229,14 +229,14 @@
 
             <!-- Subheadline -->
             <p class="font-sans text-sm sm:text-base text-on-surface-variant max-w-2xl leading-relaxed">
-              Portal resmi terpadu Organisasi Siswa Intra Sekolah (OSIS) & Majelis Perwakilan Kelas (MPK) SMP Islam Tarbiyatul Huda. Wadah akselerasi integritas, kepemimpinan amanah, dan pengabdian nyata.
+              Portal resmi terpadu Organisasi Siswa Intra Sekolah (OSIS) & Majelis Perwakilan Kelas (MPK) SMP Islam Tarbiyatul Huda. Wadah akselerasi integritas, kepemimpinan amanah, dan pengabdian nyata santri.
             </p>
 
             <!-- Action Buttons -->
             <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
-              <button onclick="document.getElementById('quiz-modal').classList.remove('hidden'); App.renderQuizModal();" class="px-5 py-3 rounded-xl bg-primary-container text-on-primary font-heading font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md hover:bg-primary transition-all">
+              <button onclick="App.openQuizModal()" class="px-5 py-3 rounded-xl bg-primary-container text-on-primary font-heading font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md hover:bg-primary transition-all">
                 <span class="material-symbols-outlined text-[20px]">psychology_alt</span>
-                <span>Ikuti Diagnostic Quiz Minat Divisi</span>
+                <span>Ikuti Diagnostic Quiz Minat Divisi (15 Soal)</span>
               </button>
 
               <a href="#section-form-pendaftaran" class="px-5 py-3 rounded-xl bg-surface-container-high text-on-surface font-heading font-bold text-xs sm:text-sm flex items-center gap-2 hover:bg-surface-variant transition-all">
@@ -303,14 +303,31 @@
                 <p class="text-xs text-on-surface-variant leading-relaxed">
                   Menyusun, mengkoordinasikan, dan mengeksekusi kegiatan keagamaan, kedisiplinan, akademik, media dakwah, dan wirausaha santri.
                 </p>
-                <div class="flex flex-wrap gap-1.5 pt-1">
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Pengurus Inti</span>
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Keagamaan & Ibadah</span>
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Kedisiplinan & Bela Negara</span>
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Akademik & Minat Bakat</span>
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Kreativitas & Wirausaha</span>
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Kesehatan & Kebersihan</span>
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Tekno Media</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <div class="p-2 rounded-lg bg-surface-container-low text-xs font-semibold cursor-pointer hover:bg-surface-container flex items-center gap-2" onclick="App.showDivisiDetail('Keagamaan & Ibadah')">
+                    <span class="material-symbols-outlined text-primary text-[18px]">mosque</span>
+                    <span>Keagamaan & Ibadah</span>
+                  </div>
+                  <div class="p-2 rounded-lg bg-surface-container-low text-xs font-semibold cursor-pointer hover:bg-surface-container flex items-center gap-2" onclick="App.showDivisiDetail('Kedisiplinan & Bela Negara')">
+                    <span class="material-symbols-outlined text-primary text-[18px]">shield</span>
+                    <span>Kedisiplinan & Bela Negara</span>
+                  </div>
+                  <div class="p-2 rounded-lg bg-surface-container-low text-xs font-semibold cursor-pointer hover:bg-surface-container flex items-center gap-2" onclick="App.showDivisiDetail('Akademik & Minat Bakat')">
+                    <span class="material-symbols-outlined text-primary text-[18px]">school</span>
+                    <span>Akademik & Minat Bakat</span>
+                  </div>
+                  <div class="p-2 rounded-lg bg-surface-container-low text-xs font-semibold cursor-pointer hover:bg-surface-container flex items-center gap-2" onclick="App.showDivisiDetail('Kreativitas & Wirausaha')">
+                    <span class="material-symbols-outlined text-primary text-[18px]">storefront</span>
+                    <span>Kreativitas & Wirausaha</span>
+                  </div>
+                  <div class="p-2 rounded-lg bg-surface-container-low text-xs font-semibold cursor-pointer hover:bg-surface-container flex items-center gap-2" onclick="App.showDivisiDetail('Kesehatan & Kebersihan')">
+                    <span class="material-symbols-outlined text-primary text-[18px]">health_and_safety</span>
+                    <span>Kesehatan & Kebersihan</span>
+                  </div>
+                  <div class="p-2 rounded-lg bg-surface-container-low text-xs font-semibold cursor-pointer hover:bg-surface-container flex items-center gap-2" onclick="App.showDivisiDetail('Tekno Media & Humas')">
+                    <span class="material-symbols-outlined text-primary text-[18px]">photo_camera</span>
+                    <span>Tekno Media & Humas</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -334,11 +351,23 @@
                 <p class="text-xs text-on-surface-variant leading-relaxed">
                   Menjembatani aspirasi santri perwakilan kelas, mengawasi kepatuhan tata tertib, dan mengevaluasi LPJ program kerja secara berkala.
                 </p>
-                <div class="flex flex-wrap gap-1.5 pt-1">
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Komisi A: Hukum & Tatib</span>
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Komisi B: Aspirasi & Mediasi</span>
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Komisi C: Anggaran & Audit</span>
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface">Komisi D: Pengawasan Proker</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <div class="p-2 rounded-lg bg-surface-container-low text-xs font-semibold cursor-pointer hover:bg-surface-container flex items-center gap-2" onclick="App.showDivisiDetail('Komisi A (Hukum & Tatib)')">
+                    <span class="material-symbols-outlined text-secondary text-[18px]">balance</span>
+                    <span>Komisi A: Hukum & Tatib</span>
+                  </div>
+                  <div class="p-2 rounded-lg bg-surface-container-low text-xs font-semibold cursor-pointer hover:bg-surface-container flex items-center gap-2" onclick="App.showDivisiDetail('Komisi B (Aspirasi & Mediasi)')">
+                    <span class="material-symbols-outlined text-secondary text-[18px]">forum</span>
+                    <span>Komisi B: Aspirasi & Mediasi</span>
+                  </div>
+                  <div class="p-2 rounded-lg bg-surface-container-low text-xs font-semibold cursor-pointer hover:bg-surface-container flex items-center gap-2" onclick="App.showDivisiDetail('Komisi C (Anggaran & Audit)')">
+                    <span class="material-symbols-outlined text-secondary text-[18px]">payments</span>
+                    <span>Komisi C: Anggaran & Audit</span>
+                  </div>
+                  <div class="p-2 rounded-lg bg-surface-container-low text-xs font-semibold cursor-pointer hover:bg-surface-container flex items-center gap-2" onclick="App.showDivisiDetail('Komisi D (Pengawasan Proker)')">
+                    <span class="material-symbols-outlined text-secondary text-[18px]">fact_check</span>
+                    <span>Komisi D: Pengawasan Proker</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -353,15 +382,15 @@
             <p class="text-xs text-on-surface-variant mt-1">Lengkapi data diri dengan benar. Pilihan divisi dapat disesuaikan dengan rekomendasi kuis minat.</p>
           </div>
 
-          <form id="form-rekrutmen" onsubmit="event.preventDefault(); App.showToast('Data pendaftaran berhasil disimpan ke sistem Cloud!', 'success'); this.reset();" class="space-y-4">
+          <form id="form-rekrutmen" onsubmit="App.handleRegistrationSubmit(event)" class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-on-surface mb-1">Nama Lengkap Siswa *</label>
-                <input type="text" required placeholder="Contoh: Muhammad Rayhan Al-Ghifari" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
+                <input type="text" id="reg-nama" required placeholder="Contoh: Muhammad Rayhan Al-Ghifari" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-on-surface mb-1">Kelas Saat Ini *</label>
-                <select required class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary">
+                <select id="reg-kelas" required class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary">
                   <option value="">Pilih Kelas</option>
                   <option value="7A">7A - Putra</option>
                   <option value="7B">7B - Putri</option>
@@ -374,11 +403,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-on-surface mb-1">No. WhatsApp Siswa *</label>
-                <input type="tel" required placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
+                <input type="tel" id="reg-wa" required placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-on-surface mb-1">No. WhatsApp Orang Tua / Wali *</label>
-                <input type="tel" required placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
+                <input type="tel" id="reg-ortu" required placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
               </div>
             </div>
 
@@ -387,37 +416,44 @@
                 <label class="block text-xs font-semibold text-on-surface mb-1">Pilihan Divisi Utama *</label>
                 <select id="form-pilihan-divisi-1" required class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary">
                   <option value="">Pilih Divisi Utama</option>
-                  <option value="Pengurus Inti">OSIS - Pengurus Inti</option>
                   <option value="Keagamaan & Ibadah">OSIS - Keagamaan & Ibadah</option>
                   <option value="Kedisiplinan & Bela Negara">OSIS - Kedisiplinan & Bela Negara</option>
                   <option value="Akademik & Minat Bakat">OSIS - Akademik & Minat Bakat</option>
                   <option value="Kreativitas & Wirausaha">OSIS - Kreativitas & Wirausaha</option>
                   <option value="Kesehatan & Kebersihan">OSIS - Kesehatan & Kebersihan</option>
                   <option value="Tekno Media & Humas">OSIS - Tekno Media & Humas</option>
-                  <option value="Komisi MPK">MPK - Komisi Legislatif Siswa</option>
+                  <option value="Komisi A (Hukum & Tatib)">MPK - Komisi A: Hukum & Tatib</option>
+                  <option value="Komisi B (Aspirasi & Mediasi)">MPK - Komisi B: Aspirasi & Mediasi</option>
+                  <option value="Komisi C (Anggaran & Audit)">MPK - Komisi C: Anggaran & Audit</option>
+                  <option value="Komisi D (Pengawasan Proker)">MPK - Komisi D: Pengawasan Proker</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-on-surface mb-1">Pilihan Divisi Cadangan (Opsional)</label>
-                <select class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary">
+                <select id="form-pilihan-divisi-2" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary">
                   <option value="">Pilih Divisi Cadangan</option>
                   <option value="Keagamaan & Ibadah">OSIS - Keagamaan & Ibadah</option>
                   <option value="Kedisiplinan & Bela Negara">OSIS - Kedisiplinan & Bela Negara</option>
                   <option value="Akademik & Minat Bakat">OSIS - Akademik & Minat Bakat</option>
+                  <option value="Kreativitas & Wirausaha">OSIS - Kreativitas & Wirausaha</option>
+                  <option value="Kesehatan & Kebersihan">OSIS - Kesehatan & Kebersihan</option>
                   <option value="Tekno Media & Humas">OSIS - Tekno Media & Humas</option>
-                  <option value="Komisi MPK">MPK - Komisi Legislatif Siswa</option>
+                  <option value="Komisi A (Hukum & Tatib)">MPK - Komisi A: Hukum & Tatib</option>
+                  <option value="Komisi B (Aspirasi & Mediasi)">MPK - Komisi B: Aspirasi & Mediasi</option>
+                  <option value="Komisi C (Anggaran & Audit)">MPK - Komisi C: Anggaran & Audit</option>
+                  <option value="Komisi D (Pengawasan Proker)">MPK - Komisi D: Pengawasan Proker</option>
                 </select>
               </div>
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-on-surface mb-1">Motivasi & Visi Kontribusi *</label>
-              <textarea rows="3" required placeholder="Tuliskan motivasi Anda untuk berkhidmah dan mengembangkan kepemimpinan Islami..." class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+              <textarea id="reg-motivasi" rows="3" required placeholder="Tuliskan motivasi Anda untuk berkhidmah dan mengembangkan kepemimpinan Islami..." class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-on-surface mb-1">Tautan Portofolio / Berkas Pendukung (Opsional)</label>
-              <input type="url" placeholder="https://drive.google.com/... atau tautan dokumen karya Anda" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
+              <input type="url" id="reg-portofolio" placeholder="https://drive.google.com/... atau tautan dokumen karya Anda" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"/>
             </div>
 
             <div class="pt-2">
@@ -467,13 +503,17 @@
                 <span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
                 <span>+ Presensi QR</span>
               </button>
-              <button onclick="App.showToast('Fitur tambah proker baru siap digunakan.', 'info')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-on-secondary font-heading font-bold text-xs shadow-sm hover:bg-on-secondary-container transition-all">
+              <button onclick="App.openModalTambahProker()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-on-secondary font-heading font-bold text-xs shadow-sm hover:bg-on-secondary-container transition-all">
                 <span class="material-symbols-outlined text-[18px]">add_task</span>
                 <span>+ Proker Baru</span>
               </button>
               <button onclick="App.navigateTo('generator-surat-resmi')" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-heading font-bold text-xs hover:bg-surface-container transition-colors">
                 <span class="material-symbols-outlined text-[18px] text-tertiary">history_edu</span>
                 <span>Terbitkan Surat</span>
+              </button>
+              <button onclick="App.exportProkerCSV()" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-heading font-bold text-xs hover:bg-surface-container transition-colors" title="Ekspor Data Proker ke CSV">
+                <span class="material-symbols-outlined text-[18px] text-on-surface-variant">file_download</span>
+                <span>Ekspor CSV</span>
               </button>
             </div>
           </div>
@@ -496,12 +536,12 @@
               </div>
             </div>
             <div class="my-3 flex items-center justify-between text-xs text-on-surface-variant">
-              <span>36 OSIS • 28 MPK</span>
+              <span>36 OSIS (56%) • 28 MPK (44%)</span>
               <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-bold text-[10px]">100% Sah</span>
             </div>
             <div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden flex">
-              <div class="bg-primary-container h-full" style="width: 56%"></div>
-              <div class="bg-secondary h-full" style="width: 44%"></div>
+              <div class="bg-primary-container h-full" style="width: 56.25%" title="OSIS: 36 Siswa"></div>
+              <div class="bg-secondary h-full" style="width: 43.75%" title="MPK: 28 Siswa"></div>
             </div>
           </div>
 
@@ -560,7 +600,7 @@
               <div>
                 <span class="text-[11px] uppercase text-on-surface-variant tracking-wider font-semibold">Realisasi Kas Kegiatan</span>
                 <div class="flex items-baseline gap-1 mt-1">
-                  <span class="font-heading font-extrabold text-2xl text-primary font-mono">Rp8.55M</span>
+                  <span class="font-heading font-extrabold text-2xl text-primary font-mono">Rp18.45M</span>
                 </div>
               </div>
               <div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
@@ -568,21 +608,131 @@
               </div>
             </div>
             <div class="my-3 flex items-center justify-between text-xs">
-              <span class="text-on-surface-variant">Sisa Kas: Rp3.250.000</span>
+              <span class="text-on-surface-variant">Sisa Kas: Rp6.550.000</span>
               <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-bold text-[10px]">Audit Bersih</span>
             </div>
             <div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
-              <div class="bg-primary-container h-full rounded-full" style="width: 72%"></div>
+              <div class="bg-primary-container h-full rounded-full" style="width: 74%"></div>
             </div>
           </div>
         </div>
 
-        <!-- Papan Kanban Proker (4 Kolom Rinci) -->
+        <!-- Visualisasi Diagram & Grafik Statistik Terpadu -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Grafik 1: Tren Kehadiran Rapat Mingguan (Line / Area Chart SVG) -->
+          <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/30 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-heading font-bold text-sm text-on-surface">Tren Kehadiran Rapat & Kegiatan (Minggu 1 - 6)</h3>
+                <p class="text-[11px] text-on-surface-variant">Tingkat partisipasi pengurus OSIS & MPK</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-bold text-xs">Target: >90%</span>
+            </div>
+
+            <div class="h-44 w-full flex flex-col justify-end pt-4">
+              <!-- Visual Chart SVG Area -->
+              <svg class="w-full h-36" viewBox="0 0 500 120" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#047857" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#047857" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,80 Q70,60 140,50 T280,35 T420,20 L500,10 L500,120 L0,120 Z" fill="url(#chartGrad)"/>
+                <path d="M0,80 Q70,60 140,50 T280,35 T420,20 L500,10" fill="none" stroke="#047857" stroke-width="3" stroke-linecap="round"/>
+                <!-- Data Points -->
+                <circle cx="0" cy="80" r="4" fill="#005d42" />
+                <circle cx="100" cy="58" r="4" fill="#005d42" />
+                <circle cx="200" cy="45" r="4" fill="#005d42" />
+                <circle cx="300" cy="32" r="4" fill="#005d42" />
+                <circle cx="400" cy="22" r="4" fill="#005d42" />
+                <circle cx="500" cy="10" r="5" fill="#047857" stroke="#ffffff" stroke-width="2"/>
+              </svg>
+              <div class="flex justify-between text-[10px] text-on-surface-variant font-mono pt-1">
+                <span>M-1 (88%)</span>
+                <span>M-2 (91%)</span>
+                <span>M-3 (93%)</span>
+                <span>M-4 (95%)</span>
+                <span>M-5 (96%)</span>
+                <span class="font-bold text-primary">M-6 (98%)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grafik 2: Distribusi Proker & Serapan Anggaran per Divisi -->
+          <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/30 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-heading font-bold text-sm text-on-surface">Distribusi Realisasi Proker per Divisi</h3>
+                <p class="text-[11px] text-on-surface-variant">Kemajuan agenda kerja Q3</p>
+              </div>
+              <span class="text-xs font-mono font-bold text-secondary">Total: 24 Agenda</span>
+            </div>
+
+            <div class="space-y-2.5 pt-1">
+              <div>
+                <div class="flex justify-between text-xs font-medium mb-1">
+                  <span>Keagamaan & Ibadah (4 Proker)</span>
+                  <span class="font-bold text-primary">100% Tuntas</span>
+                </div>
+                <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
+                  <div class="bg-primary-container h-full rounded-full" style="width: 100%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-medium mb-1">
+                  <span>Tekno Media & Humas (3 Proker)</span>
+                  <span class="font-bold text-secondary">85% Berjalan</span>
+                </div>
+                <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
+                  <div class="bg-secondary h-full rounded-full" style="width: 85%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-medium mb-1">
+                  <span>Kedisiplinan & Bela Negara (3 Proker)</span>
+                  <span class="font-bold text-tertiary">75% On Track</span>
+                </div>
+                <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
+                  <div class="bg-tertiary h-full rounded-full" style="width: 75%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-medium mb-1">
+                  <span>MPK Komisi Pengawasan & Aspirasi (4 Agenda)</span>
+                  <span class="font-bold text-primary">90% Selesai</span>
+                </div>
+                <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
+                  <div class="bg-primary-container h-full rounded-full" style="width: 90%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Papan Kanban Proker (4 Kolom Rinci) & Search/Filter Bar -->
         <div class="space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h3 class="font-heading font-extrabold text-lg text-on-surface">Papan Pelacakan Program Kerja (Kanban Q3)</h3>
               <p class="text-xs text-on-surface-variant">Monitoring real-time progres agenda kerja OSIS & MPK</p>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="relative">
+                <input type="text" id="kanban-search" oninput="App.filterProkerKanban()" placeholder="Cari nama proker / PIC..." class="pl-8 pr-3 py-1.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface focus:outline-none focus:ring-1 focus:ring-primary w-48 sm:w-60"/>
+                <span class="material-symbols-outlined text-[18px] text-on-surface-variant absolute left-2.5 top-2 pointer-events-none">search</span>
+              </div>
+
+              <select id="kanban-filter-org" onchange="App.filterProkerKanban()" class="px-3 py-1.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs font-semibold text-on-surface focus:outline-none">
+                <option value="ALL">Semua Organisasi</option>
+                <option value="OSIS">OSIS Eksekutif</option>
+                <option value="MPK">MPK Legislatif</option>
+              </select>
             </div>
           </div>
 
@@ -594,6 +744,7 @@
                   <span class="w-2 h-2 rounded-full bg-outline"></span>
                   <span>Perencanaan (Planning)</span>
                 </span>
+                <span id="badge-count-planning" class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[10px] font-mono">0</span>
               </div>
               <div id="kanban-planning" class="space-y-2.5 min-h-[140px]"></div>
             </div>
@@ -605,6 +756,7 @@
                   <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
                   <span>Sedang Berjalan (Progress)</span>
                 </span>
+                <span id="badge-count-progress" class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-mono">0</span>
               </div>
               <div id="kanban-progress" class="space-y-2.5 min-h-[140px]"></div>
             </div>
@@ -616,6 +768,7 @@
                   <span class="w-2 h-2 rounded-full bg-tertiary"></span>
                   <span>Evaluasi & Verifikasi LPJ</span>
                 </span>
+                <span id="badge-count-review" class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-mono">0</span>
               </div>
               <div id="kanban-review" class="space-y-2.5 min-h-[140px]"></div>
             </div>
@@ -627,9 +780,50 @@
                   <span class="w-2 h-2 rounded-full bg-secondary"></span>
                   <span>Selesai & Sah</span>
                 </span>
+                <span id="badge-count-completed" class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-mono">0</span>
               </div>
               <div id="kanban-completed" class="space-y-2.5 min-h-[140px]"></div>
             </div>
+          </div>
+        </div>
+
+        <!-- PANEL CMS KESISWAAN: DATA PENDAFTAR CALON PENGURUS BARU -->
+        <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden space-y-4 p-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/30">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">how_to_reg</span>
+                <h3 class="font-heading font-extrabold text-base text-on-surface">Data Pendaftar Calon Pengurus Baru</h3>
+              </div>
+              <p class="text-xs text-on-surface-variant">Hasil formulir pendaftaran online & skor Diagnostic Quiz</p>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="App.exportApplicantsCSV()" class="px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-variant text-on-surface text-xs font-bold flex items-center gap-1.5 transition-all">
+                <span class="material-symbols-outlined text-[16px]">file_download</span>
+                <span>Ekspor Pendaftar (CSV)</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-surface-container-low border-b border-outline-variant/30 text-on-surface-variant uppercase font-semibold">
+                  <th class="py-2.5 px-3">Tanggal</th>
+                  <th class="py-2.5 px-3">Nama Siswa</th>
+                  <th class="py-2.5 px-3">Kelas</th>
+                  <th class="py-2.5 px-3">Pilihan Divisi</th>
+                  <th class="py-2.5 px-3 text-center">Skor Kuis</th>
+                  <th class="py-2.5 px-3">Kontak WA</th>
+                  <th class="py-2.5 px-3 text-center">Status</th>
+                  <th class="py-2.5 px-3 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="pendaftar-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -666,9 +860,17 @@
               <span class="material-symbols-outlined text-[18px]" id="lockIcon">lock_open</span>
               <span id="lockText">Kunci Sesi Presensi</span>
             </button>
-            <button id="btnPrintReport" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-container text-on-secondary-container font-heading font-bold text-xs shadow-xs">
-              <span class="material-symbols-outlined text-[18px]">print</span>
-              <span>Cetak Rekap Hadir</span>
+            <button onclick="App.openModalPresensiManual()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary-container text-on-primary font-heading font-bold text-xs shadow-xs hover:bg-primary transition-all">
+              <span class="material-symbols-outlined text-[18px]">how_to_reg</span>
+              <span>Presensi Manual Kesiswaan</span>
+            </button>
+            <button onclick="App.openModalRegistrasiQR()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-secondary text-on-secondary font-heading font-bold text-xs shadow-xs hover:bg-on-secondary-container transition-all">
+              <span class="material-symbols-outlined text-[18px]">add_card</span>
+              <span>Daftarkan QR Kartu Siswa</span>
+            </button>
+            <button onclick="App.exportAttendanceCSV()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-container text-on-secondary-container font-heading font-bold text-xs shadow-xs">
+              <span class="material-symbols-outlined text-[18px]">table_view</span>
+              <span>Ekspor CSV</span>
             </button>
           </div>
         </div>
@@ -727,11 +929,11 @@
                 </div>
               </div>
 
-              <!-- Dual Operational Modul: Scan Kartu & Presensi Manual -->
+              <!-- Operational Buttons: Scan Kartu & Presensi Token -->
               <div class="space-y-3 pt-2">
                 <button onclick="document.getElementById('modal-scanner').classList.remove('hidden'); ScannerModule.startScanner('qr-reader', 'attendance', null, (txt) => App.recordAttendance(txt));" class="w-full py-2.5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-heading font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-all">
                   <span class="material-symbols-outlined text-[18px]">camera_alt</span>
-                  <span>Buka Scanner Kamera Siswa</span>
+                  <span>Buka Scanner Kamera Siswa / Kartu</span>
                 </button>
 
                 <!-- Input Kode Token Manual -->
@@ -775,12 +977,22 @@
 
             <!-- Live Check-in Log Table -->
             <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
-              <div class="p-4 border-b border-outline-variant/30 flex items-center justify-between">
+              <div class="p-4 border-b border-outline-variant/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div class="font-heading font-bold text-sm text-on-surface flex items-center gap-2">
                   <span class="material-symbols-outlined text-primary text-[20px]">list_alt</span>
                   <span>Roster Presensi Real-Time Sesi Ini</span>
                 </div>
-                <span class="text-xs text-on-surface-variant">Sinkronisasi Otomatis Cloud</span>
+                
+                <!-- Filter Feed -->
+                <div class="flex items-center gap-2">
+                  <select id="filter-presensi-status" onchange="App.filterAttendanceFeed()" class="px-3 py-1 rounded-lg border border-outline-variant/60 bg-surface-container-low text-xs font-semibold text-on-surface">
+                    <option value="ALL">Semua Status</option>
+                    <option value="Hadir">Hadir</option>
+                    <option value="Izin">Izin</option>
+                    <option value="Sakit">Sakit</option>
+                    <option value="Alpa">Alpa</option>
+                  </select>
+                </div>
               </div>
 
               <div class="overflow-x-auto">
@@ -828,9 +1040,13 @@
             </div>
 
             <div class="flex items-center gap-2">
-              <button onclick="App.showToast('Fitur penilaian pembina aktif untuk Super Admin.', 'info')" class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary-container text-on-primary font-heading font-bold text-xs shadow-sm hover:bg-primary transition-colors">
+              <button onclick="App.openModalInputNilaiPembina()" class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary-container text-on-primary font-heading font-bold text-xs shadow-sm hover:bg-primary transition-colors">
                 <span class="material-symbols-outlined text-[18px]">add_moderator</span>
-                <span>Input Nilai Pembina</span>
+                <span>+ Input / Sesuaikan Nilai Pembina</span>
+              </button>
+              <button onclick="App.exportLeaderboardCSV()" class="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-surface-container text-on-surface font-heading font-bold text-xs hover:bg-surface-variant transition-colors">
+                <span class="material-symbols-outlined text-[18px]">file_download</span>
+                <span>Ekspor CSV</span>
               </button>
             </div>
           </div>
@@ -847,6 +1063,7 @@
                   <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Bobot</span>
                 </div>
                 <div class="text-xs font-bold text-on-surface">Presensi & Kehadiran</div>
+                <div class="text-[10px] text-on-surface-variant">Absensi rapat, apel & kajian</div>
               </div>
             </div>
 
@@ -860,6 +1077,7 @@
                   <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Bobot</span>
                 </div>
                 <div class="text-xs font-bold text-on-surface">Realisasi Proker</div>
+                <div class="text-[10px] text-on-surface-variant">Kualitas eksekusi, LPJ & target</div>
               </div>
             </div>
 
@@ -873,6 +1091,7 @@
                   <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Bobot</span>
                 </div>
                 <div class="text-xs font-bold text-on-surface">Peer Review (360°)</div>
+                <div class="text-[10px] text-on-surface-variant">Kolaborasi, adab & empati tim</div>
               </div>
             </div>
 
@@ -886,56 +1105,85 @@
                   <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Bobot</span>
                 </div>
                 <div class="text-xs font-bold text-on-surface">Nilai Pembina</div>
+                <div class="text-[10px] text-on-surface-variant">Integritas syar'i & keteladanan</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- The Podium of Honor (Top 3) -->
-        <div class="relative w-full rounded-2xl bg-gradient-to-b from-surface-container-low via-surface-container-lowest to-surface-container-low p-6 sm:p-8 shadow-sm border border-outline-variant/30 text-center space-y-6">
+        <!-- The Podium of Honor (Top 3) with Khatam Arabesque Star -->
+        <div class="relative w-full rounded-2xl bg-gradient-to-b from-surface-container-low via-surface-container-lowest to-surface-container-low p-6 sm:p-8 shadow-sm border border-outline-variant/30 text-center space-y-6 overflow-hidden">
+          
+          <div class="absolute -right-20 -bottom-20 w-80 h-80 opacity-5 pointer-events-none text-primary">
+            <svg class="w-full h-full fill-current" viewBox="0 0 200 200">
+              <polygon points="100,10 120,70 180,50 140,100 190,140 130,150 140,210 90,170 50,210 60,150 0,140 50,100 10,50 70,70"></polygon>
+            </svg>
+          </div>
+
           <div>
-            <div class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-xs font-bold uppercase tracking-wider">
+            <div class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-xs font-bold uppercase tracking-wider shadow-xs">
               <span class="material-symbols-outlined text-[16px]">stars</span>
               <span>Seremoni Bintang Pelajar Santri Periode Ini</span>
             </div>
-            <h3 class="font-heading font-extrabold text-xl text-on-surface mt-2">Podium Pengurus Berprestasi Tertinggi</h3>
+            <h3 class="font-heading font-extrabold text-xl sm:text-2xl text-on-surface mt-2">Podium Pengurus Berprestasi Tertinggi</h3>
+            <p class="text-xs text-on-surface-variant">Penetapan Surat Keputusan Urusan Kesiswaan No. 114/SK/SMP-TH/X/2026</p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 items-end">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 items-end max-w-4xl mx-auto">
             <!-- Peringkat 2 (Perak) -->
-            <div class="order-2 md:order-1 bg-surface-container-lowest p-5 rounded-2xl border-t-4 border-t-slate-400 shadow-sm space-y-2">
-              <div class="w-12 h-12 mx-auto rounded-full bg-surface-container-high flex items-center justify-center font-bold text-on-surface-variant">
+            <div class="order-2 md:order-1 bg-surface-container-lowest p-5 rounded-2xl border-t-4 border-t-slate-400 shadow-md space-y-2">
+              <div class="w-12 h-12 mx-auto rounded-full bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center font-bold text-base shadow-sm">
                 2
               </div>
+              <div class="w-16 h-16 mx-auto rounded-full p-0.5 bg-gradient-to-tr from-secondary to-secondary-container">
+                <img id="podium-2-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar Juara 2" class="w-full h-full object-cover rounded-full"/>
+              </div>
               <div class="font-heading font-bold text-sm text-on-surface" id="podium-2-name">Nabila Syakirah Putri</div>
-              <div class="text-[11px] text-on-surface-variant">Ketua MPK Legislatif</div>
+              <div class="text-[11px] text-on-surface-variant" id="podium-2-jabatan">Ketua MPK Legislatif</div>
               <div class="font-mono font-extrabold text-lg text-secondary" id="podium-2-score">94.5 Pts</div>
+              <button onclick="App.generatePiagamForMember(App.state.members[1]?.nis)" class="text-[10px] font-bold px-3 py-1 rounded-full bg-surface-container text-secondary hover:bg-secondary hover:text-on-secondary transition-all">
+                Cetak Piagam
+              </button>
             </div>
 
             <!-- Peringkat 1 (Emas & Mahkota) -->
-            <div class="order-1 md:order-2 bg-surface-container-lowest p-6 rounded-2xl border-2 border-tertiary shadow-md relative transform md:-translate-y-2 space-y-2">
-              <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center shadow-md">
+            <div class="order-1 md:order-2 bg-surface-container-lowest p-6 rounded-2xl border-2 border-tertiary shadow-xl relative transform md:-translate-y-3 space-y-2">
+              <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center shadow-md text-base">
                 👑
               </div>
-              <div class="w-14 h-14 mx-auto rounded-full bg-tertiary-fixed flex items-center justify-center font-extrabold text-on-tertiary-fixed text-xl pt-1">
+              <div class="w-12 h-12 mx-auto rounded-full bg-tertiary-fixed flex items-center justify-center font-extrabold text-on-tertiary-fixed text-xl pt-0.5 shadow-sm">
                 1
+              </div>
+              <div class="w-20 h-20 mx-auto rounded-full p-1 bg-gradient-to-tr from-amber-400 to-amber-600 shadow-md">
+                <img id="podium-1-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" alt="Avatar Juara 1" class="w-full h-full object-cover rounded-full"/>
               </div>
               <div class="font-heading font-extrabold text-base text-on-surface" id="podium-1-name">M. Rayhan Al-Ghifari</div>
               <div class="text-xs text-primary font-bold" id="podium-1-jabatan">Ketua Umum OSIS</div>
               <div class="font-mono font-extrabold text-2xl text-tertiary-container" id="podium-1-score">96.8 Pts</div>
-              <span class="inline-block text-[10px] font-bold px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed">
+              <span class="inline-block text-[10px] font-bold px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed shadow-xs">
                 BEST MEMBER OF THE MONTH
               </span>
+              <div>
+                <button onclick="App.generatePiagamForMember(App.state.members[0]?.nis)" class="mt-2 text-xs font-bold px-4 py-1.5 rounded-xl bg-primary-container text-on-primary hover:bg-primary transition-all shadow-sm">
+                  Cetak Piagam Emas
+                </button>
+              </div>
             </div>
 
             <!-- Peringkat 3 (Perunggu) -->
-            <div class="order-3 bg-surface-container-lowest p-5 rounded-2xl border-t-4 border-t-amber-700 shadow-sm space-y-2">
-              <div class="w-12 h-12 mx-auto rounded-full bg-surface-container-high text-amber-800 flex items-center justify-center font-bold">
+            <div class="order-3 bg-surface-container-lowest p-5 rounded-2xl border-t-4 border-t-amber-700 shadow-md space-y-2">
+              <div class="w-12 h-12 mx-auto rounded-full bg-surface-container-high text-amber-800 flex items-center justify-center font-bold text-base shadow-sm">
                 3
               </div>
+              <div class="w-16 h-16 mx-auto rounded-full p-0.5 bg-gradient-to-tr from-amber-700 to-amber-900">
+                <img id="podium-3-avatar" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80" alt="Avatar Juara 3" class="w-full h-full object-cover rounded-full"/>
+              </div>
               <div class="font-heading font-bold text-sm text-on-surface" id="podium-3-name">Fathan Azka Ramadhan</div>
-              <div class="text-[11px] text-on-surface-variant">Sie Bela Negara</div>
+              <div class="text-[11px] text-on-surface-variant" id="podium-3-jabatan">Sie Bela Negara</div>
               <div class="font-mono font-extrabold text-lg text-amber-800" id="podium-3-score">93.2 Pts</div>
+              <button onclick="App.generatePiagamForMember(App.state.members[2]?.nis)" class="text-[10px] font-bold px-3 py-1 rounded-full bg-surface-container text-amber-800 hover:bg-amber-800 hover:text-white transition-all">
+                Cetak Piagam
+              </button>
             </div>
           </div>
         </div>
@@ -945,7 +1193,7 @@
           <div class="p-4 border-b border-outline-variant/30 flex items-center justify-between">
             <div class="font-heading font-bold text-sm text-on-surface flex items-center gap-2">
               <span class="material-symbols-outlined text-primary text-[20px]">military_tech</span>
-              <span>Rekapitulasi Nilai & Peringkat Komprehensif</span>
+              <span>Rekapitulasi Nilai & Peringkat Komprehensif Seluruh Pengurus</span>
             </div>
           </div>
 
@@ -1029,10 +1277,19 @@
                 </select>
               </div>
 
+              <!-- Quick Student Auto-Fill Picker -->
+              <div>
+                <label class="block text-xs font-semibold text-on-surface mb-1">Pilih Siswa dari Database (Otomatis)</label>
+                <select id="select-auto-student" onchange="App.autoFillOfficialDocStudent(this.value)" class="w-full px-3 py-2 rounded-xl border border-primary/40 bg-primary-fixed/20 text-xs font-bold text-primary focus:outline-none">
+                  <option value="">-- Pilih Siswa untuk Isi Otomatis --</option>
+                  <!-- Injected from members -->
+                </select>
+              </div>
+
               <div class="grid grid-cols-2 gap-3">
                 <div>
                   <label class="block text-xs font-semibold text-on-surface mb-1">Nomor Registrasi *</label>
-                  <input type="text" id="input-nomor-surat" value="028/OSIS-MPK/SMP-ITH/X/2026" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs font-mono font-bold text-on-surface"/>
+                  <input type="text" id="input-nomor-surat" value="028/ST/OSIS-MPK/SMP-ITH/X/2026" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs font-mono font-bold text-on-surface"/>
                 </div>
                 <div>
                   <label class="block text-xs font-semibold text-on-surface mb-1">Tanggal Terbit *</label>
@@ -1181,16 +1438,16 @@
   </div>
 
   <!-- =========================================================================
-       MODAL: DIAGNOSTIC QUIZ (15 SOAL MINAT & BAKAT)
+       MODAL: DIAGNOSTIC QUIZ (15 SOAL LENGKAP MINAT & BAKAT)
        ========================================================================= -->
   <div id="quiz-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-surface-container-lowest rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 border border-outline-variant/30 relative">
+    <div class="bg-surface-container-lowest rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 border border-outline-variant/30 relative max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-primary text-[24px]">psychology</span>
           <div>
             <h3 class="font-heading font-bold text-base text-on-surface">Diagnostic Quiz Minat Divisi</h3>
-            <span id="quiz-step-label" class="text-xs text-on-surface-variant">Pertanyaan 1 dari 4</span>
+            <span id="quiz-step-label" class="text-xs text-on-surface-variant">Pertanyaan 1 dari 15</span>
           </div>
         </div>
         <button onclick="document.getElementById('quiz-modal').classList.add('hidden')" class="p-1 rounded-lg text-on-surface-variant hover:text-on-surface">
@@ -1199,14 +1456,14 @@
       </div>
 
       <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
-        <div id="quiz-progress-bar" class="bg-primary-container h-full rounded-full transition-all duration-300" style="width: 25%"></div>
+        <div id="quiz-progress-bar" class="bg-primary-container h-full rounded-full transition-all duration-300" style="width: 7%"></div>
       </div>
 
       <div id="quiz-modal-body" class="space-y-4">
         <div id="quiz-step-container"></div>
         <div class="flex items-center justify-end gap-2 pt-2">
           <button onclick="App.nextQuizQuestion()" class="px-5 py-2.5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-heading font-bold text-xs flex items-center gap-1 shadow-sm transition-all">
-            <span>Lanjut</span>
+            <span>Lanjut Soal Berikutnya</span>
             <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
           </button>
         </div>
@@ -1234,6 +1491,243 @@
 
       <div id="qr-reader" class="my-2"></div>
       <div class="text-xs text-on-surface-variant">Pastikan pencahayaan cukup dan kartu tegak lurus.</div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: PRESENSI MANUAL KESISWAAN
+       ========================================================================= -->
+  <div id="modal-presensi-manual" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-outline-variant/30 relative">
+      <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[24px]">fact_check</span>
+          <h3 class="font-heading font-bold text-sm text-on-surface">Input Presensi Manual Kesiswaan</h3>
+        </div>
+        <button onclick="document.getElementById('modal-presensi-manual').classList.add('hidden')" class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="App.handleManualAttendanceSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1">Pilih Siswa / Pengurus *</label>
+          <select id="manual-att-student" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface">
+            <!-- Injected by JS -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1">Status Kehadiran *</label>
+          <select id="manual-att-status" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs font-bold text-on-surface">
+            <option value="Hadir">Hadir (Sesuai Jadwal)</option>
+            <option value="Izin">Izin (Ada Pemberitahuan)</option>
+            <option value="Sakit">Sakit (Surat Dokter / Asrama)</option>
+            <option value="Alpa">Alpa (Tanpa Keterangan)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1">Keterangan / Catatan Tambahan</label>
+          <input type="text" id="manual-att-note" placeholder="Misal: Bertugas di UKS / Izin pulang" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-primary-container text-on-primary font-bold text-xs shadow-sm hover:bg-primary transition-all">
+            Simpan Presensi Manual
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: REGISTRASI QR KARTU SISWA (ADMIN)
+       ========================================================================= -->
+  <div id="modal-registrasi-qr" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-outline-variant/30 relative">
+      <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-secondary text-[24px]">qr_code_2</span>
+          <h3 class="font-heading font-bold text-sm text-on-surface">Daftarkan QR Kartu Fisik Siswa</h3>
+        </div>
+        <button onclick="document.getElementById('modal-registrasi-qr').classList.add('hidden')" class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <p class="text-xs text-on-surface-variant">Siswa sudah memiliki kartu dengan barcode/QR fisik. Scan kartu tersebut untuk ditautkan ke NIS profil siswa.</p>
+
+      <form onsubmit="App.handleRegisterStudentQRSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1">Pilih Siswa *</label>
+          <select id="reg-qr-nis" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface">
+            <!-- Injected by JS -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1">String QR Code Kartu *</label>
+          <div class="flex gap-2">
+            <input type="text" id="reg-qr-string" required placeholder="Contoh: QR-232407025 atau hasil scan" class="flex-1 px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs font-mono text-on-surface"/>
+            <button type="button" onclick="App.scanForRegistration()" class="px-3 py-2 rounded-xl bg-surface-container hover:bg-surface-variant text-on-surface font-bold text-xs flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+              <span>Scan</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-secondary text-on-secondary font-bold text-xs shadow-sm hover:bg-on-secondary-container transition-all">
+            Tautkan QR ke Profil Siswa
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: TAMBAH PROGRAM KERJA BARU
+       ========================================================================= -->
+  <div id="modal-tambah-proker" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-outline-variant/30 relative">
+      <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[24px]">add_task</span>
+          <h3 class="font-heading font-bold text-sm text-on-surface">Tambah Program Kerja Baru</h3>
+        </div>
+        <button onclick="document.getElementById('modal-tambah-proker').classList.add('hidden')" class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="App.handleCreateProkerSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1">Judul Agenda / Program Kerja *</label>
+          <input type="text" id="proker-judul" required placeholder="Misal: Pesantren Kilat Ramadhan 1448 H" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Organisasi *</label>
+            <select id="proker-org" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface">
+              <option value="OSIS">OSIS</option>
+              <option value="MPK">MPK</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Divisi Pelaksana *</label>
+            <input type="text" id="proker-divisi" required placeholder="Misal: Keagamaan & Ibadah" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Anggaran Kegiatan</label>
+            <input type="text" id="proker-anggaran" placeholder="Misal: Rp3.500.000" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Target Tenggat</label>
+            <input type="text" id="proker-deadline" placeholder="Misal: 10 Des 2026" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1">Penanggung Jawab (PIC) *</label>
+          <input type="text" id="proker-pic" required placeholder="Misal: M. Rayhan Al-Ghifari" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-primary-container text-on-primary font-bold text-xs shadow-sm hover:bg-primary transition-all">
+            Terbitkan ke Papan Kanban
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: INPUT / SESUAIKAN NILAI PEMBINA BEST MEMBER
+       ========================================================================= -->
+  <div id="modal-input-nilai-pembina" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-outline-variant/30 relative">
+      <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[24px]">grade</span>
+          <h3 class="font-heading font-bold text-sm text-on-surface">Input / Sesuaikan Nilai Pengurus</h3>
+        </div>
+        <button onclick="document.getElementById('modal-input-nilai-pembina').classList.add('hidden')" class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="App.handleUpdateScoreSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1">Pilih Pengurus *</label>
+          <select id="score-member-nis" onchange="App.loadMemberScoreFields(this.value)" required class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface">
+            <!-- Injected by JS -->
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Presensi (40%)</label>
+            <input type="number" min="0" max="100" id="score-presensi" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Proker (30%)</label>
+            <input type="number" min="0" max="100" id="score-proker" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Peer Review (15%)</label>
+            <input type="number" min="0" max="100" id="score-peer" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Nilai Pembina (15%)</label>
+            <input type="number" min="0" max="100" id="score-pembina" class="w-full px-3 py-2 rounded-xl border border-outline-variant/60 bg-surface-container-low text-xs text-on-surface font-bold text-primary"/>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-primary-container text-on-primary font-bold text-xs shadow-sm hover:bg-primary transition-all">
+            Kalkulasi Ulang & Simpan Leaderboard
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: DETAIL DIVISI & KOMISI (KATALOG INFO)
+       ========================================================================= -->
+  <div id="modal-divisi-detail" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-container-lowest rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-outline-variant/30 relative">
+      <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[24px]" id="modal-divisi-icon">verified</span>
+          <h3 class="font-heading font-bold text-base text-on-surface" id="modal-divisi-title">Detail Divisi</h3>
+        </div>
+        <button onclick="document.getElementById('modal-divisi-detail').classList.add('hidden')" class="p-1 rounded-lg text-on-surface-variant hover:text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-on-surface-variant leading-relaxed">
+        <p id="modal-divisi-desc"></p>
+        <div class="p-3 rounded-xl bg-surface-container-low border border-outline-variant/30">
+          <span class="font-bold text-on-surface block mb-1">Tugas Pokok & Sasaran Proker:</span>
+          <ul id="modal-divisi-tasks" class="list-disc pl-4 space-y-1"></ul>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="App.selectDivisiFromModal()" class="px-4 py-2 rounded-xl bg-primary-container text-on-primary font-bold text-xs shadow-sm hover:bg-primary transition-all">
+          Pilih Divisi Ini di Formulir
+        </button>
+      </div>
     </div>
   </div>
 
