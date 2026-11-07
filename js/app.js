@@ -39,12 +39,7 @@ const App = {
     attendanceLogs: [],
 
     // Data Pendaftar Calon Pengurus Baru (CMS Kesiswaan)
-    applicants: [
-      { id: 'REG-001', tanggal: '06 Nov 2026', nama: 'Zaidan Al-Farizi', kelas: '7A', divisi1: 'Keagamaan & Ibadah', divisi2: 'Kedisiplinan & Bela Negara', skorKuis: 92, wa: '081234567801', status: 'Pending Seleksi', motivasi: 'Ingin berkhidmah membina ibadah santri dan memakmurkan shalat berjamaah.' },
-      { id: 'REG-002', tanggal: '06 Nov 2026', nama: 'Fatima Az-Zahra', kelas: '7B', divisi1: 'Tekno Media & Humas', divisi2: 'Akademik & Minat Bakat', skorKuis: 96, wa: '081234567802', status: 'Lolos Seleksi', motivasi: 'Punya keahlian desain Canva dan ingin mengelola publikasi media dakwah sekolah.' },
-      { id: 'REG-003', tanggal: '07 Nov 2026', nama: 'Ibnu Rusyd Siregar', kelas: '8A', divisi1: 'Komisi A (Hukum & Tatib)', divisi2: 'Komisi C (Anggaran & Audit)', skorKuis: 88, wa: '081234567803', status: 'Pending Seleksi', motivasi: 'Tertarik bidang advokasi santri dan penegakan regulasi tata tertib sekolah.' },
-      { id: 'REG-004', tanggal: '07 Nov 2026', nama: 'Maryam Salimah', kelas: '7B', divisi1: 'Kesehatan & Kebersihan', divisi2: 'Kreativitas & Wirausaha', skorKuis: 90, wa: '081234567804', status: 'Pending Seleksi', motivasi: 'Ingin mengaktifkan program sanitasi hijau dan bakti sosial santri.' }
-    ],
+    applicants: [],
 
     // Kuis Diagnostik (15 Soal Lengkap Sesuai PRD)
     quizCurrentIndex: 0,
@@ -209,6 +204,76 @@ const App = {
     this.updateAuthUI();
   },
 
+  // 1A. Manajemen Profil Kesiswaan (Dinamis Tanpa Hardcode)
+  getKesiswaanProfile() {
+    const saved = localStorage.getItem('sim_kesiswaan_custom_profile');
+    if (saved) {
+      try {
+        const p = JSON.parse(saved);
+        if (p && p.nama) return p;
+      } catch (e) {}
+    }
+    return {
+      nama: 'Pembina Kesiswaan',
+      nip: '-',
+      jabatan: 'Pembina OSIS & Urusan Kesiswaan',
+      org: 'Kesiswaan SMP Islam Tarbiyatul Huda',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
+    };
+  },
+
+  openModalEditProfilKesiswaan() {
+    const p = this.getKesiswaanProfile();
+    const inNama = document.getElementById('prof-kesiswaan-nama');
+    const inNip = document.getElementById('prof-kesiswaan-nip');
+    const inJabatan = document.getElementById('prof-kesiswaan-jabatan');
+    const inOrg = document.getElementById('prof-kesiswaan-org');
+    const inAvatar = document.getElementById('prof-kesiswaan-avatar');
+
+    if (inNama) inNama.value = p.nama || '';
+    if (inNip) inNip.value = p.nip || '';
+    if (inJabatan) inJabatan.value = p.jabatan || '';
+    if (inOrg) inOrg.value = p.org || '';
+    if (inAvatar) inAvatar.value = p.avatar || '';
+
+    const modal = document.getElementById('modal-edit-profil-kesiswaan');
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  async handleSaveProfileKesiswaan(e) {
+    e.preventDefault();
+    const nama = document.getElementById('prof-kesiswaan-nama')?.value.trim();
+    const nip = document.getElementById('prof-kesiswaan-nip')?.value.trim();
+    const jabatan = document.getElementById('prof-kesiswaan-jabatan')?.value.trim();
+    const org = document.getElementById('prof-kesiswaan-org')?.value.trim() || 'Kesiswaan SMP Islam Tarbiyatul Huda';
+    const avatar = document.getElementById('prof-kesiswaan-avatar')?.value.trim() || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80';
+
+    if (!nama || !nip || !jabatan) {
+      this.showToast('Nama asli, NIP, dan jabatan resmi wajib diisi!', 'warning');
+      return;
+    }
+
+    const newProfile = { nama, nip, jabatan, org, avatar };
+    localStorage.setItem('sim_kesiswaan_custom_profile', JSON.stringify(newProfile));
+
+    // Jika user saat ini adalah SUPER_ADMIN, perbarui sesi aktif
+    if (this.state.auth.user && this.state.auth.user.role === 'SUPER_ADMIN') {
+      this.state.auth.user.nama = nama;
+      this.state.auth.user.jabatan = jabatan;
+      this.state.auth.user.org = org;
+      this.state.auth.user.avatar = avatar;
+      localStorage.setItem(CONFIG.STORAGE_KEYS.SESSION, JSON.stringify(this.state.auth));
+    }
+
+    document.getElementById('modal-edit-profil-kesiswaan')?.classList.add('hidden');
+    this.updateAuthUI();
+    this.renderOfficialDocPreview();
+    this.showToast(`Profil Pembina resmi disimpan: ${nama}!`, 'success');
+
+    // Sinkronisasi asinkron ke Google Apps Script backend
+    await this.callApi('saveProfile', newProfile);
+  },
+
   async login(username, password) {
     username = String(username || '').trim().toLowerCase();
     password = String(password || '').trim();
@@ -218,17 +283,19 @@ const App = {
       return false;
     }
 
+    const kProf = this.getKesiswaanProfile();
+
     // 1. Akses Darurat Master Kesiswaan (Emergency Bypass)
     if (username === 'kesiswaan_darurat' && password === 'yKEYdUHPfKB62QjV') {
       return this.setAuthSession({
         id: 'USR-EMERGENCY',
         username: 'kesiswaan_darurat',
-        nama: 'Ustadzah Siti Aminah, S.Pd.I',
+        nama: kProf.nama,
         role: 'SUPER_ADMIN',
-        jabatan: 'Pembina Kesiswaan & Tata Pamong',
-        org: 'Kesiswaan SMPITH',
-        nis: '198506122010011008',
-        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
+        jabatan: kProf.jabatan,
+        org: kProf.org,
+        nis: kProf.nip,
+        avatar: kProf.avatar
       });
     }
 
@@ -263,23 +330,65 @@ const App = {
       return this.setAuthSession({
         id: 'USR-ADMIN',
         username: 'kesiswaan',
-        nama: 'Ustadzah Siti Aminah, S.Pd.I',
+        nama: kProf.nama,
         role: 'SUPER_ADMIN',
-        jabatan: 'Urusan Kesiswaan / Super Admin',
-        org: 'Kesiswaan',
-        nis: '198506122010011008',
-        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
+        jabatan: kProf.jabatan,
+        org: kProf.org,
+        nis: kProf.nip,
+        avatar: kProf.avatar
       });
     }
 
-    // 4. Fallback Pengurus Berdasarkan Data yang Dimuat dari Spreadsheet
+    // 4. Fallback Role Testing (Akun Uji Coba 4 Role PRD)
+    if (username === 'bph' && (password === 'bph123' || password === '123456')) {
+      return this.setAuthSession({
+        id: 'USR-BPH',
+        username: 'bph',
+        nama: 'M. Fatih Robbani',
+        role: 'ADMIN_BPH',
+        jabatan: 'Ketua Umum OSIS / BPH',
+        org: 'OSIS & MPK',
+        nis: '242507001',
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
+      });
+    }
+
+    if (username === 'media' && (password === 'media123' || password === '123456')) {
+      return this.setAuthSession({
+        id: 'USR-MEDIA',
+        username: 'media',
+        nama: 'Aisyah Putri Humaira',
+        role: 'ADMIN_MEDIA',
+        jabatan: 'Koor. Sie Media & Humas',
+        org: 'OSIS',
+        nis: '242507002',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80'
+      });
+    }
+
+    if (username === 'anggota' && (password === 'anggota123' || password === '123456')) {
+      return this.setAuthSession({
+        id: 'USR-MEMBER',
+        username: 'anggota',
+        nama: 'Muhammad Ziyad Al-Fatih',
+        role: 'MEMBER',
+        jabatan: 'Anggota Divisi Keagamaan',
+        org: 'OSIS',
+        divisi: 'Keagamaan & Ibadah',
+        nis: '242507003',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+      });
+    }
+
+    // 5. Fallback Pengurus Berdasarkan Data yang Dimuat dari Spreadsheet / CMS
     const matched = this.state.members.find(m => String(m.nis).toLowerCase() === username);
     if (matched && (matched.pin === password || password === '123456')) {
+      const assignedRole = matched.role || (matched.jabatan && matched.jabatan.toLowerCase().includes('ketua') ? 'ADMIN_BPH' : 'MEMBER');
       return this.setAuthSession({
         id: 'USR-' + matched.nis,
         username: String(matched.nis),
         nama: matched.nama,
-        role: matched.jabatan && matched.jabatan.includes('Ketua') ? 'ADMIN_BPH' : 'MEMBER',
+        role: assignedRole,
         jabatan: matched.jabatan,
         org: matched.org,
         divisi: matched.divisi,
@@ -321,6 +430,115 @@ const App = {
     this.showToast('Anda telah keluar dari sesi sistem. Navigasi ERP dinonaktifkan.', 'info');
   },
 
+  // 1B. Penerapan Hak Akses Berdasarkan Matriks 5 Peran (PRD RBAC)
+  applyRolePermissions(role) {
+    role = role || (this.state.auth.isLoggedIn ? (this.state.auth.user?.role || 'MEMBER') : 'PUBLIC');
+
+    const superAdminEls = document.querySelectorAll('.rbac-super-admin-only');
+    const bphAdminEls = document.querySelectorAll('.rbac-bph-admin-only');
+    const mediaAdminEls = document.querySelectorAll('.rbac-media-admin-only');
+    const memberOnlyEls = document.querySelectorAll('.rbac-member-only');
+
+    // Sembunyikan semua elemen terbatas secara default
+    superAdminEls.forEach(el => el.classList.add('hidden'));
+    bphAdminEls.forEach(el => el.classList.add('hidden'));
+    mediaAdminEls.forEach(el => el.classList.add('hidden'));
+    memberOnlyEls.forEach(el => el.classList.add('hidden'));
+
+    const navDashboardLabel = document.getElementById('nav-dashboard-label');
+    const cmsPengurusPanel = document.getElementById('cms-pengurus-panel');
+    const cmsPendaftarPanel = document.getElementById('cms-pendaftar-panel');
+    const metricsSection = document.getElementById('metrics-kpi-section');
+
+    if (role === 'SUPER_ADMIN') {
+      // Super Admin (Pembina Kesiswaan): Akses Kontrol Penuh
+      superAdminEls.forEach(el => el.classList.remove('hidden'));
+      bphAdminEls.forEach(el => el.classList.remove('hidden'));
+      mediaAdminEls.forEach(el => el.classList.remove('hidden'));
+      if (cmsPengurusPanel) cmsPengurusPanel.classList.remove('hidden');
+      if (cmsPendaftarPanel) cmsPendaftarPanel.classList.remove('hidden');
+      if (metricsSection) metricsSection.classList.remove('hidden');
+      if (navDashboardLabel) navDashboardLabel.textContent = 'Dashboard Kesiswaan';
+    } else if (role === 'ADMIN_BPH') {
+      // Admin BPH / Sekretaris / Bendahara
+      bphAdminEls.forEach(el => el.classList.remove('hidden'));
+      if (cmsPengurusPanel) cmsPengurusPanel.classList.remove('hidden');
+      if (cmsPendaftarPanel) cmsPendaftarPanel.classList.add('hidden');
+      if (metricsSection) metricsSection.classList.remove('hidden');
+      if (navDashboardLabel) navDashboardLabel.textContent = 'Dashboard BPH';
+    } else if (role === 'ADMIN_MEDIA') {
+      // Admin Media / Humas
+      mediaAdminEls.forEach(el => el.classList.remove('hidden'));
+      if (cmsPengurusPanel) cmsPengurusPanel.classList.add('hidden');
+      if (cmsPendaftarPanel) cmsPendaftarPanel.classList.remove('hidden');
+      if (metricsSection) metricsSection.classList.remove('hidden');
+      if (navDashboardLabel) navDashboardLabel.textContent = 'Dashboard Media & Humas';
+    } else if (role === 'MEMBER') {
+      // Pengurus Anggota
+      memberOnlyEls.forEach(el => el.classList.remove('hidden'));
+      if (cmsPengurusPanel) cmsPengurusPanel.classList.add('hidden');
+      if (cmsPendaftarPanel) cmsPendaftarPanel.classList.add('hidden');
+      if (metricsSection) metricsSection.classList.remove('hidden');
+      if (navDashboardLabel) navDashboardLabel.textContent = 'Portal Anggota Mandiri';
+      this.renderMemberPersonalPortal();
+    }
+  },
+
+  renderMemberPersonalPortal() {
+    const user = this.state.auth.user;
+    if (!user) return;
+
+    const m = this.state.members.find(x => String(x.nis) === String(user.nis || user.username)) || {
+      nis: user.nis || user.username || '242507001',
+      nama: user.nama || 'Anggota Pengurus',
+      org: user.org || 'OSIS',
+      divisi: user.divisi || 'Divisi Keagamaan',
+      jabatan: user.jabatan || 'Anggota Pengurus',
+      presensi: 100,
+      proker: 90,
+      peer: 90,
+      pembina: 90
+    };
+
+    const elAvatar = document.getElementById('member-card-avatar');
+    const elName = document.getElementById('member-card-name');
+    const elNis = document.getElementById('member-card-nis');
+    const elBadge = document.getElementById('member-card-role-badge');
+    const elDivisi = document.getElementById('member-card-divisi');
+    const elJabatan = document.getElementById('member-card-jabatan');
+    const elQrText = document.getElementById('member-card-qr-text');
+    const elQrImg = document.getElementById('member-card-qr-img');
+
+    if (elAvatar && user.avatar) elAvatar.src = user.avatar;
+    if (elName) elName.textContent = m.nama;
+    if (elNis) elNis.textContent = `NIS: ${m.nis}`;
+    if (elBadge) elBadge.textContent = `${m.org} • ${m.divisi}`;
+    if (elDivisi) elDivisi.textContent = `${m.org} - ${m.divisi}`;
+    if (elJabatan) elJabatan.textContent = m.jabatan;
+
+    const qrData = `QR-${m.nis}`;
+    if (elQrText) elQrText.textContent = qrData;
+    if (elQrImg) elQrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrData)}`;
+
+    const presensi = Number(m.presensi) || 100;
+    const proker = Number(m.proker) || 85;
+    const peer = Number(m.peer) || 85;
+    const pembina = Number(m.pembina) || 85;
+    const total = ((presensi * 0.4) + (proker * 0.3) + (peer * 0.15) + (pembina * 0.15)).toFixed(1);
+
+    const elStatPres = document.getElementById('member-stat-presensi');
+    const elStatProk = document.getElementById('member-stat-proker');
+    const elStatPeer = document.getElementById('member-stat-peer');
+    const elStatPemb = document.getElementById('member-stat-pembina');
+    const elStatTotal = document.getElementById('member-stat-total-score');
+
+    if (elStatPres) elStatPres.textContent = `${presensi}%`;
+    if (elStatProk) elStatProk.textContent = proker;
+    if (elStatPeer) elStatPeer.textContent = peer;
+    if (elStatPemb) elStatPemb.textContent = pembina;
+    if (elStatTotal) elStatTotal.textContent = `${total} Pts`;
+  },
+
   updateAuthUI() {
     const isAuth = this.state.auth.isLoggedIn;
     const user = this.state.auth.user;
@@ -357,18 +575,24 @@ const App = {
       if (elUserRoleBadge) {
         elUserRoleBadge.classList.remove('sm:hidden');
         elUserRoleBadge.classList.add('sm:flex');
-        elUserRoleBadge.textContent = `${user.jabatan} \u2022 ${user.nama.split(' ')[0]}`;
+        const roleTitle = user.role === 'SUPER_ADMIN' ? 'Super Admin' :
+                          user.role === 'ADMIN_BPH' ? 'Admin BPH' :
+                          user.role === 'ADMIN_MEDIA' ? 'Admin Media' : 'Member';
+        elUserRoleBadge.textContent = `${roleTitle} • ${user.nama.split(' ')[0]}`;
       }
 
       // 4. Update avatar & profile info
       if (elUserAvatar) elUserAvatar.src = user.avatar || '';
       if (elDropdownAvatar) elDropdownAvatar.src = user.avatar || '';
       if (elDropdownName) elDropdownName.textContent = user.nama;
-      if (elDropdownRole) elDropdownRole.textContent = `${user.jabatan} \u2022 ${user.org}`;
+      if (elDropdownRole) elDropdownRole.textContent = `${user.jabatan} • ${user.org}`;
 
       // 5. Update greeting di dashboard
       if (elGreetingName) elGreetingName.textContent = user.nama;
-      if (elGreetingRole) elGreetingRole.textContent = `${user.jabatan} \u2022 ${user.org} SMP Islam Tarbiyatul Huda`;
+      if (elGreetingRole) elGreetingRole.textContent = `${user.jabatan} • ${user.org}`;
+
+      // 6. Terapkan Pembatasan Peran RBAC
+      this.applyRolePermissions(user.role);
     } else {
       // 1. NONAKTIFKAN / SEMBUNYIKAN MENU NAVIGASI INTERNAL PADA TAMPILAN PUBLIK
       if (elSidebarInternalNav) elSidebarInternalNav.classList.add('hidden');
@@ -389,6 +613,9 @@ const App = {
       // 4. Reset greeting
       if (elGreetingName) elGreetingName.textContent = 'Selamat Datang';
       if (elGreetingRole) elGreetingRole.textContent = 'Silakan login untuk mengakses sistem informasi terpadu';
+
+      // 5. Terapkan Akses Publik
+      this.applyRolePermissions('PUBLIC');
     }
 
     // Tutup dropdown profil jika terbuka
@@ -502,32 +729,95 @@ const App = {
     return promise;
   },
 
-  // 5. Data Default (Sesuai Stitch Reference)
+  // 5. Inisialisasi Data Bersih (Berbasis LocalStorage & Sinkronisasi Sheets Kesiswaan)
   initData() {
-    this.state.members = [
-      { nis: '232407019', nama: 'M. Rayhan Al-Ghifari', org: 'OSIS', divisi: 'Tekno Media & Humas', jabatan: 'Ketua Umum OSIS', kelas: 'IX-A', wa: '081234567890', presensi: 100, proker: 96, peer: 94, pembina: 96, qr: 'QR-232407019' },
-      { nis: '232407020', nama: 'Nabila Syakirah Putri', org: 'MPK', divisi: 'Komisi A (Hukum & Tatib)', jabatan: 'Ketua MPK Legislatif', kelas: 'IX-B', wa: '081234567891', presensi: 96, proker: 92, peer: 95, pembina: 95, qr: 'QR-232407020' },
-      { nis: '232407021', nama: 'Fathan Azka Ramadhan', org: 'OSIS', divisi: 'Kedisiplinan & Bela Negara', jabatan: 'Koor. Sie Bela Negara', kelas: 'VIII-A', wa: '081234567892', presensi: 98, proker: 90, peer: 92, pembina: 91, qr: 'QR-232407021' },
-      { nis: '232407022', nama: 'Zahra Annisa Firdaus', org: 'OSIS', divisi: 'Pengurus Inti', jabatan: 'Sekretaris Umum OSIS', kelas: 'VIII-B', wa: '081234567893', presensi: 94, proker: 88, peer: 90, pembina: 92, qr: 'QR-232407022' },
-      { nis: '232407023', nama: 'Ahmad Faiz Robbani', org: 'MPK', divisi: 'Komisi C (Anggaran & Audit)', jabatan: 'Bendahara Komisi C', kelas: 'IX-A', wa: '081234567894', presensi: 92, proker: 85, peer: 88, pembina: 90, qr: 'QR-232407023' },
-      { nis: '232407024', nama: 'Khadijah Nurul Izzah', org: 'OSIS', divisi: 'Keagamaan & Ibadah', jabatan: 'Sekretaris Sie Keagamaan', kelas: 'VII-A', wa: '081234567895', presensi: 96, proker: 94, peer: 91, pembina: 93, qr: '' }
-    ];
+    const savedMembers = localStorage.getItem('sim_members_data');
+    if (savedMembers) {
+      try { this.state.members = JSON.parse(savedMembers); } catch (e) { this.state.members = []; }
+    } else {
+      this.state.members = [];
+    }
 
-    this.state.prokerList = [
-      { id: 'PRK-01', judul: 'Latihan Dasar Kepemimpinan Siswa (LDKS) 2026', org: 'OSIS', divisi: 'Pengurus Inti', status: 'IN_PROGRESS', progress: 75, pic: 'M. Rayhan Al-Ghifari', anggaran: 'Rp4.500.000', deadline: '24 Okt 2026' },
-      { id: 'PRK-02', judul: 'Kajian Akbar Maulid Nabi & Tabligh Santri', org: 'OSIS', divisi: 'Keagamaan & Ibadah', status: 'COMPLETED', progress: 100, pic: 'Khadijah Nurul', anggaran: 'Rp2.800.000', deadline: '12 Okt 2026' },
-      { id: 'PRK-03', judul: 'Audit Anggaran Kas Triwulan I Organisasi', org: 'MPK', divisi: 'Komisi C', status: 'IN_PROGRESS', progress: 80, pic: 'Ahmad Faiz', anggaran: 'Rp250.000', deadline: '30 Okt 2026' },
-      { id: 'PRK-04', judul: 'Pekan Olahraga & Seni Antar Kelas (PORSENI)', org: 'OSIS', divisi: 'Akademik & Minat Bakat', status: 'PLANNING', progress: 20, pic: 'Fathan Azka', anggaran: 'Rp5.000.000', deadline: '15 Nov 2026' },
-      { id: 'PRK-05', judul: 'Podcast Dakwah & Majalah Dinding Digital', org: 'OSIS', divisi: 'Tekno Media & Humas', status: 'PLANNING', progress: 35, pic: 'Zahra Annisa', anggaran: 'Rp1.200.000', deadline: '20 Nov 2026' },
-      { id: 'PRK-06', judul: 'Laporan Pertanggungjawaban Tengah Periode', org: 'MPK', divisi: 'Komisi A', status: 'REVIEW', progress: 90, pic: 'Nabila Syakirah', anggaran: 'Rp400.000', deadline: '05 Nov 2026' }
-    ];
+    const savedApplicants = localStorage.getItem('sim_applicants_data');
+    if (savedApplicants) {
+      try { this.state.applicants = JSON.parse(savedApplicants); } catch (e) { this.state.applicants = []; }
+    } else {
+      this.state.applicants = [];
+    }
 
-    this.state.attendanceLogs = [
-      { id: 'LOG-01', nis: '232407019', nama: 'M. Rayhan Al-Ghifari', divisi: 'Tekno Media (Ketua OSIS)', waktu: '15:02 WIB', status: 'Hadir', metode: 'Scan QR Mandiri' },
-      { id: 'LOG-02', nis: '232407020', nama: 'Nabila Syakirah Putri', divisi: 'Komisi A (Ketua MPK)', waktu: '15:04 WIB', status: 'Hadir', metode: 'Scan QR Mandiri' },
-      { id: 'LOG-03', nis: '232407021', nama: 'Fathan Azka Ramadhan', divisi: 'Bela Negara', waktu: '15:08 WIB', status: 'Hadir', metode: 'Kode Token Sesi' },
-      { id: 'LOG-04', nis: '232407022', nama: 'Zahra Annisa Firdaus', divisi: 'Pengurus Inti', waktu: '15:15 WIB', status: 'Izin', metode: 'Manual Kesiswaan' }
-    ];
+    const savedProker = localStorage.getItem('sim_proker_data');
+    if (savedProker) {
+      try { this.state.prokerList = JSON.parse(savedProker); } catch (e) { this.state.prokerList = []; }
+    } else {
+      this.state.prokerList = [];
+    }
+
+    const savedLogs = localStorage.getItem('sim_attendance_data');
+    if (savedLogs) {
+      try { this.state.attendanceLogs = JSON.parse(savedLogs); } catch (e) { this.state.attendanceLogs = []; }
+    } else {
+      this.state.attendanceLogs = [];
+    }
+
+    this.updateDashboardMetrics();
+  },
+
+  updateDashboardMetrics() {
+    const members = this.state.members || [];
+    const proker = this.state.prokerList || [];
+
+    const totalMembers = members.length;
+    const osisCount = members.filter(m => m.org === 'OSIS').length;
+    const mpkCount = members.filter(m => m.org === 'MPK').length;
+
+    const elTotalPengurus = document.getElementById('stat-total-pengurus');
+    const elBreakdown = document.getElementById('stat-pengurus-breakdown');
+    const elBarOsis = document.getElementById('stat-bar-osis');
+    const elBarMpk = document.getElementById('stat-bar-mpk');
+
+    if (elTotalPengurus) elTotalPengurus.textContent = totalMembers;
+    if (elBreakdown) elBreakdown.textContent = `${osisCount} OSIS • ${mpkCount} MPK`;
+    if (elBarOsis && elBarMpk) {
+      const osisPct = totalMembers > 0 ? (osisCount / totalMembers) * 100 : 50;
+      const mpkPct = totalMembers > 0 ? (mpkCount / totalMembers) * 100 : 50;
+      elBarOsis.style.width = `${osisPct}%`;
+      elBarMpk.style.width = `${mpkPct}%`;
+    }
+
+    // Kehadiran rata-rata
+    const elAvgPresensi = document.getElementById('stat-avg-presensi');
+    if (elAvgPresensi) {
+      if (members.length > 0) {
+        const avg = members.reduce((acc, m) => acc + (Number(m.presensi) || 0), 0) / members.length;
+        elAvgPresensi.textContent = `${avg.toFixed(1)}%`;
+      } else {
+        elAvgPresensi.textContent = `0%`;
+      }
+    }
+
+    // Proker count & progress
+    const elProkerCount = document.getElementById('stat-proker-count');
+    const elProkerPct = document.getElementById('stat-proker-pct');
+    const elProkerBar = document.getElementById('stat-proker-bar');
+    if (elProkerCount) {
+      const totalProker = proker.length;
+      const completedProker = proker.filter(p => p.status === 'COMPLETED').length;
+      elProkerCount.innerHTML = `${completedProker}<span class="text-sm text-on-surface-variant">/${totalProker}</span>`;
+      const pct = totalProker > 0 ? Math.round((completedProker / totalProker) * 100) : 0;
+      if (elProkerPct) elProkerPct.textContent = `${pct}% Tuntas`;
+      if (elProkerBar) elProkerBar.style.width = `${pct}%`;
+    }
+
+    // Anggaran total
+    const elTotalAnggaran = document.getElementById('stat-total-anggaran');
+    if (elTotalAnggaran) {
+      let sum = 0;
+      proker.forEach(p => {
+        const clean = String(p.anggaran || '').replace(/[^0-9]/g, '');
+        if (clean) sum += Number(clean);
+      });
+      elTotalAnggaran.textContent = sum > 0 ? `Rp${sum.toLocaleString('id-ID')}` : 'Rp0';
+    }
   },
 
   populateStudentDropdowns() {
@@ -1049,11 +1339,18 @@ const App = {
     const previewArea = document.getElementById('doc-preview-area');
     if (!previewArea) return;
 
+    // Profil Kesiswaan dinamis (penandatangan)
+    const kProf = this.getKesiswaanProfile();
+    // Ketua OSIS dinamis (co-signer) – cari dari members yang jabatan-nya mengandung "Ketua"
+    const ketuaOsis = (this.state.members || []).find(m => m.jabatan && m.jabatan.toLowerCase().includes('ketua') && m.org === 'OSIS');
+    const ketuaNama = ketuaOsis ? ketuaOsis.nama : 'Ketua OSIS';
+    const ketuaNis = ketuaOsis ? ketuaOsis.nis : '-';
+
     const jenis = document.getElementById('input-jenis-surat')?.value || 'SURAT TUGAS';
     const nomor = document.getElementById('input-nomor-surat')?.value || '028/ST/OSIS-MPK/SMP-ITH/X/2026';
     const tanggal = document.getElementById('input-tanggal-surat')?.value || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    const nama = document.getElementById('form-nama')?.value || 'M. Rayhan Al-Ghifari';
-    const nis = document.getElementById('form-nis')?.value || '232407019';
+    const nama = document.getElementById('form-nama')?.value || '';
+    const nis = document.getElementById('form-nis')?.value || '';
     const kelas = document.getElementById('form-kelas')?.value || 'IX-A (Thoriq bin Ziyad)';
     const jabatan = document.getElementById('form-jabatan')?.value || 'Ketua Umum OSIS';
     const perihal = document.getElementById('input-perihal-surat')?.value || 'Penugasan Delegasi Jambore Kepemimpinan Pelajar Islam';
@@ -1117,8 +1414,8 @@ const App = {
             <p class="my-0">Ditetapkan pada: ${tanggal}</p>
             <p class="font-bold my-0">Pembina Kesiswaan & OSIS</p>
             <div class="h-14 flex items-center justify-center my-1 text-[10px] text-gray-400 italic">[Tertanda Digital]</div>
-            <p class="font-bold underline uppercase my-0">Ustadzah Siti Aminah, S.Pd.I</p>
-            <p class="text-[10px] text-gray-600 my-0">NIP. 198506122010011008</p>
+            <p class="font-bold underline uppercase my-0">${kProf.nama}</p>
+            <p class="text-[10px] text-gray-600 my-0">NIP. ${kProf.nip || '-'}</p>
           </div>
         </div>
       </div>
@@ -1173,8 +1470,8 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
             <div class="h-14 flex items-center justify-center my-1 text-[10px] text-gray-400 italic">
               [Tertanda Digital]
             </div>
-            <p class="font-bold underline uppercase my-0">M. Rayhan Al-Ghifari</p>
-            <p class="text-[11px] text-gray-600 my-0">NIS. 232407019</p>
+            <p class="font-bold underline uppercase my-0">${ketuaNama}</p>
+            <p class="text-[11px] text-gray-600 my-0">NIS. ${ketuaNis}</p>
           </div>
 
           <div class="w-60 text-center">
@@ -1188,8 +1485,8 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
               <span class="text-[8px] font-mono text-gray-500 mt-0.5 tracking-tighter">HMAC-ID: ${hmacCode}</span>
             </div>
 
-            <p class="font-bold underline uppercase my-0">Ustadzah Siti Aminah, S.Pd.I</p>
-            <p class="text-[10px] text-gray-600 my-0">NIP. 198506122010011008</p>
+            <p class="font-bold underline uppercase my-0">${kProf.nama}</p>
+            <p class="text-[10px] text-gray-600 my-0">NIP. ${kProf.nip || '-'}</p>
           </div>
         </div>
 
@@ -1364,6 +1661,11 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
     const tbody = document.getElementById('pendaftar-tbody');
     if (!tbody) return;
 
+    if (!this.state.applicants || this.state.applicants.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-on-surface-variant">Belum ada pendaftar calon pengurus baru.</td></tr>`;
+      return;
+    }
+
     tbody.innerHTML = this.state.applicants.map(a => {
       let badge = 'bg-surface-container text-on-surface-variant';
       if (a.status === 'Lolos Seleksi') badge = 'bg-primary-fixed text-on-primary-fixed-variant';
@@ -1404,6 +1706,7 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
     const a = this.state.applicants.find(x => x.id === id);
     if (!a) return;
     a.status = newStatus;
+    localStorage.setItem('sim_applicants_data', JSON.stringify(this.state.applicants));
     this.renderApplicantsTable();
     this.showToast(`Status calon pengurus ${a.nama} diubah menjadi: ${newStatus}`, 'info');
   },
@@ -1423,11 +1726,25 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
     if (!tbody) return;
 
     if (!this.state.members || this.state.members.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-on-surface-variant">Belum ada data pengurus terdaftar di database.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-on-surface-variant">Belum ada data pengurus terdaftar di database.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = this.state.members.map(m => `
+    tbody.innerHTML = this.state.members.map(m => {
+      const roleBadge = {
+        'SUPER_ADMIN': 'bg-error-container text-on-error-container',
+        'ADMIN_BPH': 'bg-tertiary-container text-on-tertiary-container',
+        'ADMIN_MEDIA': 'bg-secondary-container text-on-secondary-container',
+        'MEMBER': 'bg-surface-container text-on-surface-variant'
+      };
+      const roleLabel = {
+        'SUPER_ADMIN': 'Super Admin',
+        'ADMIN_BPH': 'Admin BPH',
+        'ADMIN_MEDIA': 'Admin Media',
+        'MEMBER': 'Member'
+      };
+      const role = m.role || 'MEMBER';
+      return `
       <tr class="border-b border-outline-variant/30 hover:bg-surface-container-low transition-colors">
         <td class="py-2.5 px-3 font-mono font-bold text-primary">${m.nis}</td>
         <td class="py-2.5 px-3 font-bold text-on-surface">${m.nama}</td>
@@ -1436,6 +1753,9 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
         </td>
         <td class="py-2.5 px-3 text-on-surface-variant">${m.divisi}</td>
         <td class="py-2.5 px-3 font-medium">${m.jabatan}</td>
+        <td class="py-2.5 px-3 text-center">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${roleBadge[role] || roleBadge['MEMBER']}">${roleLabel[role] || role}</span>
+        </td>
         <td class="py-2.5 px-3 font-mono text-on-surface-variant">${m.wa || '-'}</td>
         <td class="py-2.5 px-3 text-center">
           <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary-fixed text-on-primary-fixed-variant">Aktif</span>
@@ -1452,7 +1772,7 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
           </div>
         </td>
       </tr>
-    `).join('');
+    `}).join('');
   },
 
   openModalTambahPengurus() {
@@ -1469,6 +1789,7 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
     const jabatan = document.getElementById('new-member-jabatan')?.value.trim();
     const wa = document.getElementById('new-member-wa')?.value.trim();
     const pin = document.getElementById('new-member-pin')?.value.trim() || '123456';
+    const role = document.getElementById('new-member-role')?.value || 'MEMBER';
 
     if (!nis || !nama || !jabatan) {
       this.showToast('Mohon lengkapi seluruh kolom wajib!', 'warning');
@@ -1476,13 +1797,15 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
     }
 
     const newMember = {
-      nis, nama, org, divisi, jabatan, wa, pin,
+      nis, nama, org, divisi, jabatan, wa, pin, role,
       presensi: 100, proker: 85, peer: 85, pembina: 85, qr: 'QR-' + nis
     };
 
     this.state.members.push(newMember);
+    localStorage.setItem('sim_members_data', JSON.stringify(this.state.members));
     this.renderMembersTable();
     this.populateStudentDropdowns();
+    this.updateDashboardMetrics();
     document.getElementById('modal-tambah-pengurus')?.classList.add('hidden');
     e.target.reset();
     this.showToast(`Pengurus ${nama} berhasil ditambahkan! PIN login: ${pin}`, 'success');
@@ -1508,6 +1831,7 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
 
     const m = this.state.members.find(x => x.nis === nis);
     if (m) m.pin = pin;
+    localStorage.setItem('sim_members_data', JSON.stringify(this.state.members));
 
     document.getElementById('modal-reset-pin')?.classList.add('hidden');
     this.showToast(`PIN pengurus (NIS: ${nis}) berhasil diperbarui menjadi: ${pin}`, 'success');
@@ -1521,8 +1845,10 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
     if (!confirm(`Apakah Anda yakin ingin menonaktifkan pengurus ${nama} (NIS: ${nis})?`)) return;
 
     this.state.members = this.state.members.filter(x => x.nis !== nis);
+    localStorage.setItem('sim_members_data', JSON.stringify(this.state.members));
     this.renderMembersTable();
     this.populateStudentDropdowns();
+    this.updateDashboardMetrics();
     this.showToast(`Pengurus ${nama} telah dinonaktifkan.`, 'info');
 
     await this.callApi('deleteMember', { nis });
@@ -1551,6 +1877,8 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
     const org = document.getElementById('approve-app-org')?.value;
     const divisi = document.getElementById('approve-app-divisi')?.value.trim();
     const pin = document.getElementById('approve-app-pin')?.value.trim() || '123456';
+    const role = document.getElementById('approve-app-role')?.value || 'MEMBER';
+    const jabatan = document.getElementById('approve-app-jabatan')?.value.trim() || ('Anggota ' + divisi);
 
     const app = this.state.applicants.find(x => x.id === id);
     if (!app) return;
@@ -1561,20 +1889,24 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
       nama: app.nama,
       org,
       divisi,
-      jabatan: 'Anggota ' + divisi,
+      jabatan,
       wa: app.wa,
       pin,
+      role,
       presensi: 100, proker: 80, peer: 80, pembina: 85, qr: 'QR-' + nis
     };
 
     this.state.members.push(newMember);
+    localStorage.setItem('sim_members_data', JSON.stringify(this.state.members));
+    localStorage.setItem('sim_applicants_data', JSON.stringify(this.state.applicants));
     this.renderApplicantsTable();
     this.renderMembersTable();
     this.populateStudentDropdowns();
+    this.updateDashboardMetrics();
     document.getElementById('modal-approve-applicant')?.classList.add('hidden');
     this.showToast(`Selamat! ${app.nama} resmi disahkan sebagai Pengurus ${org}. NIS: ${nis}, PIN: ${pin}`, 'success');
 
-    await this.callApi('approveApplicant', { id, nis, pinAwal: pin, organisasi: org, divisi, jabatan: 'Anggota ' + divisi, nama: app.nama, wa: app.wa });
+    await this.callApi('approveApplicant', { id, nis, pinAwal: pin, organisasi: org, divisi, jabatan, role, nama: app.nama, wa: app.wa });
   },
 
   exportMembersCSV() {
@@ -1591,19 +1923,60 @@ Demikian surat ini diterbitkan untuk dilaksanakan dengan penuh rasa amanah, dedi
       const res = await this.callApi('getBootData');
       if (res && res.success && res.data) {
         if (Array.isArray(res.data.members) && res.data.members.length > 0) {
-          this.state.members = res.data.members;
+          this.state.members = res.data.members.map(m => ({
+            nis: String(m.nis || m.NIS || '').replace(/^'/, ''),
+            nama: m.nama || m.Nama_Lengkap || '',
+            org: m.org || m.Organisasi || 'OSIS',
+            divisi: m.divisi || m.Divisi_Komisi || m.Divisi || '',
+            jabatan: m.jabatan || m.Jabatan || 'Pengurus',
+            wa: String(m.wa || m.No_WA || '').replace(/^'/, ''),
+            qr: m.qr || m.QR_Code_Siswa || ('QR-' + (m.nis || m.NIS)),
+            presensi: Number(m.presensi || m.Presensi_Pct || 100),
+            proker: Number(m.proker || m.Proker_Score || 85),
+            peer: Number(m.peer || m.Peer_Score || 85),
+            pembina: Number(m.pembina || m.Pembina_Score || 85),
+            role: m.role || m.Role || 'MEMBER',
+            status: m.status || m.Status_Aktif || 'Aktif'
+          }));
+          localStorage.setItem('sim_members_data', JSON.stringify(this.state.members));
           this.renderMembersTable();
           this.populateStudentDropdowns();
           this.renderBestMemberPodium();
         }
         if (Array.isArray(res.data.proker) && res.data.proker.length > 0) {
-          this.state.prokerList = res.data.proker;
+          this.state.prokerList = res.data.proker.map(p => ({
+            id: p.id || p.ID_Proker || '',
+            nama: p.nama || p.Nama_Proker || '',
+            org: p.org || p.Organisasi || 'OSIS',
+            divisi: p.divisi || p.Divisi || '',
+            status: p.status || p.Status || 'PLANNING',
+            progress: Number(p.progress || p.Progress_Pct || 0),
+            pic: p.pic || p.PIC || '',
+            anggaran: p.anggaran || p.Anggaran || 'Rp0',
+            deadline: p.deadline || p.Target_Selesai || ''
+          }));
+          localStorage.setItem('sim_proker_data', JSON.stringify(this.state.prokerList));
           this.renderProkerKanban();
         }
         if (Array.isArray(res.data.applicants) && res.data.applicants.length > 0) {
-          this.state.applicants = res.data.applicants;
+          this.state.applicants = res.data.applicants.map((a, idx) => ({
+            id: a.id || ('APP-' + String(idx + 1).padStart(3, '0')),
+            tanggal: a.tanggal || (a.Timestamp ? new Date(a.Timestamp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : ''),
+            nama: a.nama || a.Nama_Lengkap || '',
+            kelas: a.kelas || a.Kelas || '',
+            wa: String(a.wa || a.No_WA || '').replace(/^'/, ''),
+            ortu: String(a.ortu || a.No_Ortu || '').replace(/^'/, ''),
+            divisi1: a.divisi1 || a.Pilihan_Divisi_1 || '',
+            divisi2: a.divisi2 || a.Pilihan_Divisi_2 || '',
+            skorKuis: Number(a.skorKuis || a.Skor_Kuis || 0),
+            motivasi: a.motivasi || a.Motivasi || '',
+            portofolio: a.portofolio || a.Portofolio_URL || '',
+            status: a.status || a.Status_Seleksi || 'Pending Seleksi'
+          }));
+          localStorage.setItem('sim_applicants_data', JSON.stringify(this.state.applicants));
           this.renderApplicantsTable();
         }
+        this.updateDashboardMetrics();
       }
     } catch (e) {
       console.warn('Boot data fetch error:', e);
